@@ -1,15 +1,13 @@
-import yayJpg from '../assets/yay.jpg';
+import indp1jpg from '../assets/index_p1.png'
+import {useEffect, useState} from "react";
+import {Link, Button} from "@carbon/react";
+import Homepage from "@/ext_index/App";
+
+
 
 export default function HomePage() {
+
   return (
-    <div>
-      <h2>Yay! Welcome to umi!</h2>
-      <p>
-        <img src={yayJpg} width="388" />
-      </p>
-      <p>
-        To get started, edit <code>pages/index.tsx</code> and save to reload.
-      </p>
-    </div>
+      <Homepage/>
   );
 }
