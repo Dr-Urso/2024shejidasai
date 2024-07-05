@@ -5,6 +5,7 @@ export default defineConfig({
     { path: "/", component: "index" },
     { path: "/docs", component: "docs" },
     { path: "/test", component: "test" },
+    { path: "/login", component: "login" },
   ],
   proxy: {
     '/api': {
