@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@carbon/icons-react':
+    specifier: ^11.45.0
+    version: 11.45.0(react@18.3.1)
   '@carbon/react':
     specifier: ^1.33.0
     version: 1.33.0(react-dom@18.3.1)(react@18.3.1)(sass@1.63.6)
@@ -17,6 +20,9 @@ dependencies:
   aos:
     specifier: ^2.3.4
     version: 2.3.4
+  axios:
+    specifier: ^1.7.2
+    version: 1.7.2
   classnames:
     specifier: ^2.5.1
     version: 2.5.1
@@ -901,8 +907,8 @@ packages:
       '@ibm/telemetry-js': 1.6.0
     dev: false
 
-  /@carbon/icons-react@11.44.1(react@18.3.1):
-    resolution: {integrity: sha512-oZlwm9is3eGkxQbEuqsv0Awzb7s+msbdvM1/yxQJLcLCBWbRjER66nPLms9+vO2z3+3eS5CdLvoxplpRgOwA2Q==}
+  /@carbon/icons-react@11.45.0(react@18.3.1):
+    resolution: {integrity: sha512-QTf+K4BT4Vn2e9c5HDZGqTOztVOXG+4k2dAxDgAyg+18zif/kJsZKPnaFJsthxVezzELJ9cbmlXC0acbiE/zjA==}
     requiresBuild: true
     peerDependencies:
       react: '>=16'
@@ -937,7 +943,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.24.7
       '@carbon/feature-flags': 0.15.0
-      '@carbon/icons-react': 11.44.1(react@18.3.1)
+      '@carbon/icons-react': 11.45.0(react@18.3.1)
       '@carbon/layout': 11.23.1
       '@carbon/styles': 1.60.1(sass@1.63.6)
       '@carbon/telemetry': 0.1.0
@@ -3793,7 +3799,6 @@ packages:
 
   /asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
-    dev: true
 
   /atomic-sleep@1.0.0:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
@@ -3830,6 +3835,16 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+
+  /axios@1.7.2:
+    resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /babel-jest@29.7.0(@babel/core@7.24.7):
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
@@ -4351,7 +4366,6 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
-    dev: true
 
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -4806,7 +4820,6 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
-    dev: true
 
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
@@ -5784,7 +5797,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dev: true
 
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -5829,7 +5841,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
-    dev: true
 
   /formdata-polyfill@4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
@@ -8541,6 +8552,10 @@ packages:
   /proxy-compare@2.5.1:
     resolution: {integrity: sha512-oyfc0Tx87Cpwva5ZXezSp5V9vht1c7dZBhvuV/y3ctkgMVUmiAGDVeeB0dKhGSyT0v1ZTEQYpe/RXlBVBNuCLA==}
     dev: true
+
+  /proxy-from-env@1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
 
   /prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}

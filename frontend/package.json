@@ -9,10 +9,12 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@carbon/icons-react": "^11.45.0",
     "@carbon/react": "^1.33.0",
     "@headlessui/react": "^2.1.1",
     "@ibm/plex": "^6.4.1",
     "aos": "^2.3.4",
+    "axios": "^1.7.2",
     "classnames": "^2.5.1",
     "emailjs-com": "^3.2.0",
     "prop-types": "^15.8.1",
