@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {Link} from 'umi';
 import styles from './index.less';
 import {TextInput, Form,Button,Checkbox} from "@carbon/react";
 import {ArrowRight} from "@carbon/icons-react";
@@ -78,11 +79,13 @@ export default function Page() {
               <Checkbox id="remember-me" labelText="记住我" style={{marginBottom: '5%'}}/>
               <div className={styles.greyline} style={{marginBottom: "5%", marginTop: "6%"}}/>
               <div className="text-3xl" style={{marginBottom: "5%"}}>没有账户？</div>
+              <Link to="/register">
               <Button kind="tertiary" style={{
                   width: "100%",
                   boxSizing: "border-box",
                   maxWidth: "1000px"
               }}>创建账户</Button>
+              </Link>
               <div className={styles.greyline} style={{marginBottom: "5%", marginTop: "6%"}}/>
               <div>忘记账号密码？<a href="#">联系我们</a></div>
           </div>

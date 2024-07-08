@@ -29,7 +29,7 @@ class User(AbstractUser):
     )
 
     username = models.CharField(max_length=16, unique=True)
-    nickname = models.CharField(max_length=16, unique=True)
-    mobile_num = models.CharField(max_length=20, unique=True)
+    nickname = models.CharField(max_length=16, unique=True, null=True)
+    mobile_num = models.CharField(max_length=20, unique=True, null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
