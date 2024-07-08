@@ -47,16 +47,8 @@ class User(AbstractUser):
         else:
             super().save(*args, **kwargs)
 
-
-class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    student_id = models.CharField(max_length=20, unique=True, null=True)
-    grade = models.CharField(max_length=10, null=True)
-    major = models.CharField(max_length=50, null=True)
-
     def __str__(self):
-        return self.user.username
-
+        return self.username
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -66,3 +58,15 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    student_id = models.CharField(max_length=20, unique=True, null=True)
+    grade = models.CharField(max_length=10, null=True)
+    major = models.CharField(max_length=50, null=True)
+    teacher = models.ForeignKey(Teacher, related_name='students', on_delete=models.SET_NULL, null=True)
+    def __str__(self):
+        return self.user.username
+
+

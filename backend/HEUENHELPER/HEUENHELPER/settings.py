@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userLogin.apps.UserloginConfig',
     'testUtils.apps.TestutilsConfig',
+    'Teacher_Student_Interactions.apps.TeacherStudentInteractionsConfig',
 ]
 
 REST_FRAMEWORK = {
