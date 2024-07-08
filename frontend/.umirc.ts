@@ -7,6 +7,7 @@ export default defineConfig({
     { path: "/test", component: "test" },
     { path: "/login", component: "login" },
     { path: "/register", component: "register"},
+    {path: "/tool", component: "tools" },
     { path: "/message", component: "messager"},
   ],
   proxy: {
