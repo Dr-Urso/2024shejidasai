@@ -10,8 +10,10 @@ from django.db import transaction
 from django.contrib.auth import get_user_model
 from .models import Request, Conversation, Message
 from .serializers import RequestSerializer, ConversationSerializer, MessageSerializer
+from userLogin.models import Teacher, Student
 
 User = get_user_model()
+
 
 class SendRequestView(APIView):
     permission_classes = [IsAuthenticated]
@@ -35,6 +37,7 @@ class SendRequestView(APIView):
         serializer = RequestSerializer(request_obj)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
 class RespondRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -54,9 +57,23 @@ class RespondRequestView(APIView):
 
         request_obj.status = status_update
         request_obj.save()
+        if status_update == 'accepted':
+            if request_obj.sender.user_type == 'student':
+                teacher = Teacher.objects.get(user=request_obj.receiver)
+                s = Student.objects.get(user=request_obj.sender)
+                s.teacher = teacher
+                s.save()
+            elif request_obj.sender.user_type == 'teacher':
+                s = Student.objects.get(user=request_obj.receiver)
+                s.teacher = Teacher.objects.get(user=request_obj.sender)
+                s.save()
+            else:
+                return Response({'detail': '无效的用户类型'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         serializer = RequestSerializer(request_obj)
         return Response(serializer.data)
+
 
 class RequestListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -72,13 +89,18 @@ class RequestListView(APIView):
             'received_requests': received_serializer.data
         })
 
+
 class ConversationView(APIView):
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
     def post(self, request):
         user = request.user
-        other_user = request.data.get('other_user')
+        if user.user_type == 'student':
+            print(Student.objects.get(user=user).teacher)
+            other_user = Student.objects.get(user=user).teacher.user.username
+        else:
+            other_user = request.data.get('other_user')
         topic = request.data.get('topic')
 
         try:
@@ -109,6 +131,7 @@ class ConversationView(APIView):
             conversations = Conversation.objects.filter(student=user)
         serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data)
+
 
 class MessageView(APIView):
     permission_classes = [IsAuthenticated]

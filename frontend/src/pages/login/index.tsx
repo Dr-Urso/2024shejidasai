@@ -7,6 +7,7 @@ import bg from '@/assets/login_illustration.svg'
 import axios from "axios";
 import '@/Utils/axiosInstance'
 import axiosInstance from "@/Utils/axiosInstance";
+import {useUser} from "@/Utils/UserContext";
 export default function Page() {
     const [username, setUsername] = useState(localStorage.getItem('username') || '');
     const [password, setPassword] = useState(localStorage.getItem('password') || '');
@@ -31,6 +32,8 @@ export default function Page() {
 
             if (response.data.detail == "OK") {
                 setErrorMessage('');
+                const {username, setUserInfo} = useUser();
+                setUserInfo({username});
                 if (rememberMe) {
                     localStorage.setItem('username', username);
                     localStorage.setItem('password', password);
