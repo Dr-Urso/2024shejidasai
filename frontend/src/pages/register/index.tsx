@@ -16,7 +16,10 @@ export default function Page() {
     let student_id='';
     let employee_id='';
     const handleRegister = async () => {
-        if (!username && !password && !nickname && !id && !user_type) {
+        if (!username || !password || !nickname || !id || !user_type) {
+            setErrorMessage("请填写所有必填项");
+            return;
+        }
             if(user_type=='teacher')
             {employee_id=id
                 try {
@@ -63,8 +66,8 @@ export default function Page() {
                 }
             }
 
-        } else {
-            setErrorMessage("请填写所有必填项");}
+
+
     };
 
     return (
