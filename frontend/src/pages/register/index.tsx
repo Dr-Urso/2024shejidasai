@@ -91,7 +91,7 @@ export default function Page() {
                         <TextInput
                             className={styles.Text}
                             id="text-input-1"
-                            labelText="邮箱地址"
+                            labelText="用户名"
                             helperText="不能超过16位"
                             onChange={(e) => setUsername(e.target.value)}
                         />

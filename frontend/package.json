@@ -9,6 +9,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@carbon/ibm-products": "^2.44.0",
     "@carbon/icons-react": "^11.45.0",
     "@carbon/react": "^1.33.0",
     "@headlessui/react": "^2.1.1",
