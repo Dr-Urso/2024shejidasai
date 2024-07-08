@@ -3,26 +3,50 @@
   background: rgb(121, 167, 242);
 }
 .Container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 45vh;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  height: 1600px;
+
 }
 .Tab{
-    background: rgb(121, 167, 242);
+  margin-left: 20px;
   place-items: center;
-  width: 70%;
-  height:60%;
+
+
+}
+.Jump{
   display: flex;
-  flex-direction: column;
-  align-items: center;
+}
+.Input{
+  display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 .Text{
-  width: 50%;
+width:90%;
+  max-width: 500px;
 }
 .Button{
 }
 
 h1{
-  color:beige;
+  color:black;
+}
+.Header{
+  background-image: url("@/assets/register.svg");
+}
+.Header h1{
+  color: #9494f0;
+  font-size: 40px;
+  font-weight: bold;
+
+}
+.bottomBorder {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 6%; /* 深灰色底边的高度 */
+  background-color: #333; /* 深灰色 */
+  text-align: center;
+  line-height: 50px;
+  color: white;
 }

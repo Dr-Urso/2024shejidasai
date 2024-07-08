@@ -55,6 +55,9 @@ devDependencies:
   '@types/aos':
     specifier: ^3.0.7
     version: 3.0.7
+  '@types/carbon-components-react':
+    specifier: ^7.55.11
+    version: 7.55.11
   '@types/react':
     specifier: ^18.0.33
     version: 18.3.3
@@ -2568,6 +2571,13 @@ packages:
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
     dependencies:
       '@babel/types': 7.24.7
+    dev: true
+
+  /@types/carbon-components-react@7.55.11:
+    resolution: {integrity: sha512-byqX9hXDqDjglGLM79B8gx2oJ/OkxuRU+ygl5OnZ+gT8FOqRP361IuB8kmVXcDw0pbPqG/D9qxLnLKpaHXwXwg==}
+    dependencies:
+      '@types/react': 18.3.3
+      flatpickr: 4.6.9
     dev: true
 
   /@types/eslint-scope@3.7.7:
@@ -5973,7 +5983,6 @@ packages:
 
   /flatpickr@4.6.9:
     resolution: {integrity: sha512-F0azNNi8foVWKSF+8X+ZJzz8r9sE1G4hl06RyceIaLvyltKvDl6vqk9Lm/6AUUCi5HWaIjiUbk7UpeE/fOXOpw==}
-    dev: false
 
   /flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
