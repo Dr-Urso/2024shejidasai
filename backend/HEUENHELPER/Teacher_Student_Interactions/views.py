@@ -19,9 +19,9 @@ class SendRequestView(APIView):
     @transaction.atomic
     def post(self, request):
         sender = request.user
-        receiver_id = request.data.get('receiver_id')
+        receiver_name = request.data.get('receiver')
         try:
-            receiver = User.objects.get(id=receiver_id)
+            receiver = User.objects.get(username=receiver_name)
         except User.DoesNotExist:
             return Response({'detail': '接收者不存在'}, status=status.HTTP_404_NOT_FOUND)
 

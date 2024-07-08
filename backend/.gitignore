@@ -1,3 +1,5 @@
 /.venv
 /HEUENHELPER/.idea
 /HEUENHELPER/HEUENHELPER/_pycache_
+
+**/__pycache__/
