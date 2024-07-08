@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
@@ -6,13 +7,14 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer
 from django.contrib.auth import authenticate, login, logout
 
-from .models import User
+from .models import User, Student, Teacher
 
 
 # Create your views here.
 # 业务代码写在这
 # 命中的这个函数如下，由于是注册用户，所以应该是post方法
 class CreateUserView(APIView):
+
 
     def post(self, request):
         if (username := request.data.get('username')) is None or (len(username) == 0):
@@ -24,15 +26,31 @@ class CreateUserView(APIView):
         # 验证新用户名是否重复
         if User.objects.filter(username=username).first():
             return Response({'detail': '用户名已被使用'}, status=status.HTTP_400_BAD_REQUEST)
-        # 没啥问题开始创建账号
+        if (user_type := request.data.get('user_type')) not in ['student', 'teacher']:
+            return Response({'detail': '用户类型错误'}, status=status.HTTP_400_BAD_REQUEST)
+
+        student_id = request.data.get('student_id')
+        employee_id = request.data.get('employee_id')
+
         try:
-            user = User.objects.create_user(
-                username=username,
-                password=password,
-            )
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=username,
+                    password=password,
+                    user_type=user_type,
+                )
+                if user_type == 'student':
+                    user.student.student_id = student_id
+                    user.student.save()
+                if user_type == 'teacher':
+                    user.teacher.employee_id = employee_id
+                    user.teacher.save()
+
         except Exception as e:
             print(e)
             return Response({'detail': '内部错误'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 没啥问题开始创建账号
         return Response({'detail': 'OK'})
 
 
