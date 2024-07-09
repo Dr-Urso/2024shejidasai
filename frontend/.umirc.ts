@@ -7,7 +7,6 @@ export default defineConfig({
     { path: "/test", component: "test" },
     { path: "/login", component: "login" },
     { path: "/register", component: "register"},
-    {path: "/tool", component: "tools" },
     { path: "/text", component: "text" },
     { path: "/document", component: "document" },
     { path: "/message", component: "messager"},

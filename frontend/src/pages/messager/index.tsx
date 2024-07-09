@@ -6,6 +6,7 @@ import {Button, FluidForm, TextInput, Tile} from "@carbon/react";
 import {MessageResponse} from "@/interfaces/MessageResponse";
 import ConversationCard from "@/components/ConversationCard";
 import MessageModa from "@/components/MessageModa";
+import {Content} from "carbon-components-react";
 
 interface Message {
     avatar: string;
@@ -55,7 +56,10 @@ export default function Page() {
 
 
   return (
+      <Content id='main-content' >
       <div>
+
+
 
           <FluidForm style={{display:'flex'}}>
               <Button onClick={newConversation}>新建对话</Button>
@@ -65,6 +69,8 @@ export default function Page() {
               return (<ConversationCard one={one} setCurrentConversation={setCurrentConversation} setOpen={setOpen} />)
           })}
           {CurrentConversation&&<MessageModa CurrentConversation={CurrentConversation as MessageResponse} setOpen={setOpen} open={open} username={username}/>}
-      </div>
+
+          </div>
+</Content>
   );
 }
