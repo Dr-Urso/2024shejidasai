@@ -41,6 +41,9 @@ dependencies:
   prop-types:
     specifier: ^15.8.1
     version: 15.8.1
+  react-mic:
+    specifier: ^12.4.6
+    version: 12.4.6(prop-types@15.8.1)(react@18.3.1)
   react-router-dom:
     specifier: ^6.24.1
     version: 6.24.1(react-dom@18.3.1)(react@18.3.1)
@@ -67,6 +70,9 @@ devDependencies:
   '@types/react-dom':
     specifier: ^18.0.11
     version: 18.3.0
+  '@types/react-mic':
+    specifier: ^12.4.6
+    version: 12.4.6
   '@umijs/plugins':
     specifier: ^4.3.1
     version: 4.3.1(@babel/core@7.24.7)(@types/react-dom@18.3.0)(@types/react@18.3.3)(antd@5.19.0)(dva@2.5.0-beta.2)(rc-field-form@1.44.0)(react-dom@18.3.1)(react@18.3.1)
@@ -2766,6 +2772,12 @@ packages:
 
   /@types/react-dom@18.3.0:
     resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
+    dependencies:
+      '@types/react': 18.3.3
+    dev: true
+
+  /@types/react-mic@12.4.6:
+    resolution: {integrity: sha512-EBD7AOxgi037VX/osTtlv3pJ0Rlwc9SobtSkt4Yq+XO8Coq4LbQCM2zqjUppu5DMm6GY0fzwFwTjAkoO3XbPGA==}
     dependencies:
       '@types/react': 18.3.3
     dev: true
@@ -9622,6 +9634,16 @@ packages:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
     dev: true
 
+  /react-ga@2.7.0(prop-types@15.8.1)(react@18.3.1):
+    resolution: {integrity: sha512-AjC7UOZMvygrWTc2hKxTDvlMXEtbmA0IgJjmkhgmQQ3RkXrWR11xEagLGFGaNyaPnmg24oaIiaNPnEoftUhfXA==}
+    peerDependencies:
+      prop-types: ^15.6.0
+      react: ^15.6.2 || ^16.0
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
+    dev: false
+
   /react-helmet-async@1.3.0(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-9jZ57/dAn9t3q6hneQS0wukqC2ENOBgMNVEhb/ZG9ZSxUetzVIw4iAmEU38IaVg3QGYauQPhSeUTuIUtFglWpg==}
     peerDependencies:
@@ -9670,6 +9692,17 @@ packages:
   /react-merge-refs@1.1.0:
     resolution: {integrity: sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==}
     dev: true
+
+  /react-mic@12.4.6(prop-types@15.8.1)(react@18.3.1):
+    resolution: {integrity: sha512-2/DZoz7thR2nJyekF10zBvs/7a8HhUQ4L8MV6BpC+Q/T8G1MvpRHGSHjSlVtnbzaCMDJ3R1MdThoLu15WuVh/g==}
+    peerDependencies:
+      prop-types: ^15.5.10
+      react: 16.x
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-ga: 2.7.0(prop-types@15.8.1)(react@18.3.1)
+    dev: false
 
   /react-redux@5.1.2(react@18.3.1)(redux@3.7.2):
     resolution: {integrity: sha512-Ns1G0XXc8hDyH/OcBHOxNgQx9ayH3SPxBnFCOidGKSle8pKihysQw2rG/PmciUQRoclhVBO8HMhiRmGXnDja9Q==}

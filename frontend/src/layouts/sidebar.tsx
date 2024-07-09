@@ -48,7 +48,7 @@ export default function Layout() {
                         文本翻译
                     </SideNavLink>
                     <SideNavLink href='/plat/document'>
-                        文档翻译
+                        音频翻译
                     </SideNavLink>
                     <SideNavLink href='/plat/bbs'>
                         师生论坛
