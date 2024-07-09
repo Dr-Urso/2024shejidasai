@@ -61,7 +61,6 @@ export default function Page() {
                   未来
               </HeaderName>
           </Header>
-          <Content id='main-content' >
 <div className={styles.illustration_canva} style={{backgroundImage:`url(${bg})`}}></div>
           <div className={styles.formArea}>
               <div className="text-5xl" style={{marginBottom: "5%"}}>用户登录</div>
@@ -99,7 +98,6 @@ export default function Page() {
           <div className={styles.bottomBorder}>
               这是底边
           </div>
-              </Content>
       </div>
   );
 }

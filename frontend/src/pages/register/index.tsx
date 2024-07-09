@@ -78,7 +78,6 @@ export default function Page() {
                     未来
                 </HeaderName>
             </Header>
-            <Content id='main-content' >
             <div className={styles.Container}>
                 <div className={styles.illustration_canva} style={{backgroundImage: `url(${bg})`}}></div>
                 <div className={styles.head}>
@@ -146,7 +145,6 @@ export default function Page() {
                     这是底边
                 </div>
             </div>
-                </Content>
         </>
     );
 }

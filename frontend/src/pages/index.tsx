@@ -12,16 +12,8 @@ export default function HomePage() {
     const navigate = useNavigate();
   return (
       <div>
-      <Header>
-          <HeaderName href="/" prefix="智学">
-              未来
-          </HeaderName>
-          <Chat onClick={()=>{navigate('/message')}} size={20}/>
-          <Tools  onClick={()=>{navigate('/text')}} size={20}/>
-      </Header>
-      <Content id='main-content' >
+
       <Homepage/>
-      </Content>
       </div>
   );
 }

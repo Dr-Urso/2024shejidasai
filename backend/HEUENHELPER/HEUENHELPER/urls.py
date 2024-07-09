@@ -22,4 +22,5 @@ urlpatterns = [
     path('test/', include('testUtils.urls')),
     path('user/', include('userLogin.urls')),
     path('interactions/', include('Teacher_Student_Interactions.urls')),
+    path('forum/', include('bbs.urls'))
 ]
