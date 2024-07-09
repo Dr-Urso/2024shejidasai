@@ -6,12 +6,12 @@ import {UserProvider} from "@/Utils/UserContext";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {Header, HeaderGlobalBar, HeaderName, SideNav, SideNavItems, SideNavLink} from "carbon-components-react";
-import {Chat, Login, Menu} from "@carbon/icons-react";
+import {Chat, Login, Menu, Tools, User} from "@carbon/icons-react";
 import {useLocation} from "@@/exports";
 export default function Layout() {
   pkg.component.UserAvatar = true;
      const location = useLocation();
-     if (location.pathname === '/login' || location.pathname === '/register') {
+     if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/') {
          return <Outlet />
      }
     const navigate = useNavigate();
@@ -28,8 +28,10 @@ export default function Layout() {
                 </HeaderName>
                 <Menu onClick={toggleSideNav} size={20} />
                 <Chat onClick={()=>{navigate('/message')}} size={20}/>
+                <Tools  onClick={()=>{navigate('/text')}} size={20}/>
                 <HeaderGlobalBar>
-                    <Login onClick={ ()=>navigate('/login')} size={20}/>
+                    <Login onClick={ ()=>navigate('/register')} size={20}/>
+                    <User onClick={ ()=>navigate('/login')} size={20}/>
                 </HeaderGlobalBar>
             </Header>
             <SideNav isFixedNav={true} expanded={isSideNavExpanded} isChildOfHeader={false} aria-label="Side navigation">
@@ -39,6 +41,9 @@ export default function Layout() {
                     </SideNavLink>
                     <SideNavLink href='/document'>
                         文档翻译
+                    </SideNavLink>
+                    <SideNavLink href='/message'>
+                        师生论坛
                     </SideNavLink>
                 </SideNavItems>
             </SideNav>
