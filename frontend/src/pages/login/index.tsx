@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Link} from 'umi';
 import styles from './index.less';
 import {TextInput, Form,Button,Checkbox} from "@carbon/react";
-import {ArrowRight} from "@carbon/icons-react";
+import {ArrowRight, Chat, Login, Menu} from "@carbon/icons-react";
 import bg from '@/assets/login_illustration.svg'
 import axios from "axios";
 import '@/Utils/axiosInstance'
 import axiosInstance from "@/Utils/axiosInstance";
 import {useUser} from "@/Utils/UserContext";
+import {Content, Header, HeaderGlobalBar, HeaderName} from "carbon-components-react";
 export default function Page() {
     const [username, setUsername] = useState(localStorage.getItem('username') || '');
     const [password, setPassword] = useState(localStorage.getItem('password') || '');
@@ -55,9 +56,12 @@ export default function Page() {
 
   return (
       <div className={styles.container}>
-          <div className={styles.header}>
-
-          </div>
+          <Header>
+              <HeaderName href="/" prefix="智学">
+                  未来
+              </HeaderName>
+          </Header>
+          <Content id='main-content' >
 <div className={styles.illustration_canva} style={{backgroundImage:`url(${bg})`}}></div>
           <div className={styles.formArea}>
               <div className="text-5xl" style={{marginBottom: "5%"}}>用户登录</div>
@@ -95,6 +99,7 @@ export default function Page() {
           <div className={styles.bottomBorder}>
               这是底边
           </div>
+              </Content>
       </div>
   );
 }

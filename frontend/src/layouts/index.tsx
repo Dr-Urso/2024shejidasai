@@ -7,14 +7,13 @@ import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {Header, HeaderGlobalBar, HeaderName, SideNav, SideNavItems, SideNavLink} from "carbon-components-react";
 import {Chat, Login, Menu} from "@carbon/icons-react";
-import StoryContent from "@/pages/text/text";
 import {useLocation} from "@@/exports";
 export default function Layout() {
   pkg.component.UserAvatar = true;
-    // const location = useLocation();
-    // if (location.pathname === '/') {
-    //     return <SimpleLayout><Outlet /></SimpleLayout>
-    // }
+     const location = useLocation();
+     if (location.pathname === '/login' || location.pathname === '/register') {
+         return <Outlet />
+     }
     const navigate = useNavigate();
     const [isSideNavExpanded, setIsSideNavExpanded] = useState(true);
     function toggleSideNav() {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { Button, TextInput,RadioButtonSkeleton,} from "@carbon/react";
-import {RadioButton, RadioButtonGroup} from "carbon-components-react";
+import {Content, Header, HeaderName, RadioButton, RadioButtonGroup} from "carbon-components-react";
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
 import styles from './index.less';
@@ -73,7 +73,12 @@ export default function Page() {
 
     return (
         <>
-
+            <Header>
+                <HeaderName href="/" prefix="智学">
+                    未来
+                </HeaderName>
+            </Header>
+            <Content id='main-content' >
             <div className={styles.Container}>
                 <div className={styles.illustration_canva} style={{backgroundImage: `url(${bg})`}}></div>
                 <div className={styles.head}>
@@ -141,7 +146,7 @@ export default function Page() {
                     这是底边
                 </div>
             </div>
-
+                </Content>
         </>
     );
 }
