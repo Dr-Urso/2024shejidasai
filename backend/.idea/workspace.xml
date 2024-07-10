@@ -4,11 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84860dc0-0290-4ac8-baff-5e8f21ae60f8" name="Changes" comment="" />
+    <list default="true" id="84860dc0-0290-4ac8-baff-5e8f21ae60f8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/HEUENHELPER/services/AI_API_CALL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/445a4114-36ec-4a44-9d5e-88e6372dfe03.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/445a4114-36ec-4a44-9d5e-88e6372dfe03.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/c985189a-840a-4a1c-9246-39464543d49b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/c985189a-840a-4a1c-9246-39464543d49b.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HEUENHELPER/HEUENHELPER/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/HEUENHELPER/HEUENHELPER/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HEUENHELPER/testUtils/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/HEUENHELPER/testUtils/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HEUENHELPER/testUtils/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/HEUENHELPER/testUtils/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -42,6 +58,11 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Defworkspace\2024shejidasai\backend\HEUENHELPER" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -72,6 +93,7 @@
       <workItem from="1720436188694" duration="1621000" />
       <workItem from="1720486878898" duration="3364000" />
       <workItem from="1720577628743" duration="3474000" />
+      <workItem from="1720585310238" duration="1917000" />
     </task>
     <servers />
   </component>
