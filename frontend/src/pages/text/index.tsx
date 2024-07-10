@@ -10,7 +10,7 @@ export default function TextPage() {
 
     const handleTranslate = async () => {
         try {
-            const response = await fetch('YOUR_BACKEND_API_URL', {
+            const response = await fetch('YOUR_BACKEND_API', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
