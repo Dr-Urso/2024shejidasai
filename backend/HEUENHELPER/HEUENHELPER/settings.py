@@ -114,6 +114,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+API_RATE_LIMIT = 100
+
+
+XFYUN_API_ENDPOINT = 'https://spark-api-open.xf-yun.com/v1/chat/completions'
+XFYUN_API_KEY = 'ef5f5387d7c60912e412dcd850ed9961'
+XFYUN_API_SECRET = 'MWMxYzQ0N2RmZjFmMmZmOWY2MWJkNzY1'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
