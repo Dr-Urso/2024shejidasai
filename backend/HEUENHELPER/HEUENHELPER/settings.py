@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'userLogin.apps.UserloginConfig',
     'testUtils.apps.TestutilsConfig',
     'Teacher_Student_Interactions.apps.TeacherStudentInteractionsConfig',
-    'bbs.apps.BbsConfig'
+    'bbs.apps.BbsConfig',
+    'transApi.apps.TransApiConfig',
 ]
 
 REST_FRAMEWORK = {
