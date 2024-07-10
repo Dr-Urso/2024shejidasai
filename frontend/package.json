@@ -20,6 +20,7 @@
     "carbon-components-react": "^8.61.0",
     "classnames": "^2.5.1",
     "emailjs-com": "^3.2.0",
+    "package.json": "^2.0.1",
     "prop-types": "^15.8.1",
     "react-mic": "^12.4.6",
     "react-router-dom": "^6.24.1",
