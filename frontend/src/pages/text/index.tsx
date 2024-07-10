@@ -10,7 +10,7 @@ export default function TextPage() {
 
     const handleTranslate = async () => {
         try {
-            const response = await fetch('YOUR_BACKEND_API', {
+            const response = await fetch('/api/trans/trans', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ export default function TextPage() {
             });
             if (response.ok) {
                 const data = await response.json();
-                setTranslatedText(data.translatedText);  // 假设后端返回的键名为 translatedText
+                setTranslatedText(data.result);  // 假设后端返回的键名为 result
             } else {
                 console.error('翻译失败');
             }

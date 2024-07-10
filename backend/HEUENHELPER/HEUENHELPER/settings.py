@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'testUtils.apps.TestutilsConfig',
     'Teacher_Student_Interactions.apps.TeacherStudentInteractionsConfig',
     'bbs.apps.BbsConfig',
-    'transApi.apps.TransApiConfig',
+    'transApi.apps.TransapiConfig',
 ]
 
 REST_FRAMEWORK = {
