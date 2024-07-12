@@ -53,7 +53,30 @@ export default function TodoList() {
         }));
     };
 
-    const addTask = async () => {
+    const handleTaskStatusChange = async (dayIndex, taskIndex, newStatus) => {
+        const updatedDays = [...days];
+        updatedDays[dayIndex].tasks[taskIndex].status = newStatus;
+
+        const taskId = updatedDays[dayIndex].tasks[taskIndex].id;
+        try {
+            const response = await fetch(`/api/todolist/tasks/${taskId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (response.ok) {
+                setDays(updatedDays);
+            } else {
+                console.error('更新任务状态失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        }
+    };
+
+    const addTask = () => {
         if (!currentTask.task_name) {
             setErr("请输入任务名称");
             return;
@@ -83,6 +106,21 @@ export default function TodoList() {
         if (err) {
             setErr('');
         }
+        setDays(prevDays => {
+            const dayIndex = prevDays.findIndex(day => day.date === currentDay.date);
+            if (dayIndex !== -1) {
+                // 如果找到相同日期的任务，则更新该任务列表
+                const updatedDays = [...prevDays];
+                updatedDays[dayIndex].tasks = [
+                    ...updatedDays[dayIndex].tasks,
+                    ...currentDay.tasks
+                ];
+                return updatedDays;
+            } else {
+                // 否则，添加新的任务列表
+                return [...prevDays, currentDay];
+            }
+        });
         try {
             const response = await fetch('/api/todolist/days/', {
                 method: 'POST',
@@ -111,6 +149,10 @@ export default function TodoList() {
             setErr("请添加至少一天的任务");
             return;
         }
+        const daysJson = days.reduce((acc, day, index) => {
+            acc[index + 1] = day;
+            return acc;
+        }, {});
 
         try {
             const response = await fetch('/api/todolist/analyze/', {
@@ -118,7 +160,7 @@ export default function TodoList() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(days)
+                body: JSON.stringify(daysJson)
             });
 
             if (response.ok) {
@@ -177,13 +219,23 @@ export default function TodoList() {
                     <div className={styles.Err}>{err}</div>
                 )}</div>
                 <div className={styles.DayList}>
-                    {days.map((day, index) => (
-                        <div key={index} className={styles.DayItem}>
+                    {days.map((day, dayIndex) => (
+                        <div key={dayIndex} className={styles.DayItem}>
                             <h3>日期: {day.date}</h3>
-                            {day.tasks.map((task, tIndex) => (
-                                <div key={tIndex} className={styles.TaskItem}>
+                            {day.tasks.map((task, taskIndex) => (
+                                <div key={taskIndex} className={styles.TaskItem}>
                                     <p>任务: {task.task_name}</p>
-                                    <p>状态: {task.status}</p>
+                                    <Select
+                                        id={`status-${dayIndex}-${taskIndex}`}
+                                        name="status"
+                                        labelText="任务状态"
+                                        value={task.status}
+                                        onChange={(e) => handleTaskStatusChange(dayIndex, taskIndex, e.target.value)}
+                                    >
+                                        <SelectItem value="未开始" text="未开始" />
+                                        <SelectItem value="进行中" text="进行中" />
+                                        <SelectItem value="已完成" text="已完成" />
+                                    </Select>
                                 </div>
                             ))}
                         </div>

@@ -71,3 +71,18 @@ class AnalyzeTasksAPIView(APIView):
             print(e)
             return Response({'error': 'An error occurred while analyzing tasks'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TaskUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, task_id):
+        try:
+            task = Task.objects.get(id=task_id, day__user=request.user)
+            serializer = TaskSerializer(task, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Task.DoesNotExist:
+            return Response({'error': 'Task not found or not authorized'}, status=status.HTTP_404_NOT_FOUND)
