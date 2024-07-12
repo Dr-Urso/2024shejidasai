@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Teacher_Student_Interactions.apps.TeacherStudentInteractionsConfig',
     'bbs.apps.BbsConfig',
     'transApi.apps.TransapiConfig',
+    'todolist.apps.TodolistConfig',
 ]
 
 REST_FRAMEWORK = {
