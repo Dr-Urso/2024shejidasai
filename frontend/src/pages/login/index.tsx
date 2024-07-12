@@ -14,7 +14,7 @@ export default function Page() {
     const [password, setPassword] = useState(localStorage.getItem('password') || '');
     const [rememberMe, setRememberMe] = useState(!!localStorage.getItem('rememberMe'));
     const [errorMessage, setErrorMessage] = useState('');
-
+    const {usernameStored, setUserInfo} = useUser();
     useEffect(() => {
         if (rememberMe) {
             setUsername(localStorage.getItem('username') || '');
@@ -33,7 +33,7 @@ export default function Page() {
 
             if (response.data.detail == "OK") {
                 setErrorMessage('');
-                const {username, setUserInfo} = useUser();
+
                 setUserInfo({username});
                 if (rememberMe) {
                     localStorage.setItem('username', username);
@@ -49,6 +49,7 @@ export default function Page() {
                 setErrorMessage('用户名或密码错误');
             }
         } catch (error) {
+            console.log(error);
             setErrorMessage('请求失败，请稍后再试');
         }
     };

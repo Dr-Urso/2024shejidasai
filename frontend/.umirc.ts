@@ -15,7 +15,7 @@ export default defineConfig({
       routes:[{ path: "/plat/text", component: "text" },
         { path: "/plat/document", component: "document" },
         { path: "/plat/bbs", component: "bbs" },
-        { path: "/plat/message", component: "messager"},],},
+        ],},
 
   ],
   proxy: {

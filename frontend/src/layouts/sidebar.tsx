@@ -9,7 +9,7 @@ import {
     Button,
     Header,
     HeaderGlobalAction,
-    HeaderGlobalBar,
+    HeaderGlobalBar, HeaderMenuButton,
     HeaderName,
     SideNav,
     SideNavItems,
@@ -30,13 +30,16 @@ export default function Layout() {
     return (
         <>
             <Header>
+                <HeaderMenuButton aria-label="打开侧边菜单"
+                                  isCollapsible
+                                  onClick={toggleSideNav}
+                                  isActive={isSideNavExpanded}/>
                 <HeaderName href="/" prefix="智学">
                     未来
                 </HeaderName>
 
 
                 <HeaderGlobalBar>
-                    <Button renderIcon={Menu} onClick={ toggleSideNav} size="small" kind="ghost" hasIconOnly />
                     <Button renderIcon={Login} onClick={ ()=>navigate('/register')} size="small" kind="ghost" hasIconOnly />
                     <Button renderIcon={User} onClick={ ()=>navigate('/login')} size="small" kind="ghost" hasIconOnly />
 
@@ -53,9 +56,7 @@ export default function Layout() {
                     <SideNavLink href='/plat/bbs'>
                         师生论坛
                     </SideNavLink>
-                    <SideNavLink href='/plat/message'>
-                        一对一私聊
-                    </SideNavLink>
+
                 </SideNavItems>
             </SideNav>
             <UserProvider>
