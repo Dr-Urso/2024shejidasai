@@ -44,11 +44,23 @@ export default function Layout() {
             </Header>
             <SideNav isFixedNav={true} expanded={isSideNavExpanded} isChildOfHeader={false} aria-label="Side navigation">
                 <SideNavItems>
+                    <SideNavLink href='/plat/analyse'>
+                        成绩分析
+                    </SideNavLink>
+                    <SideNavLink href='/plat/to_do_list'>
+                        学习计划
+                    </SideNavLink>
+                    <SideNavLink href='/plat/diary'>
+                        日记本
+                    </SideNavLink>
                     <SideNavLink href='/plat/text'>
                         文本翻译
                     </SideNavLink>
                     <SideNavLink href='/plat/document'>
                         音频翻译
+                    </SideNavLink>
+                    <SideNavLink href='/plat/audio'>
+                        文档翻译
                     </SideNavLink>
                     <SideNavLink href='/plat/bbs'>
                         师生论坛
