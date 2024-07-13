@@ -6,8 +6,8 @@ import 'react-quill/dist/quill.snow.css'; // Quill样式
 import DOMPurify from 'dompurify';
 
 class DiaryEntry {
-    private title: any;
     private date: any;
+    private title: any;
     private mood: any;
     private content: any;
     constructor(title, date, mood, content) {
@@ -45,8 +45,7 @@ export default function Page() {
         setViewMode('edit');
     };
 
-    const handleViewDiary = (index) => {
-        const diary = diaries[index];
+    const handleViewDiary = (diary) => {
         setCurrentDiary({
             diary_title: diary.title,
             diary_date: diary.date,
@@ -54,7 +53,6 @@ export default function Page() {
             diary_content: diary.content
         });
         setValue(diary.content);
-        setCurrentDiaryIndex(index);
         setViewMode('view');
     };
 
@@ -193,10 +191,11 @@ export default function Page() {
                     </div>
                     <div className={styles.Entries}>
                         {sortedDiaries.map((diary, index) => (
-                            <div key={index} className={styles.Entry} onClick={() => handleViewDiary(index)}>
+                            <div key={index} className={styles.Entry} onClick={() => handleViewDiary(diary)}>
                                 <h3>{diary.title}</h3>
                                 <p>日期: {diary.date}</p>
                                 <p>心情: {diary.mood}</p>
+                                <p className={styles.Underline}>-------------------</p>
                             </div>
                         ))}
                     </div>
