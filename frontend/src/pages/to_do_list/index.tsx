@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
-import {Button, TextInput, Select, SelectItem, Content} from 'carbon-components-react';
+import React, { useState, useEffect } from 'react';
+import { Button, TextInput, Select, SelectItem, Content } from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 
 export default function TodoList() {
-    const [err,setErr]=useState('');
+    const [err, setErr] = useState('');
     const [days, setDays] = useState([]);
     const [currentDay, setCurrentDay] = useState({
         date: '',
         tasks: []
     });
     const [currentTask, setCurrentTask] = useState({
-        taskName: '',
+        task_name: '',
         status: '未开始'
     });
+
+    useEffect(() => {
+        fetchDays();
+    }, []);
+
+    const fetchDays = async () => {
+        try {
+            const response = await fetch('/api/todolist/days/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setDays(data);
+            } else {
+                console.error('获取天数据失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        }
+    };
 
     const handleDayChange = (e) => {
         const { name, value } = e.target;
@@ -30,9 +53,32 @@ export default function TodoList() {
         }));
     };
 
+    const handleTaskStatusChange = async (dayIndex, taskIndex, newStatus) => {
+        const updatedDays = [...days];
+        updatedDays[dayIndex].tasks[taskIndex].status = newStatus;
+
+        const taskId = updatedDays[dayIndex].tasks[taskIndex].id;
+        try {
+            const response = await fetch(`/api/todolist/tasks/${taskId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (response.ok) {
+                setDays(updatedDays);
+            } else {
+                console.error('更新任务状态失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        }
+    };
+
     const addTask = () => {
-        if (!currentTask.taskName) {
-            setErr("请输入任务名称")
+        if (!currentTask.task_name) {
+            setErr("请输入任务名称");
             return;
         }
         if (err) {
@@ -43,22 +89,23 @@ export default function TodoList() {
             tasks: [...prevDay.tasks, currentTask]
         }));
         setCurrentTask({
-            taskName: '',
+            task_name: '',
             status: '未开始'
         });
     };
 
-    const addDay = () => {
+    const addDay = async () => {
         if (!currentDay.date) {
-            setErr("请输入日期")
+            setErr("请输入日期");
             return;
         }
-        if (currentDay.tasks.length===0) {
-            setErr("任务不能为空")
+        if (currentDay.tasks.length === 0) {
+            setErr("任务不能为空");
             return;
         }
         if (err) {
-            setErr('');}
+            setErr('');
+        }
         setDays(prevDays => {
             const dayIndex = prevDays.findIndex(day => day.date === currentDay.date);
             if (dayIndex !== -1) {
@@ -74,15 +121,32 @@ export default function TodoList() {
                 return [...prevDays, currentDay];
             }
         });
-        setCurrentDay({
-            date: '',
-            tasks: []
-        });
+        try {
+            const response = await fetch('/api/todolist/days/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(currentDay)
+            });
+
+            if (response.ok) {
+                fetchDays(); // 更新天数据
+                setCurrentDay({
+                    date: '',
+                    tasks: []
+                });
+            } else {
+                console.error('添加天失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        }
     };
 
     const analyzeTasks = async () => {
         if (days.length === 0) {
-            setErr("请添加至少一天的任务")
+            setErr("请添加至少一天的任务");
             return;
         }
         const daysJson = days.reduce((acc, day, index) => {
@@ -91,7 +155,7 @@ export default function TodoList() {
         }, {});
 
         try {
-            const response = await fetch('YOUR_BACKEND_API_URL', {
+            const response = await fetch('/api/todolist/analyze/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -112,72 +176,72 @@ export default function TodoList() {
 
     return (
         <Content className={styles.Container} id='main-content'>
-        <div className={styles.Box}>
-            <h2>学习任务管理</h2>
-            <div className={styles.DayForm}>
-                <TextInput
-                    id="date"
-                    name="date"
-                    type="date"
-                    labelText="日期"
-                    value={currentDay.date}
-                    onChange={handleDayChange}
-                />
-                {currentDay.tasks.map((task, index) => (
-                    <div key={index} className={styles.TaskItem}>
-                        <p>任务: {task.taskName}</p>
-                        <p>状态: {task.status}</p>
-                    </div>
-                ))}
-                <TextInput
-                    id="taskName"
-                    name="taskName"
-                    labelText="任务名称"
-                    value={currentTask.taskName}
-                    onChange={handleTaskChange}
-                />
-                <Select
-                    id="status"
-                    name="status"
-                    labelText="任务状态"
-                    value={currentTask.status}
-                    onChange={handleTaskChange}
-                >
-                    <SelectItem value="未开始" text="未开始" />
-                    <SelectItem value="进行中" text="进行中" />
-                    <SelectItem value="已完成" text="已完成" />
-                </Select>
-                <Button onClick={addTask}>添加任务</Button>
-                <Button onClick={addDay}>添加当天任务</Button>
-                <Button onClick={analyzeTasks}>分析任务</Button>
+            <div className={styles.Box}>
+                <h2>学习任务管理</h2>
+                <div className={styles.DayForm}>
+                    <TextInput
+                        id="date"
+                        name="date"
+                        type="date"
+                        labelText="日期"
+                        value={currentDay.date}
+                        onChange={handleDayChange}
+                    />
+                    {currentDay.tasks.map((task, index) => (
+                        <div key={index} className={styles.TaskItem}>
+                            <p>任务: {task.task_name}</p>
+                            <p>状态: {task.status}</p>
+                        </div>
+                    ))}
+                    <TextInput
+                        id="task_name"
+                        name="task_name"
+                        labelText="任务名称"
+                        value={currentTask.task_name}
+                        onChange={handleTaskChange}
+                    />
+                    <Select
+                        id="status"
+                        name="status"
+                        labelText="任务状态"
+                        value={currentTask.status}
+                        onChange={handleTaskChange}
+                    >
+                        <SelectItem value="未开始" text="未开始" />
+                        <SelectItem value="进行中" text="进行中" />
+                        <SelectItem value="已完成" text="已完成" />
+                    </Select>
+                    <Button onClick={addTask}>添加任务</Button>
+                    <Button onClick={addDay}>添加当天任务</Button>
+                    <Button onClick={analyzeTasks}>分析任务</Button>
+                </div>
+                <div>{err && (
+                    <div className={styles.Err}>{err}</div>
+                )}</div>
+                <div className={styles.DayList}>
+                    {days.map((day, dayIndex) => (
+                        <div key={dayIndex} className={styles.DayItem}>
+                            <h3>日期: {day.date}</h3>
+                            {day.tasks.map((task, taskIndex) => (
+                                <div key={taskIndex} className={styles.TaskItem}>
+                                    <p>任务: {task.task_name}</p>
+                                    <Select
+                                        id={`status-${dayIndex}-${taskIndex}`}
+                                        name="status"
+                                        labelText="任务状态"
+                                        value={task.status}
+                                        onChange={(e) => handleTaskStatusChange(dayIndex, taskIndex, e.target.value)}
+                                    >
+                                        <SelectItem value="未开始" text="未开始" />
+                                        <SelectItem value="进行中" text="进行中" />
+                                        <SelectItem value="已完成" text="已完成" />
+                                    </Select>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div>{err && (
-                <div className={styles.Err}>{err}</div>
-            )}</div>
-            <div className={styles.DayList}>
-                {days.map((day, index) => (
-                    <div key={index} className={styles.DayItem}>
-                        <h3>日期: {day.date}</h3>
-                        {day.tasks.map((task, tIndex) => (
-                            <div key={tIndex} className={styles.TaskItem}>
-                                <p>任务: {task.taskName}</p>
-                                <Select
-                                    id="status"
-                                    name="status"
-                                    labelText="任务状态"
-                                    value={currentTask.status}
-                                    onChange={handleTaskChange}
-                                >
-                                    <SelectItem value="未开始" text="未开始" />
-                                    <SelectItem value="进行中" text="进行中" />
-                                    <SelectItem value="已完成" text="已完成" />
-                                </Select>
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-        </div>
         </Content>
     );
 }
