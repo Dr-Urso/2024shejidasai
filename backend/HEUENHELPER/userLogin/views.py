@@ -1,36 +1,34 @@
 from django.db import transaction
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer
-from django.contrib.auth import authenticate, login, logout
-
 from .models import User, Student, Teacher
+from django.contrib.auth import authenticate, login, logout
+import logging
 
+logger = logging.getLogger(__name__)
 
-# Create your views here.
-# 业务代码写在这
-# 命中的这个函数如下，由于是注册用户，所以应该是post方法
 class CreateUserView(APIView):
-
-
     def post(self, request):
-        if (username := request.data.get('username')) is None or (len(username) == 0):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user_type = request.data.get('user_type')
+        student_id = request.data.get('student_id')
+        employee_id = request.data.get('employee_id')
+
+        logger.debug(f"Received data: username={username}, password={password}, user_type={user_type}, student_id={student_id}, employee_id={employee_id}")
+
+        if not username or len(username) == 0:
             return Response({'detail': '用户名为空'}, status=status.HTTP_400_BAD_REQUEST)
         if len(username) > 16:
             return Response({'detail': '用户名长度不超过16个字符'}, status=status.HTTP_400_BAD_REQUEST)
-        if ((password := request.data.get('password')) is None) or len(password) == 0:
+        if not password or len(password) == 0:
             return Response({'detail': '密码为空'}, status=status.HTTP_400_BAD_REQUEST)
-        # 验证新用户名是否重复
-        if User.objects.filter(username=username).first():
+        if User.objects.filter(username=username).exists():
             return Response({'detail': '用户名已被使用'}, status=status.HTTP_400_BAD_REQUEST)
-        if (user_type := request.data.get('user_type')) not in ['student', 'teacher']:
+        if user_type not in ['student', 'teacher']:
             return Response({'detail': '用户类型错误'}, status=status.HTTP_400_BAD_REQUEST)
-
-        student_id = request.data.get('student_id')
-        employee_id = request.data.get('employee_id')
 
         try:
             with transaction.atomic():
@@ -40,34 +38,47 @@ class CreateUserView(APIView):
                     user_type=user_type,
                 )
                 if user_type == 'student':
-                    user.student.student_id = student_id
-                    user.student.save()
-                if user_type == 'teacher':
-                    user.teacher.employee_id = employee_id
-                    user.teacher.save()
+                    student = Student.objects.create(user=user, student_id=student_id)
+                elif user_type == 'teacher':
+                    teacher = Teacher.objects.create(user=user, employee_id=employee_id)
+
+                return Response({'detail': 'OK'}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            print(e)
+            logger.error(f"Error during user creation: {e}")
             return Response({'detail': '内部错误'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 没啥问题开始创建账号
-        return Response({'detail': 'OK'})
 
 
 # 登录视图函数
 class LoginUserView(APIView):
     def post(self, request):
-        if (username := request.data.get('username')) is None or (len(username) == 0):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or len(username) == 0:
             return Response({'detail': '用户名为空'}, status=status.HTTP_400_BAD_REQUEST)
-        if ((password := request.data.get('password')) is None) or len(password) == 0:
+        if not password or len(password) == 0:
             return Response({'detail': '密码为空'}, status=status.HTTP_400_BAD_REQUEST)
+
         user = authenticate(request, username=username, password=password)
-        # 验证是否成功
         if user is not None:
             login(request, user)
-            return Response({'detail': 'OK'})
+            student_id = teacher_id = None
+            if user.user_type == 'student' and hasattr(user, 'student') and user.student:
+                student_id = user.student.student_id
+            elif user.user_type == 'teacher' and hasattr(user, 'teacher') and user.teacher:
+                teacher_id = user.teacher.employee_id
+            return Response({
+                'detail': 'OK',
+                'student_id': student_id,
+                'teacher_id': teacher_id
+            })
         else:
             return Response({'detail': '登录失败'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 # 退出登录

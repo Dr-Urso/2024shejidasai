@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'testUtils.apps.TestutilsConfig',
     'Teacher_Student_Interactions.apps.TeacherStudentInteractionsConfig',
     'bbs.apps.BbsConfig',
+    'sparkApi.apps.SparkapiConfig',
     'transApi.apps.TransapiConfig',
     'todolist.apps.TodolistConfig',
 ]
@@ -150,3 +151,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

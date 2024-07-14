@@ -24,5 +24,6 @@ urlpatterns = [
     path('interactions/', include('Teacher_Student_Interactions.urls')),
     path('forum/', include('bbs.urls')),
     path('trans/', include('transApi.urls')),
-    path('todolist/', include('todolist.urls'))
+    path('todolist/', include('todolist.urls')),
+    path('spark/', include('sparkApi.urls')),
 ]

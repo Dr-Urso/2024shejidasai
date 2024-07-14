@@ -1,41 +1,120 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 
-from .webApi.test_json import score_json, subject_json, data_json
-from models import ExamSummary, ExamInfo, BaseInfo
-from .webApi.sparkAPI import main,res
+from .models import ExamSummary, ExamInfo, BaseInfo
+from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
+from .webApi.sparkAPI import main, res
 
-# Create your views here.
 class SaveInfoView(APIView):
 
     def post(self, request):
-        if request.method == "POST":
-            Info=BaseInfo(
-                subject=request.data['subject'],
-                fullMark=request.data['fullMark']
+        try:
+            print(request.data)
+            student_id = request.data['student_id']
+            subject = request.data['subject']
+            fullMark = request.data['fullMark']
+            education_level = request.data.get('education_level', '')
+
+            # 验证 student_id 是否存在
+            student = Student.objects.filter(student_id=student_id).first()
+            if not student:
+                return Response({'error': '无效的 student_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+            Info = BaseInfo(
+                student=student,
+                subject=subject,
+                fullMark=fullMark,
+                education_level=education_level
             )
             Info.save()
+            return Response({'message': 'Base info saved successfully.'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class SaveExamInfoView(APIView):
 
     def post(self, request):
-        if request.method == "POST":
+        try:
+            print(request.data)
+            student_id = request.data['student_id']
+            examName = request.data['examName']
+            examType = request.data['examType']
+            examScore = request.data['examScore']
+            totalScore = request.data['totalScore']
+            selfEvaluation = request.data['selfEvaluation']
+
+            # 验证 student_id 是否存在
+            student = Student.objects.filter(student_id=student_id).first()
+            if not student:
+                return Response({'error': '无效的 student_id'}, status=status.HTTP_400_BAD_REQUEST)
+
             examInfo = ExamInfo(
-                examName=request.POST['examName'],
-                examType=request.POST['examType'],
-                examScore=request.POST['examScore'],
-                selfEvaluation=request.POST['selfEvaluation'],
+                student=student,
+                examName=examName,
+                examType=examType,
+                examScore=examScore,
+                totalScore=totalScore,
+                selfEvaluation=selfEvaluation,
             )
             examInfo.save()
+            return Response({'message': 'Exam info saved successfully.'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class examSummaryView(APIView):
+import json
+import logging
+from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+
+from .models import ExamSummary, ExamInfo, BaseInfo
+from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
+from .webApi.sparkAPI import main, res
+
+# 获取logger实例
+logger = logging.getLogger(__name__)
+
+class ExamSummaryView(APIView):
 
     def post(self, request):
-        examSummary = ExamSummary()
+        try:
+            # 从数据库中读取所有考试信息
+            exam_infos = ExamInfo.objects.all()
 
-        query = "评分标准：" + score_json + "\n考试科目名称：" + subject_json + "\n学生要分析的考试信息：" + data_json
-        main(query)
+            # 调试输出
+            for exam in exam_infos:
+                logger.debug(f"Exam: {exam.examName}, Score: {exam.examScore}")
 
-        return Response({'result': res})
+            # 组织数据进行分析
+            score_json_list = []
+            subject_json_list = []
+            data_json_list = []
 
+            for exam in exam_infos:
+                # 将 JSON 对象转换为字符串并添加到列表
+                score_json_list.append(json.dumps(exam.examScore))
+                subject_json_list.append(exam.examName)
+                data_json_list.append(exam.selfEvaluation)
+
+            # 用逗号分隔各部分数据
+            score_json = ", ".join(score_json_list)
+            subject_json = ", ".join(subject_json_list)
+            data_json = ", ".join(data_json_list)
+
+            # 构造查询
+            query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
+            logger.debug("Query: %s", query)
+
+            # 调用分析函数
+            main(query)
+
+            # 打印分析结果
+            logger.debug("Result: %s", res)
+
+            return Response({'result': res}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
