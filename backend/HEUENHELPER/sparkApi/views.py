@@ -5,7 +5,7 @@ from rest_framework import status
 
 from .models import ExamSummary, ExamInfo, BaseInfo
 from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
-from .webApi.sparkAPI import main, res
+from .webApi.sparkAPI import sparkApi, res
 
 class SaveInfoView(APIView):
 
@@ -109,7 +109,51 @@ class ExamSummaryView(APIView):
             logger.debug("Query: %s", query)
 
             # 调用分析函数
-            main(query)
+            sparkApi(query,'exam')
+
+            # 打印分析结果
+            logger.debug("Result: %s", res)
+
+            return Response({'result': res}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class DraiySummaryView(APIView):
+
+    def post(self, request):
+        try:
+
+            #按照考试分析模板从数据库中获取json数据
+
+            # 构造查询
+            # query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
+            query=''
+
+            # 调用分析函数
+            sparkApi(query,'diary')
+
+            # 打印分析结果
+            logger.debug("Result: %s", res)
+
+            return Response({'result': res}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class ToDoListSummaryView(APIView):
+
+    def post(self, request):
+        try:
+
+            #按照考试分析模板从数据库中获取json数据
+
+            # 构造查询
+            # query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
+            query=''
+
+            # 调用分析函数
+            sparkApi(query,'to_do_list')
 
             # 打印分析结果
             logger.debug("Result: %s", res)
