@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'transApi.apps.TransapiConfig',
     'todolist.apps.TodolistConfig',
     'essayCorrect.apps.EssaycorrectConfig',
+    'generateDoc.apps.GeneratedocConfig',
 ]
 
 REST_FRAMEWORK = {
