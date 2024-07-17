@@ -196,12 +196,14 @@ class TeachingPlanView(APIView):
 
     def post(self, request):
         try:
-            #直接将用户输入的要求给大模型
+            # 从请求中获取teaching_plan_request
+            teaching_plan_request = request.data.get('teaching_plan_request', '')
 
-            # 构造查询
-            # query="帮我制定一个关于how to study well的教学计划方案"
-            query = ''
+            if not teaching_plan_request:
+                return Response({'error': '教学计划请求内容不能为空'}, status=status.HTTP_400_BAD_REQUEST)
 
+            # 构造query
+            query = teaching_plan_request
 
             # 调用分析函数
             sparkApi(query, 'plan')
@@ -209,7 +211,10 @@ class TeachingPlanView(APIView):
             # 打印分析结果
             logger.debug("Result: %s", res)
 
-            return Response({'result': res}, status=status.HTTP_200_OK)
+            # 将结果转换为字符串并返回
+            result_text = "\n".join(res)
+
+            return Response({'result': result_text}, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

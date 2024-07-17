@@ -2,7 +2,6 @@ import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState } from "react";
 import { Content, TextArea, Button, TextInput } from "carbon-components-react";
-import { useNavigate } from "react-router-dom";
 
 export default function LessonPlanPage() {
     const [topic, setTopic] = useState("");
@@ -10,18 +9,46 @@ export default function LessonPlanPage() {
 
     const handleGenerateLessonPlan = async () => {
         try {
-            const response = await fetch('/api/lesson/plan', {
+            const response = await fetch('/api/spark/teaching_plan', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ topic })  // 发送主题到后端
+                body: JSON.stringify({ teaching_plan_request: topic })  // 发送教案请求到后端
             });
             if (response.ok) {
                 const data = await response.json();
-                setLessonPlan(data.choices?.[0].message.content);  // 假设后端返回的键名为 choices
+                // 后端返回的结果应该包含在 result 字段中
+                const resultText = Array.isArray(data.result) ? data.result.join('\n') : data.result;
+                setLessonPlan(resultText);
             } else {
                 console.error('生成教案模板失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        }
+    };
+
+    const handleDownloadLessonPlan = async () => {
+        try {
+            const response = await fetch('/api/generatedoc/gen', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: topic })  // 发送教案请求到后端
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `lesson_plan_${Date.now()}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                console.error('下载教案模板失败');
             }
         } catch (error) {
             console.error('请求出错', error);
@@ -47,13 +74,15 @@ export default function LessonPlanPage() {
                             placeholder="请在此输入教案主题"
                             onChange={handleTopicChange}
                             id="topic-input"
+                            value={topic}
                         />
                         <Button onClick={handleGenerateLessonPlan}>生成教案模板</Button>
+                        <Button onClick={handleDownloadLessonPlan}>下载教案docx</Button>
                         <div className={styles.Trans}>
                             <TextArea
                                 value={lessonPlan}
                                 readOnly
-                                rows={10}
+                                rows={30}
                                 id="lesson-plan-area"
                             />
                         </div>
