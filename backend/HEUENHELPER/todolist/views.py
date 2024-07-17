@@ -47,7 +47,7 @@ class AnalyzeTasksAPIView(APIView):
 
             # 创建AI服务实例
             ai_service = AIAdviceService()
-            ai_service.add_param('system', "现在你是一个老师，我现在要给你一个学生的两周总结。请根据这个学生的两周总结，给出一些建议。如果里面的内容令人困惑，那么现在就是正在运行测试，只需要输出“测试成功”即可。")
+            ai_service.add_param('system', "现在你是一个老师，根据学生的to do list 给出一些建议。")
             # 添加每个任务的数据到AI服务中
             for day in days:
                 for task in day.tasks.all():

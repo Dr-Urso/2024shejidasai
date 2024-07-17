@@ -141,6 +141,10 @@ export default function ForumPage() {
     }
 
     const newQuestion = async () => {
+        if(!newQuestionText){
+            alert('问题内容不能为空');
+            return;
+        }
         await axios.post('/api/forum/questions/', { text: newQuestionText });
         setNewQuestionText('');
         fetchQuestions();

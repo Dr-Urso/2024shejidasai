@@ -5,6 +5,7 @@ import styles from './index.less'; // 样式文件
 export default function TodoList() {
     const [err, setErr] = useState('');
     const [days, setDays] = useState([]);
+    const [aiSuggestions, setAiSuggestions] = useState('');
     const [currentDay, setCurrentDay] = useState({
         date: '',
         tasks: []
@@ -165,7 +166,7 @@ export default function TodoList() {
 
             if (response.ok) {
                 const data = await response.json();
-                alert(`AI每周总结: ${data.weeklySummary}`);
+                setAiSuggestions(data.weeklySummary);
             } else {
                 console.error('分析失败');
             }
@@ -241,6 +242,12 @@ export default function TodoList() {
                         </div>
                     ))}
                 </div>
+                {aiSuggestions && (
+                    <div className={styles.AiSuggestions}>
+                        <h3>AI 大模型的建议</h3>
+                        <p>{aiSuggestions}</p>
+                    </div>
+                )}
             </div>
         </Content>
     );

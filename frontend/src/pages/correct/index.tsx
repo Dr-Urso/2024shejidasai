@@ -16,7 +16,7 @@ export default function TextPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ title, essay_text: essayText }) 
+                body: JSON.stringify({ title, essay_text: essayText })
             });
             if (response.ok) {
                 const data = await response.json();
