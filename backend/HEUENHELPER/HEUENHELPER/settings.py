@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'sparkApi.apps.SparkapiConfig',
     'transApi.apps.TransapiConfig',
     'todolist.apps.TodolistConfig',
+    'essayCorrect.apps.EssaycorrectConfig',
 ]
 
 REST_FRAMEWORK = {

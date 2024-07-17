@@ -72,7 +72,7 @@ from rest_framework import status
 
 from .models import ExamSummary, ExamInfo, BaseInfo
 from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
-from .webApi.sparkAPI import main, res
+from .webApi.sparkAPI import res
 
 # 获取logger实例
 logger = logging.getLogger(__name__)
