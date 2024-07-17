@@ -162,3 +162,57 @@ class ToDoListSummaryView(APIView):
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#作文批改
+class WritingCorrectView(APIView):
+
+    def post(self, request):
+        try:
+
+            # 按照考试分析模板从数据库中获取json数据，后面可以查看历史批改记录
+
+            #老师输入作标题和内容
+            # 构造查询
+            # title = {
+            #     "作文标题": "The Importance of Technology in Education"
+            # }
+            # article = {
+            #     "作文内容": "In the 21st century..."
+            # }
+            # title_json=json.dumps(titile) article_json=json.dumps(article)
+            # query = "作文标题：" + title_json + "作文内容：" + article_json
+            query = ''
+
+            # 调用分析函数
+            sparkApi(query, 'write')
+
+            # 打印分析结果
+            logger.debug("Result: %s", res)
+
+            return Response({'result': res}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#教学计划方案生成
+class TeachingPlanView(APIView):
+
+    def post(self, request):
+        try:
+            #直接将用户输入的要求给大模型
+
+            # 构造查询
+            # query="帮我制定一个关于how to study well的教学计划方案"
+            query = ''
+
+
+            # 调用分析函数
+            sparkApi(query, 'plan')
+
+            # 打印分析结果
+            logger.debug("Result: %s", res)
+
+            return Response({'result': res}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
