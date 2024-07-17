@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 from rest_framework.views import APIView
@@ -13,7 +14,7 @@ from services.AI_API_CALL import RateLimitException, AIAdviceService, InvalidRol
 
 
 class EssayCorrectionView(APIView):
-
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         try:
             user_id = request.user.id
