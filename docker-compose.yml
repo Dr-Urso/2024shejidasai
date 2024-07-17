@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    volumes:
+      - ./backend/HEUENHELPER:/app
+
+    env_file:
+      - .env
+
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+

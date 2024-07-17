@@ -133,7 +133,7 @@ def sparkApi(query, role):
     domain = "generalv3.5"
 
     wsParam = Ws_Param(appid, api_key, api_secret, gpt_url)
-    websocket.enableTrace(False)
+    #websocket.enableTrace(False)
     wsUrl = wsParam.create_url()
     print(f"WebSocket URL: {wsUrl}")  # 打印出生成的URL以便调试
 
