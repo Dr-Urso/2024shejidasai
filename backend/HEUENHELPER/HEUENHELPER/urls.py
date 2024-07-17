@@ -26,4 +26,5 @@ urlpatterns = [
     path('trans/', include('transApi.urls')),
     path('todolist/', include('todolist.urls')),
     path('spark/', include('sparkApi.urls')),
+    path('essay/', include('essayCorrect.urls')),
 ]
