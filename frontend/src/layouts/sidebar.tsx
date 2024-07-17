@@ -59,14 +59,17 @@ export default function Layout() {
                     <SideNavLink href='/plat/text'>
                         文本翻译
                     </SideNavLink>
-                    <SideNavLink href='/plat/document'>
-                        音频翻译
-                    </SideNavLink>
-                    <SideNavLink href='/plat/audio'>
-                        文档翻译
-                    </SideNavLink>
                     <SideNavLink href='/plat/bbs'>
                         师生论坛
+                    </SideNavLink>
+                    <SideNavLink href='/plat/composition'>
+                        作文修改
+                    </SideNavLink>
+                    <SideNavLink href='/plat/teaching_plan'>
+                        教案生成
+                    </SideNavLink>
+                    <SideNavLink href='/plat/correct'>
+                        作文批改
                     </SideNavLink>
 
                 </SideNavItems>

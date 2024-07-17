@@ -18,7 +18,10 @@ export default defineConfig({
        { path: "/plat/audio", component: "audio" },
        { path: "/plat/analyse", component: "analyse" },
        { path: "/plat/diary", component: "diary" },
+          { path: "/plat/correct", component: "correct" },
        { path: "/plat/to_do_list", component: "to_do_list" },
+          { path: "/plat/teaching_plan", component: "teaching_plan" },
+          { path: "/plat/composition", component: "composition" },
        { path: "/plat/message", component: "messager"},],},
 
   ],

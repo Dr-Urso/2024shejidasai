@@ -23,7 +23,7 @@ class EssayCorrectionView(APIView):
                 return Response({"error": "作文文本不能为空"}, status=status.HTTP_400_BAD_REQUEST)
 
             ai_service = AIAdviceService()
-            ai_service.add_param('system','现在你是一位英语老师，请根据下面的学生作文来给出修改建议。用中文回答。').add_param('user', essay_text)
+            ai_service.add_param('system','现在你是一位英语老师，请根据下面的学生作文来给出修改建议。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。').add_param('user', '下面是学生作文：'  +  essay_text)
             advice = ai_service.get_advice(user_id=user_id)
 
             return Response(advice, status=status.HTTP_200_OK)
@@ -33,4 +33,5 @@ class EssayCorrectionView(APIView):
         except InvalidRoleException as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print(e)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
