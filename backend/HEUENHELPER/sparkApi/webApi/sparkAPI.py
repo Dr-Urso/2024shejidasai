@@ -52,8 +52,14 @@ def on_open(ws):
 
 
 def run(ws, *args):
-    data = json.dumps(gen_params(appid=ws.appid, query=ws.query, domain=ws.domain))
-    ws.send(data)
+    try:
+        print(f"Running with appid={ws.appid}, query={ws.query}, domain={ws.domain}, role={ws.role}")
+        data = json.dumps(gen_params(appid=ws.appid, query=ws.query, domain=ws.domain, role=ws.role))
+        ws.send(data)
+    except Exception as e:
+        print(f"Error in run function: {e}")
+
+
 
 
 res = []
@@ -115,6 +121,10 @@ def gen_params(appid, query, domain, role):
 
 
 def sparkApi(query, role):
+    if not query or not role:
+        print(f"Invalid query or role: query={query}, role={role}")
+        return
+
     res.clear()
     appid = "b9470671"
     api_secret = "ZDkxNWFmZDk0NjQ2NWFmNWE5N2U3MGNj"
@@ -125,10 +135,15 @@ def sparkApi(query, role):
     wsParam = Ws_Param(appid, api_key, api_secret, gpt_url)
     websocket.enableTrace(False)
     wsUrl = wsParam.create_url()
+    print(f"WebSocket URL: {wsUrl}")  # 打印出生成的URL以便调试
 
     ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close, on_open=on_open)
     ws.appid = appid
     ws.query = query
     ws.domain = domain
-    ws.role = role
+    ws.role = role  # 添加 role 属性
     ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+
+# 测试调用
+sparkApi("这是一个测试查询", "write")
+

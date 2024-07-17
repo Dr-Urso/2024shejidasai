@@ -2,7 +2,6 @@ import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState } from "react";
 import { Content, TextArea, Button } from "carbon-components-react";
-import { useNavigate } from "react-router-dom";
 
 export default function TextPage() {
     const [title, setTitle] = useState("");
@@ -20,7 +19,9 @@ export default function TextPage() {
             });
             if (response.ok) {
                 const data = await response.json();
-                setCorrectedText(data.result);
+                // 将数组数据转换为字符串，用换行符分隔
+                const resultText = data.result.join('\n');
+                setCorrectedText(resultText);
             } else {
                 console.error('批改失败');
             }
@@ -49,7 +50,7 @@ export default function TextPage() {
                     <div className={styles.Translate}>
                         <TextArea
                             labelText="请输入作文标题"
-                            placeholder="请在此输入作文标题"  // 使用 placeholder 属性
+                            placeholder="请在此输入作文标题"
                             onChange={handleTitleChange}
                             counterMode="word"
                             enableCounter={true}
@@ -59,7 +60,7 @@ export default function TextPage() {
                         />
                         <TextArea
                             labelText="请输入需要批改的英语作文"
-                            placeholder="请在此输入作文"  // 使用 placeholder 属性
+                            placeholder="请在此输入作文"
                             onChange={handleTextChange}
                             counterMode="word"
                             enableCounter={true}

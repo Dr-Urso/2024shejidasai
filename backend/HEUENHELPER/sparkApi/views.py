@@ -168,20 +168,17 @@ class WritingCorrectView(APIView):
 
     def post(self, request):
         try:
+            # 从请求中获取title和essay_text
+            title = request.data.get('title', '')
+            essay_text = request.data.get('essay_text', '')
 
-            # 按照考试分析模板从数据库中获取json数据，后面可以查看历史批改记录
+            if not title or not essay_text:
+                return Response({'error': '作文标题和内容不能为空'}, status=status.HTTP_400_BAD_REQUEST)
 
-            #老师输入作标题和内容
-            # 构造查询
-            # title = {
-            #     "作文标题": "The Importance of Technology in Education"
-            # }
-            # article = {
-            #     "作文内容": "In the 21st century..."
-            # }
-            # title_json=json.dumps(titile) article_json=json.dumps(article)
-            # query = "作文标题：" + title_json + "作文内容：" + article_json
-            query = ''
+            # 构造query
+            title_json = json.dumps({"作文标题": title}, ensure_ascii=False)
+            article_json = json.dumps({"作文内容": essay_text}, ensure_ascii=False)
+            query = "作文标题：" + title_json + " 作文内容：" + article_json
 
             # 调用分析函数
             sparkApi(query, 'write')
