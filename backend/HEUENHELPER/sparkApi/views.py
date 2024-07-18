@@ -81,8 +81,13 @@ class ExamSummaryView(APIView):
 
     def post(self, request):
         try:
-            # 从数据库中读取所有考试信息
-            exam_infos = ExamInfo.objects.all()
+            # 获取当前用户的 ID
+            student_id = request.user.id
+            if not student_id:
+                return Response({'error': '缺少学生ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 从数据库中读取当前学生的考试信息
+            exam_infos = ExamInfo.objects.filter(student_id=student_id)
 
             # 调试输出
             for exam in exam_infos:
@@ -109,7 +114,7 @@ class ExamSummaryView(APIView):
             logger.debug("Query: %s", query)
 
             # 调用分析函数
-            sparkApi(query,'exam')
+            res = sparkApi(query, 'exam')
 
             # 打印分析结果
             logger.debug("Result: %s", res)
@@ -118,6 +123,7 @@ class ExamSummaryView(APIView):
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class DraiySummaryView(APIView):
 
