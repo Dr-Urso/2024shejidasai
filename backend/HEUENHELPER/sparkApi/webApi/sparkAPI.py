@@ -12,8 +12,11 @@ import ssl
 from wsgiref.handlers import format_date_time
 
 import websocket
+import logging
 
-
+# 初始化日志记录器
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 class Ws_Param(object):
     def __init__(self, APPID, APIKey, APISecret, gpt_url):
         self.APPID = APPID
@@ -67,19 +70,25 @@ res = []
 
 def on_message(ws, message):
     global res
-    data = json.loads(message)
-    code = data['header']['code']
-    if code != 0:
-        print(f'请求错误: {code}, {data}')
-        ws.close()
-    else:
-        choices = data["payload"]["choices"]
-        status = choices["status"]
-        content = choices["text"][0]["content"]
-        res.append(content)
-        if status == 2:
-            print("#### 关闭会话")
+    try:
+        data = json.loads(message)
+        code = data['header']['code']
+        if code != 0:
+            logger.error(f'请求错误: {code}, {data}')
             ws.close()
+        else:
+            choices = data["payload"]["choices"]
+            status = choices.get("status", None)
+            content_list = choices.get("text", [])
+            if content_list and len(content_list) > 0:
+                content = content_list[0].get("content", "")
+                res.append(content)
+            if status == 2:
+                logger.info("#### 关闭会话")
+                ws.close()
+    except Exception as e:
+        logger.error(f"Error in on_message: {e}")
+        ws.close()
 
 
 def gen_params(appid, query, domain, role):
@@ -122,9 +131,10 @@ def gen_params(appid, query, domain, role):
 
 def sparkApi(query, role):
     if not query or not role:
-        print(f"Invalid query or role: query={query}, role={role}")
-        return
+        logger.error(f"Invalid query or role: query={query}, role={role}")
+        return None
 
+    global res
     res.clear()
     appid = "b9470671"
     api_secret = "ZDkxNWFmZDk0NjQ2NWFmNWE5N2U3MGNj"
@@ -135,14 +145,19 @@ def sparkApi(query, role):
     wsParam = Ws_Param(appid, api_key, api_secret, gpt_url)
     websocket.enableTrace(False)
     wsUrl = wsParam.create_url()
-    print(f"WebSocket URL: {wsUrl}")  # 打印出生成的URL以便调试
+    logger.debug(f"WebSocket URL: {wsUrl}")  # 打印出生成的URL以便调试
 
     ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close, on_open=on_open)
     ws.appid = appid
     ws.query = query
     ws.domain = domain
     ws.role = role  # 添加 role 属性
+
+    # 阻塞直到 WebSocket 连接关闭
     ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+
+    # 返回拼接后的完整结果
+    return ''.join(res) if res else None
 
 # 测试调用
 sparkApi("这是一个测试查询", "write")

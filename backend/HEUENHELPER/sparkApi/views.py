@@ -78,10 +78,9 @@ from .webApi.sparkAPI import res
 logger = logging.getLogger(__name__)
 
 class ExamSummaryView(APIView):
-
     def post(self, request):
         try:
-            # 获取当前用户的 ID
+            # 从请求数据中获取当前学生的 student_id
             student_id = request.user.id
             if not student_id:
                 return Response({'error': '缺少学生ID'}, status=status.HTTP_400_BAD_REQUEST)
@@ -116,10 +115,13 @@ class ExamSummaryView(APIView):
             # 调用分析函数
             res = sparkApi(query, 'exam')
 
-            # 打印分析结果
-            logger.debug("Result: %s", res)
-
-            return Response({'result': res}, status=status.HTTP_200_OK)
+            # 检查并返回分析结果
+            if res is not None:
+                logger.debug("Result: %s", res)
+                return Response({'result': res}, status=status.HTTP_200_OK)
+            else:
+                logger.error("sparkApi returned null result")
+                return Response({'result': None}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
