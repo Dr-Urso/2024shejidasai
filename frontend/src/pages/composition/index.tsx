@@ -1,14 +1,15 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState } from "react";
-import { Content, TextArea, Button } from "carbon-components-react";
+import {Content, TextArea, Button, Loading} from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
 
 export default function TextPage() {
     const [text, setText] = useState("");
     const [translatedText, setTranslatedText] = useState("修改建议");
-
+    const [loading, setLoading] = useState(false)
     const handleCorrection = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/essay/correction', {
                 method: 'POST',
@@ -25,6 +26,8 @@ export default function TextPage() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -35,6 +38,7 @@ export default function TextPage() {
     return (
         <>
             <Content className={styles.Container} id='main-content'>
+                <Loading active={loading} />
                 <div>
                     <div className={styles.Header}>
                         <p>当前由</p>

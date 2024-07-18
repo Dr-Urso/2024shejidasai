@@ -1,14 +1,15 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState } from "react";
-import { Content, TextArea, Button } from "carbon-components-react";
+import {Content, TextArea, Button, Loading} from "carbon-components-react";
 
 export default function TextPage() {
     const [title, setTitle] = useState("");
     const [essayText, setEssayText] = useState("");
     const [correctedText, setCorrectedText] = useState("批改结果");
-
+    const [loading, setLoading] = useState(false)
     const handleCorrection = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/spark/writing_correction', {
                 method: 'POST',
@@ -27,6 +28,8 @@ export default function TextPage() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -41,6 +44,7 @@ export default function TextPage() {
     return (
         <>
             <Content className={styles.Container} id='main-content'>
+                <Loading active={loading}/>
                 <div>
                     <div className={styles.Header}>
                         <p>当前由</p>

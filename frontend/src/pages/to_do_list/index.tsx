@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextInput, Select, SelectItem, Content } from 'carbon-components-react';
+import {Button, TextInput, Select, SelectItem, Content, Loading} from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 
 export default function TodoList() {
@@ -144,8 +144,9 @@ export default function TodoList() {
             console.error('请求出错', error);
         }
     };
-
+    const [loading, setLoading] = useState(false)
     const analyzeTasks = async () => {
+
         if (days.length === 0) {
             setErr("请添加至少一天的任务");
             return;
@@ -154,7 +155,7 @@ export default function TodoList() {
             acc[index + 1] = day;
             return acc;
         }, {});
-
+        setLoading(true);
         try {
             const response = await fetch('/api/todolist/analyze/', {
                 method: 'POST',
@@ -172,11 +173,14 @@ export default function TodoList() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <Content className={styles.Container} id='main-content'>
+            <Loading active={loading} />
             <div className={styles.Box}>
                 <h2>学习任务管理</h2>
                 <div className={styles.DayForm}>

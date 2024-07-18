@@ -1,13 +1,14 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState } from "react";
-import { Content, TextArea, Button, TextInput } from "carbon-components-react";
+import {Content, TextArea, Button, TextInput, Loading} from "carbon-components-react";
 
 export default function LessonPlanPage() {
     const [topic, setTopic] = useState("");
     const [lessonPlan, setLessonPlan] = useState("生成的教案模板将在这里显示");
-
+    const [loading, setLoading] = useState(false)
     const handleGenerateLessonPlan = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/spark/teaching_plan', {
                 method: 'POST',
@@ -26,10 +27,13 @@ export default function LessonPlanPage() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleDownloadLessonPlan = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/generatedoc/gen', {
                 method: 'POST',
@@ -52,6 +56,8 @@ export default function LessonPlanPage() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -62,6 +68,7 @@ export default function LessonPlanPage() {
     return (
         <>
             <Content className={styles.Container} id='main-content'>
+                <Loading active={loading} />
                 <div>
                     <div className={styles.Header}>
                         <p>当前由</p>

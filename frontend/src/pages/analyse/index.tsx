@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content } from 'carbon-components-react';
+import {Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading} from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
 
 export default function ScoreAnalysis() {
+    const [loading, setLoading] = useState(false);
     const { username, student_id, teacher_id } = useUser();
     console.log({ username, student_id, teacher_id });
     const [exams, setExams] = useState([]);
@@ -81,6 +82,7 @@ export default function ScoreAnalysis() {
     };
 
     const saveBaseInfo = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/spark/mark', {
                 method: 'POST',
@@ -107,6 +109,8 @@ export default function ScoreAnalysis() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false);  // 隐藏loading效果
         }
     };
 
@@ -167,6 +171,7 @@ export default function ScoreAnalysis() {
     };
 
     const analyzeExams = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/spark/summary', {
                 method: 'POST',
@@ -183,11 +188,15 @@ export default function ScoreAnalysis() {
             }
         } catch (error) {
             console.error('请求出错', error);
+        } finally {
+            setLoading(false)
         }
     };
 
     return (
+
         <Content className={styles.Container} id='main-content'>
+            {loading&&<Loading />}
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
