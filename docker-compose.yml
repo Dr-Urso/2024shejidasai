@@ -19,7 +19,7 @@ services:
       dockerfile: frontend/Dockerfile
     container_name: frontend
     ports:
-      - "80:80"
+      - "8001:80"
     depends_on:
       - backend
 
