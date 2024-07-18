@@ -160,5 +160,5 @@ def sparkApi(query, role):
     return ''.join(res) if res else None
 
 # 测试调用
-sparkApi("这是一个测试查询", "write")
+
 
