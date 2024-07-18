@@ -2,10 +2,12 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-
 from .models import ExamSummary, ExamInfo, BaseInfo
 from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
 from .webApi.sparkAPI import sparkApi, res
+from .models import Diary
+from .serializers import DiarySerializer
+from userLogin.models import User, Student
 
 class SaveInfoView(APIView):
 
@@ -125,30 +127,6 @@ class ExamSummaryView(APIView):
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class DraiySummaryView(APIView):
-
-    def post(self, request):
-        try:
-
-            #按照考试分析模板从数据库中获取json数据
-
-            # 构造查询
-            # query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
-            query=''
-
-            # 调用分析函数
-            sparkApi(query,'diary')
-
-            # 打印分析结果
-            logger.debug("Result: %s", res)
-
-            return Response({'result': res}, status=status.HTTP_200_OK)
-        except Exception as e:
-            logger.error(f"Error: {e}")
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 class ToDoListSummaryView(APIView):
 
     def post(self, request):
@@ -223,6 +201,68 @@ class TeachingPlanView(APIView):
             result_text = "\n".join(res)
 
             return Response({'result': result_text}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class DiaryListView(APIView):
+    def get(self, request):
+        try:
+            # 获取当前用户的 ID
+            user_id = request.user.id
+            if not user_id:
+                return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 从数据库中读取当前用户的日记
+            diaries = Diary.objects.filter(user_id=user_id)
+            serializer = DiarySerializer(diaries, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        try:
+            user_id = request.user.id
+            if not user_id:
+                return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+            request.data['user'] = user_id
+            serializer = DiarySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DiarySummaryView(APIView):
+    def post(self, request):
+        try:
+            # 获取当前用户的 ID
+            user_id = request.user.id
+            if not user_id:
+                return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 从数据库中读取当前用户的日记
+            diaries = Diary.objects.filter(user_id=user_id)
+
+            # 组织数据进行分析
+            diary_data = [{"title": diary.title, "date": diary.date.strftime("%Y-%m-%d"), "mood": diary.mood, "content": diary.content} for diary in diaries]
+
+            # 构造查询
+            query = f"日记内容：{json.dumps(diary_data)}"
+            logger.debug("Query: %s", query)
+
+            # 调用分析函数
+            res = sparkApi(query, 'diary')
+
+            # 检查并返回分析结果
+            if res is not None:
+                logger.debug("Result: %s", res)
+                return Response({'result': res}, status=status.HTTP_200_OK)
+            else:
+                logger.error("sparkApi returned null result")
+                return Response({'result': None}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -4,6 +4,8 @@ import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
 
 export default function ScoreAnalysis() {
+    const [edit,setEdit]=useState('0');
+    const [view,setView]=useState('0');
     const [loading, setLoading] = useState(false);
     const { username, student_id, teacher_id } = useUser();
     console.log({ username, student_id, teacher_id });
@@ -200,125 +202,128 @@ export default function ScoreAnalysis() {
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
-                    <div className={styles.BaseInfoForm}>
-                        <Select
-                            id="educationLevel"
-                            name="educationLevel"
-                            labelText="选择教育阶段"
-                            value={educationLevel}
-                            onChange={(e) => setEducationLevel(e.target.value)}
-                        >
-                            <SelectItem value="" text="请选择" />
-                            <SelectItem value="小学" text="小学" />
-                            <SelectItem value="初中" text="初中" />
-                            <SelectItem value="高中" text="高中" />
-                        </Select>
+                    edit==='0' ?(<Button onClick={()=>setEdit('1')}>编辑科目信息</Button>):(
+                        <div className={styles.BaseInfoForm}>
+                            <Select
+                                id="educationLevel"
+                                name="educationLevel"
+                                labelText="选择教育阶段"
+                                value={educationLevel}
+                                onChange={(e) => setEducationLevel(e.target.value)}
+                            >
+                                <SelectItem value="" text="请选择" />
+                                <SelectItem value="小学" text="小学" />
+                                <SelectItem value="初中" text="初中" />
+                                <SelectItem value="高中" text="高中" />
+                            </Select>
 
-                        <h3>选择额外科目</h3>
-                        {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => (
-                            <Checkbox
-                                key={subject}
-                                id={subject}
-                                name={subject}
-                                labelText={subject}
-                                checked={subjects[subject]}
-                                onChange={handleSubjectChange}
-                            />
-                        ))}
+                            <h3>选择额外科目</h3>
+                            {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => (
+                                <Checkbox
+                                    key={subject}
+                                    id={subject}
+                                    name={subject}
+                                    labelText={subject}
+                                    checked={subjects[subject]}
+                                    onChange={handleSubjectChange}
+                                />
+                            ))}
 
-                        <h3>输入科目总分</h3>
-                        <TextInput
-                            id="ChineseTotal"
-                            name="Chinese"
-                            labelText="语文总分"
-                            value={totalScores.Chinese}
-                            onChange={handleTotalScoreChange}
-                        />
-                        <TextInput
-                            id="MathTotal"
-                            name="Math"
-                            labelText="数学总分"
-                            value={totalScores.Math}
-                            onChange={handleTotalScoreChange}
-                        />
-                        <TextInput
-                            id="EnglishTotal"
-                            name="English"
-                            labelText="英语总分"
-                            value={totalScores.English}
-                            onChange={handleTotalScoreChange}
-                        />
-                        {subjects.Physics && (
+                            <h3>输入科目总分</h3>
                             <TextInput
-                                id="PhysicsTotal"
-                                name="Physics"
-                                labelText="物理总分"
-                                value={totalScores.Physics}
+                                id="ChineseTotal"
+                                name="Chinese"
+                                labelText="语文总分"
+                                value={totalScores.Chinese}
                                 onChange={handleTotalScoreChange}
                             />
-                        )}
-                        {subjects.Chemistry && (
                             <TextInput
-                                id="ChemistryTotal"
-                                name="Chemistry"
-                                labelText="化学总分"
-                                value={totalScores.Chemistry}
+                                id="MathTotal"
+                                name="Math"
+                                labelText="数学总分"
+                                value={totalScores.Math}
                                 onChange={handleTotalScoreChange}
                             />
-                        )}
-                        {subjects.Biology && (
                             <TextInput
-                                id="BiologyTotal"
-                                name="Biology"
-                                labelText="生物总分"
-                                value={totalScores.Biology}
+                                id="EnglishTotal"
+                                name="English"
+                                labelText="英语总分"
+                                value={totalScores.English}
                                 onChange={handleTotalScoreChange}
                             />
-                        )}
-                        {subjects.Geography && (
-                            <TextInput
-                                id="GeographyTotal"
-                                name="Geography"
-                                labelText="地理总分"
-                                value={totalScores.Geography}
-                                onChange={handleTotalScoreChange}
-                            />
-                        )}
-                        {subjects.History && (
-                            <TextInput
-                                id="HistoryTotal"
-                                name="History"
-                                labelText="历史总分"
-                                value={totalScores.History}
-                                onChange={handleTotalScoreChange}
-                            />
-                        )}
-                        {subjects.Politics && (
-                            <TextInput
-                                id="PoliticsTotal"
-                                name="Politics"
-                                labelText="政治总分"
-                                value={totalScores.Politics}
-                                onChange={handleTotalScoreChange}
-                            />
-                        )}
-                        <Button onClick={saveBaseInfo}>保存基础信息</Button>
-                    </div>
+                            {subjects.Physics && (
+                                <TextInput
+                                    id="PhysicsTotal"
+                                    name="Physics"
+                                    labelText="物理总分"
+                                    value={totalScores.Physics}
+                                    onChange={handleTotalScoreChange}
+                                />
+                            )}
+                            {subjects.Chemistry && (
+                                <TextInput
+                                    id="ChemistryTotal"
+                                    name="Chemistry"
+                                    labelText="化学总分"
+                                    value={totalScores.Chemistry}
+                                    onChange={handleTotalScoreChange}
+                                />
+                            )}
+                            {subjects.Biology && (
+                                <TextInput
+                                    id="BiologyTotal"
+                                    name="Biology"
+                                    labelText="生物总分"
+                                    value={totalScores.Biology}
+                                    onChange={handleTotalScoreChange}
+                                />
+                            )}
+                            {subjects.Geography && (
+                                <TextInput
+                                    id="GeographyTotal"
+                                    name="Geography"
+                                    labelText="地理总分"
+                                    value={totalScores.Geography}
+                                    onChange={handleTotalScoreChange}
+                                />
+                            )}
+                            {subjects.History && (
+                                <TextInput
+                                    id="HistoryTotal"
+                                    name="History"
+                                    labelText="历史总分"
+                                    value={totalScores.History}
+                                    onChange={handleTotalScoreChange}
+                                />
+                            )}
+                            {subjects.Politics && (
+                                <TextInput
+                                    id="PoliticsTotal"
+                                    name="Politics"
+                                    labelText="政治总分"
+                                    value={totalScores.Politics}
+                                    onChange={handleTotalScoreChange}
+                                />
+                            )}
+                            <Button onClick={saveBaseInfo}>保存基础信息</Button>
+                        </div>)
                 ) : (
-                    <div className={styles.FixedInfo}>
-                        <h3>教育阶段: {educationLevel}</h3>
-                        <h3>额外科目: {Object.keys(subjects).filter(subject => subjects[subject]).join(', ')}</h3>
-                        <h3>各科总分</h3>
-                        <p>语文: {totalScores.Chinese}</p>
-                        <p>数学: {totalScores.Math}</p>
-                        <p>英语: {totalScores.English}</p>
-                        {subjects.Physics && <p>物理: {totalScores.Physics}</p>}
-                        {subjects.Chemistry && <p>化学: {totalScores.Chemistry}</p>}
-                        {subjects.Biology && <p>生物: {totalScores.Biology}</p>}
-                        {subjects.Geography && <p>地理: {totalScores.Geography}</p>}
-                        {subjects.History && <p>历史: {totalScores.History}</p>}
-                        {subjects.Politics && <p>政治: {totalScores.Politics}</p>}
-                    </div>
+                    view==='0'?(<Button onClick={()=>setView('1')}>查看科目信息</Button>):(<div className={styles.FixedInfo}>
+                <h3>教育阶段: {educationLevel}</h3>
+                <h3>额外科目: {Object.keys(subjects).filter(subject => subjects[subject]).join(', ')}</h3>
+                <h3>各科总分</h3>
+                <p>语文: {totalScores.Chinese}</p>
+                <p>数学: {totalScores.Math}</p>
+                <p>英语: {totalScores.English}</p>
+                {subjects.Physics && <p>物理: {totalScores.Physics}</p>}
+                {subjects.Chemistry && <p>化学: {totalScores.Chemistry}</p>}
+                {subjects.Biology && <p>生物: {totalScores.Biology}</p>}
+                {subjects.Geography && <p>地理: {totalScores.Geography}</p>}
+                {subjects.History && <p>历史: {totalScores.History}</p>}
+                {subjects.Politics && <p>政治: {totalScores.Politics}</p>}
+                        <Button onClick={()=>setView('0')}>收起科目信息</Button>
+            </div>)
+
                 )}
 
                 <div className={styles.ExamForm}>

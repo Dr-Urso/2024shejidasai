@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Button, TextInput, Select, SelectItem, Content, Loading} from 'carbon-components-react';
+import { Button, TextInput, Select, SelectItem, Content, Loading } from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 
 export default function TodoList() {
@@ -14,6 +14,8 @@ export default function TodoList() {
         task_name: '',
         status: '未开始'
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     useEffect(() => {
         fetchDays();
@@ -144,9 +146,9 @@ export default function TodoList() {
             console.error('请求出错', error);
         }
     };
-    const [loading, setLoading] = useState(false)
-    const analyzeTasks = async () => {
 
+    const [loading, setLoading] = useState(false);
+    const analyzeTasks = async () => {
         if (days.length === 0) {
             setErr("请添加至少一天的任务");
             return;
@@ -177,6 +179,18 @@ export default function TodoList() {
             setLoading(false);
         }
     };
+
+    const handleNextPage = () => {
+        setCurrentPage((prevPage) => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    };
+
+    const indexOfLastDay = currentPage * itemsPerPage;
+    const indexOfFirstDay = indexOfLastDay - itemsPerPage;
+    const currentDays = days.slice(indexOfFirstDay, indexOfLastDay);
 
     return (
         <Content className={styles.Container} id='main-content'>
@@ -216,15 +230,15 @@ export default function TodoList() {
                         <SelectItem value="进行中" text="进行中" />
                         <SelectItem value="已完成" text="已完成" />
                     </Select>
-                    <Button onClick={addTask} style={{marginRight:"20px"}}>添加任务</Button>
-                    <Button onClick={addDay} style={{marginRight:"20px"}}>添加当天任务</Button>
-                    <Button onClick={analyzeTasks}>分析任务</Button>
+                    <Button onClick={addTask} style={{ marginRight: "20px" }}>添加任务</Button>
+                    <Button onClick={addDay} style={{ marginRight: "20px" }}>添加当天任务</Button>
+                    <Button onClick={analyzeTasks}>当天任务总结</Button>
                 </div>
                 <div>{err && (
                     <div className={styles.Err}>{err}</div>
                 )}</div>
                 <div className={styles.DayList}>
-                    {days.map((day, dayIndex) => (
+                    {currentDays.map((day, dayIndex) => (
                         <div key={dayIndex} className={styles.DayItem}>
                             <h3>日期: {day.date}</h3>
                             {day.tasks.map((task, taskIndex) => (
@@ -245,6 +259,11 @@ export default function TodoList() {
                             ))}
                         </div>
                     ))}
+                </div>
+                <div className={styles.Pagination}>
+                    <Button onClick={handlePrevPage} disabled={currentPage === 1}>上一页</Button>
+                    <span>{currentPage}</span>
+                    <Button onClick={handleNextPage} disabled={indexOfLastDay >= days.length}>下一页</Button>
                 </div>
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>

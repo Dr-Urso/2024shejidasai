@@ -28,3 +28,13 @@ class ExamSummary(models.Model):
 
     def __str__(self):
         return ", ".join([user.username for user in self.user.all()])
+
+class Diary(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    title = models.CharField(max_length=255)
+    date = models.DateField()
+    mood = models.CharField(max_length=50, default='平常心')
+    content = models.TextField()
+
+    def __str__(self):
+        return self.title
