@@ -1,7 +1,7 @@
 {
   "Header": {
-    "title": "智学未来学习平台",
-    "paragraph": "AI驱动的一站式外语学习平台"
+    "title": "智学未来教育平台",
+    "paragraph": "AI驱动的一站式教育学习平台"
   },
   "About": {
     "paragraph": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -73,8 +73,8 @@
     },
     {
       "icon": "fa fa-cart-arrow-down",
-      "name": "个性化学习计划编写",
-      "text": "根据学生需求，量身定制学习计划，确保高效、有针对性的学习。"
+      "name": "个性化教学计划编写",
+      "text": "根据教师需求，定制教学计划，确保高效、有针对性的教学。"
     },
     {
       "icon": "fa fa-cloud-download",
@@ -162,18 +162,18 @@
   "Features": [
     {
       "icon": "fa fa-magic",
-      "title": "AI赋能外语教育",
-      "text": "借助星火大模型，实现外语教育的AI赋能，使学习更高效、更有趣。"
+      "title": "AI赋能教育",
+      "text": "借助星火大模型，实现教育的AI赋能，使学习更高效、更有趣。"
     },
     {
       "icon": "fa fa-bullhorn",
       "title": "智能成绩分析",
-      "text": "利用讯飞星火大模型，实时分析学生的学习成绩，提供详尽的数据报告，帮助学生发现弱点并提升成绩。"
+      "text": "利用讯飞星火大模型，实时分析学生的学习成绩，提供详尽的分析报告，帮助学生发现不足并给出学习建议规划。"
     },
     {
       "icon": "fa fa-group",
       "title": "智能作文批改与修改",
-      "text": "AI自动批改作文，指出语法和结构上的错误，并提供修改建议，帮助学生提升写作能力。"
+      "text": "AI自动批改作文，帮助学生提升写作能力和帮助老师快速批改作文。"
     },
     {
       "icon": "fa fa-comments-o",
