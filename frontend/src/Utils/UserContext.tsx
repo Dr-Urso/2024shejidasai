@@ -8,13 +8,13 @@ interface UserContextType {
     [key: string]: any;
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface UserProviderProps {
     children: ReactNode;
 }
 
-export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+export const UserProvider: React.FC = ({ children }) => {
     const [username, setUsername] = useState<string>(() => localStorage.getItem('username') || '');
     const [student_id, setStudentId] = useState<number | null>(() => {
         const savedId = localStorage.getItem('student_id');
@@ -24,34 +24,47 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         const savedId = localStorage.getItem('teacher_id');
         return savedId ? parseInt(savedId, 10) : null;
     });
-    const [additionalInfo, setAdditionalInfo] = useState<any>({});
+    const [additionalInfo, setAdditionalInfo] = useState<any>(() => {
+        const savedInfo = localStorage.getItem('additionalInfo');
+        return savedInfo ? JSON.parse(savedInfo) : {};
+    });
 
     const setUserInfo = (info: any) => {
-        if (info.username) {
+        if (info.username !== undefined) {
             setUsername(info.username);
             localStorage.setItem('username', info.username);
         }
         if (info.student_id !== undefined) {
             setStudentId(info.student_id);
-            localStorage.setItem('student_id', info.student_id);
+            localStorage.setItem('student_id', info.student_id !== null ? info.student_id.toString() : '');
         }
         if (info.teacher_id !== undefined) {
             setTeacherId(info.teacher_id);
-            localStorage.setItem('teacher_id', info.teacher_id);
+            localStorage.setItem('teacher_id', info.teacher_id !== null ? info.teacher_id.toString() : '');
         }
-        setAdditionalInfo(prevInfo => ({ ...prevInfo, ...info }));
+        const newAdditionalInfo = { ...additionalInfo, ...info };
+        setAdditionalInfo(newAdditionalInfo);
+        localStorage.setItem('additionalInfo', JSON.stringify(newAdditionalInfo));
     };
 
-    useEffect(() => {
-        // Load any other persisted info here, if necessary
-    }, []);
+    const clearUserInfo = () => {
+        setUsername('');
+        setStudentId(null);
+        setTeacherId(null);
+        setAdditionalInfo({});
+        localStorage.removeItem('username');
+        localStorage.removeItem('student_id');
+        localStorage.removeItem('teacher_id');
+        localStorage.removeItem('additionalInfo');
+    };
 
     return (
-        <UserContext.Provider value={{ username, student_id, teacher_id, setUserInfo, ...additionalInfo }}>
+        <UserContext.Provider value={{ username, student_id, teacher_id, setUserInfo, clearUserInfo, ...additionalInfo }}>
             {children}
         </UserContext.Provider>
     );
 };
+
 
 export const useUser = (): UserContextType => {
     const context = useContext(UserContext);

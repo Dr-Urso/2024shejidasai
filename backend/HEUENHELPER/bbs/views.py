@@ -1,13 +1,17 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db import transaction
 from .models import Question, FollowUp
 from .serializers import QuestionSerializer, FollowUpSerializer
 
 class QuestionListView(APIView):
-    permission_classes = [IsAuthenticated]
+    # 允许所有用户访问 GET 方法，只有认证用户才能访问 POST 方法
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def get(self, request):
         questions = Question.objects.all()
@@ -28,7 +32,8 @@ class QuestionListView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class QuestionDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    # 允许所有用户访问
+    permission_classes = [AllowAny]
 
     def get(self, request, question_id):
         try:

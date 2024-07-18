@@ -4,7 +4,8 @@ import './global.scss';
 import { pkg } from '@carbon/ibm-products';
 import {UserProvider} from "@/Utils/UserContext";
 import {useNavigate} from "react-router-dom";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import { useUser,UserContext } from "@/Utils/UserContext";
 import {
     Button,
     Header,
@@ -18,6 +19,7 @@ import {
 import {Chat, Login, Menu, Tools, User} from "@carbon/icons-react";
 import {useLocation} from "@@/exports";
 export default function Layout() {
+    const { student_id, teacher_id, username } = useContext(UserContext);
   pkg.component.UserAvatar = true;
      const location = useLocation();
 
@@ -26,7 +28,7 @@ export default function Layout() {
     function toggleSideNav() {
         setIsSideNavExpanded(!isSideNavExpanded);
     }
-
+    console.log('这里是侧边栏的日志',{ username, student_id, teacher_id });
     return (
         <>
             <Header>
@@ -47,31 +49,33 @@ export default function Layout() {
             </Header>
             <SideNav isFixedNav={true} expanded={isSideNavExpanded} isChildOfHeader={false} aria-label="Side navigation">
                 <SideNavItems>
-                    <SideNavLink href='/plat/analyse'>
+                    {student_id && (<SideNavLink href='/plat/analyse'>
                         成绩分析
-                    </SideNavLink>
-                    <SideNavLink href='/plat/to_do_list'>
+                    </SideNavLink>)}
+                    {student_id && (<SideNavLink href='/plat/to_do_list'>
                         学习计划
-                    </SideNavLink>
-                    <SideNavLink href='/plat/diary'>
+                    </SideNavLink>)}
+                    {student_id && (<SideNavLink href='/plat/diary'>
                         日记本
-                    </SideNavLink>
+                    </SideNavLink>)}
+                    {teacher_id && (<SideNavLink href='/plat/to_do_list'>
+                        教学计划
+                    </SideNavLink>)}
                     <SideNavLink href='/plat/text'>
                         文本翻译
                     </SideNavLink>
                     <SideNavLink href='/plat/bbs'>
                         师生论坛
                     </SideNavLink>
-                    <SideNavLink href='/plat/composition'>
-                        作文修改
-                    </SideNavLink>
-                    <SideNavLink href='/plat/teaching_plan'>
+                    {student_id && (<SideNavLink href='/plat/composition'>
+                        作文润色
+                    </SideNavLink>)}
+                    {teacher_id && (<SideNavLink href='/plat/teaching_plan'>
                         教案生成
-                    </SideNavLink>
-                    <SideNavLink href='/plat/correct'>
+                    </SideNavLink>)}
+                    {teacher_id && (<SideNavLink href='/plat/correct'>
                         作文批改
-                    </SideNavLink>
-
+                    </SideNavLink>)}
                 </SideNavItems>
             </SideNav>
             <UserProvider>
