@@ -394,7 +394,7 @@ export default function ScoreAnalysis() {
                         onChange={handleChange}
                         rows={4}
                     />
-                    <Button onClick={addExam}>添加考试成绩</Button>
+                    <Button onClick={addExam} style={{marginRight:"20px"}} >添加考试成绩</Button>
                     <Button onClick={analyzeExams}>分析成绩</Button>
                 </div>
                 <div className={styles.ExamList}>

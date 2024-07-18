@@ -212,8 +212,8 @@ export default function TodoList() {
                         <SelectItem value="进行中" text="进行中" />
                         <SelectItem value="已完成" text="已完成" />
                     </Select>
-                    <Button onClick={addTask}>添加任务</Button>
-                    <Button onClick={addDay}>添加当天任务</Button>
+                    <Button onClick={addTask} style={{marginRight:"20px"}}>添加任务</Button>
+                    <Button onClick={addDay} style={{marginRight:"20px"}}>添加当天任务</Button>
                     <Button onClick={analyzeTasks}>分析任务</Button>
                 </div>
                 <div>{err && (
