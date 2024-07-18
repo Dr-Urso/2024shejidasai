@@ -8,6 +8,7 @@ WORKDIR /app
 
 # 复制requirements.txt文件并安装依赖
 COPY backend/HEUENHELPER/requirements.txt /app/requirements.txt
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # 复制整个Django项目到工作目录
