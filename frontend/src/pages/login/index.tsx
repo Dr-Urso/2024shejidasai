@@ -167,7 +167,7 @@ else{       navigate('/plat'); // 根据需求调整跳转页面
                 <div style={{
                     height:'10px'
                 }}></div>
-                <Button kind="tertiary" onClick={onLogout} style={{
+                <Button kind="tertiary" onClick={tourist} style={{
                     width: "100%",
                     boxSizing: "border-box",
                     maxWidth: "1000px"
