@@ -192,10 +192,10 @@ export default function ForumPage() {
     return (
         <Content id='main-content'>
             <div>
-                <FluidForm style={{ display: 'flex' }}>
+                {student_id && (<FluidForm style={{ display: 'flex' }}>
                     <Button onClick={newQuestion}>新建问题</Button>
                     <TextInput id='new-question' labelText='问题内容' value={newQuestionText} onChange={(e) => setNewQuestionText(e.target.value)} />
-                </FluidForm>
+                </FluidForm>)}
                 <div className='h-5' />
                 <div style={{ marginLeft: '5%', marginRight: '5%' }}>
                     {currentQuestions.map((question) => (
