@@ -25,13 +25,15 @@ SECRET_KEY = 'django-insecure-)k!o#!9!t)k#yx4jf6794)&(iy!7-+5wh1g17+y0@p62f9-f*q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['woshiwangguan.site', '8.130.76.174']
+ALLOWED_HOSTS = ['woshiwangguan.site', '8.130.76.174', 'localhost', 'backend']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+
     'rest_framework',
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -135,9 +137,11 @@ XFYUN_API_SECRET = 'MWMxYzQ0N2RmZjFmMmZmOWY2MWJkNzY1'
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'Asia/Harbin'
+
+SIMPLEUI_LOGO = 'http://wiki.42lab.cloud/images/3/3a/PNC_Corporation_42LAB_B.png'
 
 USE_I18N = True
 
@@ -148,7 +152,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+SIMPLEUI_HOME_INFO=False
+SIMPLEUI_ANALYSIS=False
 
+STATIC_ROOT = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

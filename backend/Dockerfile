@@ -11,8 +11,10 @@ COPY backend/HEUENHELPER/requirements.txt /app/requirements.txt
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
+
 # 复制整个Django项目到工作目录
 COPY backend/HEUENHELPER /app
+
 
 # 设置环境变量
 ENV PYTHONUNBUFFERED=1

@@ -5,6 +5,7 @@ FROM nginx:alpine
 
 # 复制构建好的前端文件到Nginx的html目录
 COPY ./frontend/dist /usr/share/nginx/html
+COPY ./frontend/static /usr/share/nginx/html/static
 
 # 复制Nginx配置文件
 COPY ./frontend/nginx.conf /etc/nginx/nginx.conf
