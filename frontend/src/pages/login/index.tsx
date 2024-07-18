@@ -107,7 +107,7 @@ export default function Page() {
                 <div>忘记账号密码？<a href="#">联系我们</a></div>
             </div>
             <div className={styles.bottomBorder}>
-                这是底边
+                ©2024 by 智学未来
             </div>
         </div>
     );
