@@ -42,7 +42,7 @@ class CreateUserView(APIView):
                 elif user_type == 'teacher':
                     teacher = Teacher.objects.create(user=user, employee_id=employee_id)
 
-                return Response({'detail': 'OK'}, status=status.HTTP_201_CREATED)
+                return Response({'detail': 'OK'})
 
         except Exception as e:
             logger.error(f"Error during user creation: {e}")
@@ -85,7 +85,7 @@ class LoginUserView(APIView):
 class LogoutUserView(APIView):
     def get(self, request):
         if not request.user.is_authenticated:
-            return Response({'detail': '未登录'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': '未登录'})
         # 退出登录
         logout(request)
         return Response({'detail': 'OK'})
