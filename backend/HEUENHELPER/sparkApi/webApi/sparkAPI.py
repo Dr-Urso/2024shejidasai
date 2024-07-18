@@ -121,7 +121,7 @@ def gen_params(appid, query, domain, role):
             "message": {
                 "text": [
                     {"role": "system", "content": content},
-                    {"role": "user", "content": query}
+                    {"role": "user", "content": '下面是每天的任务情况：' + query}
                 ]
             }
         }
