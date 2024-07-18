@@ -1,6 +1,7 @@
 import { defineConfig } from "umi";
 
 export default defineConfig({
+    favicons :['/favicon.ico'],
   routes: [
     {path:"/",
     component:"@/layouts/index",

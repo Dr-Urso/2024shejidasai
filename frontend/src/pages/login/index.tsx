@@ -124,12 +124,14 @@ else{       navigate('/plat'); // 根据需求调整跳转页面
                 <div className={styles.Top}>
                 <div className="text-5xl" style={{ marginBottom: "5%" }}>用户登录</div>
                     <Button kind='tertiary' onClick={tourist} style={{
-                        width: '60px', // 根据需要调整宽度
+                        width: '200px', // 根据需要调整宽度
                         height: '24px', // 根据需要调整高度
                         fontSize: '10px', // 调整字体大小
                         padding: '4px' // 调整内边距
                     }}>
-                        游客登录
+                        <div className="text-2xl" style={{marginBottom: "5%"}}>
+                            游客登录
+                            </div>
                     </Button>
 
                 </div>
@@ -172,7 +174,7 @@ else{       navigate('/plat'); // 根据需求调整跳转页面
                 }}>退出登录</Button>
             </div>
             <div className={styles.bottomBorder}>
-                这是底边
+                ©2024 by 智学未来
             </div>
         </div>
     );

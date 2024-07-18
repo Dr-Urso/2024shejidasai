@@ -115,7 +115,7 @@ export default function Page() {
                     <h2>创建账户以访问平台服务</h2>
                 </div>
                 <div className={styles.bottomBorder}>
-                    这是底边
+                    ©2024 by 智学未来
                 </div>
             </div>
         </>

@@ -16,6 +16,7 @@ import "./css/style.css"
 import "./css/bootstrap.min.css"
 import "./css/nivo-lightbox/default.css"
 import "./css/nivo-lightbox/nivo-lightbox.css"
+import './fonts/font-awesome/css/font-awesome.min.css';
 export const scroll = new SmoothScroll('a[href*="#"]', {
   speed: 1000,
   speedAsDuration: true,
@@ -32,12 +33,12 @@ const Homepage = () => {
       <Navigation />
       <Header data={landingPageData.Header} />
       <Features data={landingPageData.Features} />
-      <About data={landingPageData.About} />
-      <Services data={landingPageData.Services} />
-      <Gallery data={landingPageData.Gallery} />
-      <Testimonials data={landingPageData.Testimonials} />
+        {/*<About data={landingPageData.About} />*/}
+        <Services data={landingPageData.Services} />
+        <Gallery data={landingPageData.Gallery} />
+        {/*<Testimonials data={landingPageData.Testimonials} />
       <Team data={landingPageData.Team} />
-      <Contact data={landingPageData.Contact} />
+      <Contact data={landingPageData.Contact} />*/}
     </div>
   );
 };
