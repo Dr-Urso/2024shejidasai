@@ -1,0 +1,28 @@
+系统：Ubuntu 22.04.4 LTS
+部署步骤：
+
+1、安装docker
+
+export DOWNLOAD_URL="https://mirrors.tuna.tsinghua.edu.cn/docker-ce"
+curl -fsSL https://get.docker.com/ | sudo -E sh
+
+2、安装node
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install node
+
+3、安装pnpm
+
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+
+4、开始部署
+
+定位到项目根目录下与本文件相同目录位置，运行
+
+sh start.sh
+
+最后访问localhost:8001即可
+
+localhost:8001/admin为管理员后台，账号drkuma，密码123qweasdzxc
