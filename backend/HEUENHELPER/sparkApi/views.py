@@ -13,7 +13,6 @@ class SaveInfoView(APIView):
 
     def post(self, request):
         try:
-            print(request.data)
             student_id = request.data['student_id']
             subject = request.data['subject']
             fullMark = request.data['fullMark']
@@ -127,6 +126,30 @@ class ExamSummaryView(APIView):
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+from datetime import timedelta
+import datetime
+import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from .serializers import  ExamInfoSerializer
+
+class UserExamScoresAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            student = Student.objects.filter(user=request.user).first()
+            if not student:
+                return Response({'error': '无效的用户'}, status=status.HTTP_400_BAD_REQUEST)
+
+            exam_infos = ExamInfo.objects.filter(student=student)
+            serializer = ExamInfoSerializer(exam_infos, many=True)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class ToDoListSummaryView(APIView):
 
     def post(self, request):

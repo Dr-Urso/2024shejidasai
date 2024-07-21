@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading} from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
@@ -12,6 +12,12 @@ export default function ScoreAnalysis() {
     const [exams, setExams] = useState([]);
     const [aiSuggestions, setAiSuggestions] = useState('');
     const [educationLevel, setEducationLevel] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4;
+    const indexOfLastExam = currentPage * itemsPerPage;
+    const indexOfFirstExam = indexOfLastExam - itemsPerPage;
+    const currentExams = exams.slice(indexOfFirstExam, indexOfLastExam);
+    const [errorMessage, setErrorMessage] = useState('');
     const [subjects, setSubjects] = useState({
         Physics: false,
         Chemistry: false,
@@ -47,6 +53,43 @@ export default function ScoreAnalysis() {
         },
         selfEvaluation: ''
     });
+    useEffect(() => {
+        fetchScores();
+    }, []);
+
+    const fetchScores = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/spark/scores', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Fetched data:', data);  // 调试输出
+
+                // 格式化数据以匹配前端期望的结构
+                const formattedData = data.map(exam => ({
+                    examType: exam.examType,
+                    examName: exam.examName,
+                    scores: exam.examScore,
+                    selfEvaluation: exam.selfEvaluation
+                }));
+
+                setExams(formattedData);
+                console.log('Exams set:', formattedData);  // 确认 exams 数据已设置
+            } else {
+                console.error('获取成绩信息失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -149,6 +192,30 @@ export default function ScoreAnalysis() {
     };
 
     const addExam = async () => {
+        if (!currentExam.examType) {
+            setErrorMessage('请填写考试名称');
+            return;
+        }
+        if (!currentExam.scores.Chinese) {
+            setErrorMessage('请填写语文成绩');            return;}
+        if(!currentExam.scores.Math){
+            setErrorMessage('请填写数学成绩');            return;}
+        if(!currentExam.scores.English){
+            setErrorMessage('请填写英语成绩');            return;}
+
+        if (subjects.Physics && !currentExam.scores.Physics) {
+            setErrorMessage('请填写物理成绩');            return;}
+        if (subjects.Chemistry && !currentExam.scores.Chemistry) {
+            setErrorMessage('请填写化学成绩');            return;}
+        if (subjects.Biology && !currentExam.scores.Biology){
+            setErrorMessage('请填写生物成绩') ;           return;}
+        if (subjects.Geography && !currentExam.scores.Geography) {
+            setErrorMessage('请填写地理成绩');            return;
+        }
+        if (subjects.History && !currentExam.scores.History) {
+            setErrorMessage('请填写历史成绩');            return;}
+        if (subjects.Politics && !currentExam.scores.Politics) {
+setErrorMessage('请填写政治成绩');            return;}
         if (!baseInfoSaved) {
             await saveBaseInfo(); // 保存基础信息
         }
@@ -193,6 +260,13 @@ export default function ScoreAnalysis() {
         } finally {
             setLoading(false)
         }
+    };
+    const handleNextPage = () => {
+        setCurrentPage((prevPage) => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
     return (
@@ -421,22 +495,29 @@ export default function ScoreAnalysis() {
                     <Button onClick={addExam} style={{marginRight:"20px"}} >添加考试成绩</Button>
                     <Button onClick={analyzeExams}>分析成绩</Button>
                 </div>
+                {errorMessage && <div style={{ color: 'red', marginBottom: '0%', marginTop: "2%" }}>{errorMessage}</div>}
                 <div className={styles.ExamList}>
-                    {exams.map((exam, index) => (
+                    {currentExams.map((exam, index) => (
                         <div key={index} className={styles.ExamItem}>
-                            <h3>考试名称 {exam.examType}</h3>
+                            <h3>考试名称: {exam.examName}</h3>
+                            <p>考试阶段: {exam.examType}</p>
                             <p>语文: {exam.scores.Chinese}</p>
                             <p>数学: {exam.scores.Math}</p>
                             <p>英语: {exam.scores.English}</p>
-                            {subjects.Physics && <p>物理: {exam.scores.Physics}</p>}
-                            {subjects.Chemistry && <p>化学: {exam.scores.Chemistry}</p>}
-                            {subjects.Biology && <p>生物: {exam.scores.Biology}</p>}
-                            {subjects.Geography && <p>地理: {exam.scores.Geography}</p>}
-                            {subjects.History && <p>历史: {exam.scores.History}</p>}
-                            {subjects.Politics && <p>政治: {exam.scores.Politics}</p>}
+                            {exam.scores.Physics && <p>物理: {exam.scores.Physics}</p>}
+                            {exam.scores.Chemistry && <p>化学: {exam.scores.Chemistry}</p>}
+                            {exam.scores.Biology && <p>生物: {exam.scores.Biology}</p>}
+                            {exam.scores.Geography && <p>地理: {exam.scores.Geography}</p>}
+                            {exam.scores.History && <p>历史: {exam.scores.History}</p>}
+                            {exam.scores.Politics && <p>政治: {exam.scores.Politics}</p>}
                             <p>自我评价: {exam.selfEvaluation}</p>
                         </div>
                     ))}
+                </div>
+                <div className={styles.Pagination}>
+                    <Button onClick={handlePrevPage} disabled={currentPage === 1}>上一页</Button>
+                    <span>{currentPage}</span>
+                    <Button onClick={handleNextPage} disabled={indexOfLastExam >= exams.length}>下一页</Button>
                 </div>
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>

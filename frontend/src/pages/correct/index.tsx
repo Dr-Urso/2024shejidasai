@@ -21,7 +21,7 @@ export default function TextPage() {
             if (response.ok) {
                 const data = await response.json();
                 // 将数组数据转换为字符串，用换行符分隔
-                const resultText = data.result.join('\n');
+                const resultText = data.result.join('');
                 setCorrectedText(resultText);
             } else {
                 console.error('批改失败');

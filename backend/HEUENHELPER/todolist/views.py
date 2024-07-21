@@ -10,6 +10,7 @@ from services.AI_API_CALL import RateLimitException, InvalidRoleException, AIAdv
 from .models import Day, Task
 from .serializers import DaySerializer, TaskSerializer
 
+
 class DayListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -20,12 +21,32 @@ class DayListCreateAPIView(APIView):
 
     def post(self, request):
         data = request.data
-        serializer = DaySerializer(data=data, context={'request': request})
+        date = data.get('date')
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not date:
+            return Response({'error': 'Date is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        existing_day = Day.objects.filter(user=request.user, date=date).first()
+
+        if existing_day:
+            # 合并任务
+            tasks_data = data.get('tasks', [])
+            for task_data in tasks_data:
+                task_serializer = TaskSerializer(data=task_data)
+                if task_serializer.is_valid():
+                    task_serializer.save(day=existing_day)
+                else:
+                    return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            existing_day_serializer = DaySerializer(existing_day)
+            return Response(existing_day_serializer.data, status=status.HTTP_200_OK)
+        else:
+            # 创建新的 Day 实例
+            serializer = DaySerializer(data=data, context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnalyzeTasksAPIView(APIView):

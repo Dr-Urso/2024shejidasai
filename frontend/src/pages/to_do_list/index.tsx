@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Button, TextInput, Select, SelectItem, Content, Loading } from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
-
+import { useUser,UserContext } from "@/Utils/UserContext";
 export default function TodoList() {
+    const { student_id, teacher_id, clearUserInfo } = useContext(UserContext);
     const [err, setErr] = useState('');
     const [days, setDays] = useState([]);
     const [aiSuggestions, setAiSuggestions] = useState('');
@@ -196,7 +197,7 @@ export default function TodoList() {
         <Content className={styles.Container} id='main-content'>
             <Loading active={loading} />
             <div className={styles.Box}>
-                <h2>学习任务管理</h2>
+                {student_id === null ? (<h2>教学计划管理</h2>):(<h2>学习计划管理</h2>)}
                 <div className={styles.DayForm}>
                     <TextInput
                         id="date"
@@ -267,7 +268,7 @@ export default function TodoList() {
                 </div>
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>
-                        <h3>AI 大模型的建议</h3>
+                        {student_id === null ? (<h3>每日教学计划总结</h3>):(<h3>每日学习计划总结</h3>)}
                         <p>{aiSuggestions}</p>
                     </div>
                 )}

@@ -233,7 +233,7 @@ export default function Page() {
                     </div>
                     {analysisResult && (
                         <div className={styles.AnalysisResult}>
-                            <h3>日记分析结果:</h3>
+                            <h3>每日日记总结</h3>
                             <p>{analysisResult}</p>
                         </div>
                     )}
