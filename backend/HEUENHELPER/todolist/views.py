@@ -39,7 +39,7 @@ class AnalyzeTasksAPIView(APIView):
             end_date = current_date + timedelta(days=7)
 
             # 获取时间范围内的天数据
-            days = Day.objects.filter(user=request.user, date__range=[start_date, end_date])
+            days = Day.objects.filter(user=request.user, date = current_date)
 
             if not days.exists():
                 return Response({'error': 'No tasks found for the specified date range.'},

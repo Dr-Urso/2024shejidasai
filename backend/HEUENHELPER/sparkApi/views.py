@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -212,9 +214,11 @@ class DiaryListView(APIView):
             user_id = request.user.id
             if not user_id:
                 return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
-
+            current_date = datetime.datetime.now().date()
+            start_date = current_date - datetime.timedelta(days=7)
+            end_date = current_date + datetime.timedelta(days=7)
             # 从数据库中读取当前用户的日记
-            diaries = Diary.objects.filter(user_id=user_id)
+            diaries = Diary.objects.filter(user_id=user_id, date__range = [start_date, end_date])
             serializer = DiarySerializer(diaries, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
