@@ -195,7 +195,6 @@ class WritingCorrectView(APIView):
 
             # 调用分析函数
             sparkApi(query, 'write')
-
             # 打印分析结果
             logger.debug("Result: %s", res)
 
@@ -225,7 +224,7 @@ class TeachingPlanView(APIView):
             logger.debug("Result: %s", res)
 
             # 将结果转换为字符串并返回
-            result_text = "\n".join(res)
+            result_text = "".join(res)
 
             return Response({'result': result_text}, status=status.HTTP_200_OK)
         except Exception as e:
