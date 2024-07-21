@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -160,9 +162,11 @@ class ToDoListSummaryView(APIView):
             # 构造查询
             # query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
             query=''
-
+            if request.user.user_type == 'teacher':
             # 调用分析函数
-            sparkApi(query,'to_do_list')
+                sparkApi(query,'to_do_list_teacher')
+            else:
+                sparkApi(query,'to_do_list_student')
 
             # 打印分析结果
             logger.debug("Result: %s", res)
@@ -235,7 +239,6 @@ class DiaryListView(APIView):
             user_id = request.user.id
             if not user_id:
                 return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
-
             # 从数据库中读取当前用户的日记
             diaries = Diary.objects.filter(user_id=user_id)
             serializer = DiarySerializer(diaries, many=True)
@@ -266,8 +269,12 @@ class DiarySummaryView(APIView):
             if not user_id:
                 return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
 
+            current_date = datetime.datetime.now().date()
+            start_date = current_date - datetime.timedelta(days=7)
+            end_date = current_date + datetime.timedelta(days=7)
+
             # 从数据库中读取当前用户的日记
-            diaries = Diary.objects.filter(user_id=user_id)
+            diaries = Diary.objects.filter(user_id=user_id,date__range=[start_date,end_date])
 
             # 组织数据进行分析
             diary_data = [{"title": diary.title, "date": diary.date.strftime("%Y-%m-%d"), "mood": diary.mood, "content": diary.content} for diary in diaries]

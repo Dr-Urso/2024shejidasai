@@ -54,13 +54,14 @@ class AnalyzeTasksAPIView(APIView):
 
     def post(self, request):
         try:
+            user_type=request.user.user_type
             # 获取当前日期
             current_date = datetime.datetime.now().date()
             start_date = current_date - timedelta(days=7)
             end_date = current_date + timedelta(days=7)
 
             # 获取时间范围内的天数据
-            days = Day.objects.filter(user=request.user, date__range=[start_date, end_date])
+            days = Day.objects.filter(user=request.user, date = current_date)
 
             if not days.exists():
                 return Response({'error': 'No tasks found for the specified date range.'},
@@ -68,12 +69,17 @@ class AnalyzeTasksAPIView(APIView):
 
             # 创建AI服务实例
             ai_service = AIAdviceService()
-            ai_service.add_param('system', "你是一个擅长总结每天任务情况的管理大师，你现在的任务是总结每天的任务情况。""任务要求：1、避免出现总结内容与任务内容不符。2、如果有很多任务未完成，提醒加快速度。")
+            if user_type == 'teacher':
+                ai_service.add_param('system', "你是一个擅长总结每天任务情况的任务总结大师，你善于跟踪、分析和总结任务的进展情况，确保任务按时完成，并提供适当的反馈和建议以提高效率。你现在的任务是总结老师每天的任务情况，你现在总结的任务的对象是老师。""任务要求：1、完全记住老师每天的任务内容，避免出现总结内容与任务内容不符。2、回答要亲切地道，避免机器化回答。")
+            elif user_type == 'student':
+                ai_service.add_param('system', "你是一个擅长总结每天任务情况的任务总结大师，你善于跟踪、分析和总结任务的进展情况，确保任务按时完成，并提供适当的反馈和建议以提高效率。你现在的任务是总结学生每天的任务情况，你现在总结的任务的对象是学生。""任务要求：1、完全记住学生每天的任务内容，避免出现总结内容与任务内容不符。2、回答要亲切地道，避免机器化回答。")
             # 添加每个任务的数据到AI服务中
+            cnt=0
             for day in days:
                 for task in day.tasks.all():
-
-                    ai_service.add_param('user', f"任务: {task.task_name}, 状态: {task.status}")
+                    print(task.task_name,task.status)
+                    cnt += 1
+                    ai_service.add_param('user', f"当天任务{cnt}: {task.task_name}, 状态: {task.status}")
 
             # 获取AI生成的总结
             advice = ai_service.get_advice(user_id=request.user.id)
