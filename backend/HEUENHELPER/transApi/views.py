@@ -10,16 +10,20 @@ class translationView(APIView):
     def post(self, request):
         sender = request.user
         text = request.data['text']
+        fromTo=request.data['fromTo']
         host = "itrans.xfyun.cn"
         gClass = get_result(host)
 
         # 设置要翻译的文本
         gClass.setText(text)
 
+        # 获取语言对
+        fromLang,toLang=fromTo.split('-')
+
         # 设置翻译的语言对
         gClass.setBusinessArgs({
-            "from": "en",
-            "to": "cn"
+            "from": fromLang,
+            "to":  toLang
         })
 
         res = gClass.call_url()

@@ -49,10 +49,12 @@ class AnalyzeTasksAPIView(APIView):
             ai_service = AIAdviceService()
             ai_service.add_param('system', "你是一个擅长总结每天任务情况的管理大师，你现在的任务是总结每天的任务情况。""任务要求：1、避免出现总结内容与任务内容不符。2、如果有很多任务未完成，提醒加快速度。")
             # 添加每个任务的数据到AI服务中
+            cnt=0
             for day in days:
                 for task in day.tasks.all():
-
-                    ai_service.add_param('user', f"任务: {task.task_name}, 状态: {task.status}")
+                    print(task.task_name,task.status)
+                    cnt += 1
+                    ai_service.add_param('user', f"当天任务{cnt}: {task.task_name}, 状态: {task.status}")
 
             # 获取AI生成的总结
             advice = ai_service.get_advice(user_id=request.user.id)
