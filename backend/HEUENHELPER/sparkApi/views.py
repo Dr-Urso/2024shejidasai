@@ -139,9 +139,11 @@ class ToDoListSummaryView(APIView):
             # 构造查询
             # query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
             query=''
-
+            if request.user.user_type == 'teacher':
             # 调用分析函数
-            sparkApi(query,'to_do_list')
+                sparkApi(query,'to_do_list_teacher')
+            else:
+                sparkApi(query,'to_do_list_student')
 
             # 打印分析结果
             logger.debug("Result: %s", res)
