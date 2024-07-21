@@ -214,11 +214,8 @@ class DiaryListView(APIView):
             user_id = request.user.id
             if not user_id:
                 return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
-            current_date = datetime.datetime.now().date()
-            start_date = current_date - datetime.timedelta(days=7)
-            end_date = current_date + datetime.timedelta(days=7)
             # 从数据库中读取当前用户的日记
-            diaries = Diary.objects.filter(user_id=user_id, date__range = [start_date, end_date])
+            diaries = Diary.objects.filter(user_id=user_id)
             serializer = DiarySerializer(diaries, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -247,8 +244,12 @@ class DiarySummaryView(APIView):
             if not user_id:
                 return Response({'error': '缺少用户ID'}, status=status.HTTP_400_BAD_REQUEST)
 
+            current_date = datetime.datetime.now().date()
+            start_date = current_date - datetime.timedelta(days=7)
+            end_date = current_date + datetime.timedelta(days=7)
+
             # 从数据库中读取当前用户的日记
-            diaries = Diary.objects.filter(user_id=user_id)
+            diaries = Diary.objects.filter(user_id=user_id,date__range=[start_date,end_date])
 
             # 组织数据进行分析
             diary_data = [{"title": diary.title, "date": diary.date.strftime("%Y-%m-%d"), "mood": diary.mood, "content": diary.content} for diary in diaries]
