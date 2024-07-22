@@ -63,9 +63,9 @@ class AnalyzeTasksAPIView(APIView):
             # 获取时间范围内的天数据
             days = Day.objects.filter(user=request.user, date = current_date)
 
-            if not days.exists():
-                return Response({'error': 'No tasks found for the specified date range.'},
-                                status=status.HTTP_404_NOT_FOUND)
+            # if not days.exists():
+            #     return Response({'error': 'No tasks found for the specified date range.'},
+            #                     status=status.HTTP_404_NOT_FOUND)
 
             # 创建AI服务实例
             ai_service = AIAdviceService()
@@ -81,6 +81,8 @@ class AnalyzeTasksAPIView(APIView):
                     cnt += 1
                     ai_service.add_param('user', f"当天任务{cnt}: {task.task_name}, 状态: {task.status}")
 
+            if cnt ==0:
+                ai_service.add_param('user', f"当天任务数量为零")
             # 获取AI生成的总结
             advice = ai_service.get_advice(user_id=request.user.id)
             print(advice)
