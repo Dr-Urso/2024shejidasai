@@ -55,6 +55,7 @@ export default function ScoreAnalysis() {
     });
     useEffect(() => {
         fetchScores();
+        fetchBaseInfo();
     }, []);
 
     const fetchScores = async () => {
@@ -69,7 +70,8 @@ export default function ScoreAnalysis() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Fetched data:', data);  // 调试输出
-
+                console.log('edit',edit);
+                console.log('view',view);
                 // 格式化数据以匹配前端期望的结构
                 const formattedData = data.map(exam => ({
                     examType: exam.examType,
@@ -80,6 +82,7 @@ export default function ScoreAnalysis() {
 
                 setExams(formattedData);
                 console.log('Exams set:', formattedData);  // 确认 exams 数据已设置
+                
             } else {
                 console.error('获取成绩信息失败');
             }
@@ -109,7 +112,6 @@ export default function ScoreAnalysis() {
             }
         }));
     };
-
     const handleTotalScoreChange = (e) => {
         const { name, value } = e.target;
         setTotalScores(prevState => ({
@@ -124,9 +126,29 @@ export default function ScoreAnalysis() {
             ...prevState,
             [name]: checked
         }));
+
+        // 如果取消勾选，清空对应的成绩
+        if (!checked) {
+            setTotalScores(prevState => ({
+                ...prevState,
+                [name]: ''
+            }));
+            setCurrentExam(prevState => ({
+                ...prevState,
+                scores: {
+                    ...prevState.scores,
+                    [name]: ''
+                }
+            }));
+        }
     };
 
+
     const saveBaseInfo = async () => {
+        if (!educationLevel){
+            setErrorMessage('请选择教育阶段');
+            return;
+        }
         setLoading(true);
         try {
             const response = await fetch('/api/spark/mark', {
@@ -135,29 +157,33 @@ export default function ScoreAnalysis() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    student_id: student_id,  // 使用 student_id 或 teacher_id
+                    student_id: student_id,
                     education_level: educationLevel,
-                    subject: '总分信息', // 固定一个描述
+                    subject: Object.keys(subjects).filter(subject => subjects[subject]).join(', '), // 将勾选的科目转换为字符串
                     fullMark: totalScores
                 })
             });
             console.log({
-                student_id: student_id,  // 使用 student_id 或 teacher_id
+                student_id: student_id,
                 education_level: educationLevel,
-                subject: '总分信息', // 固定一个描述
+                subject: Object.keys(subjects).filter(subject => subjects[subject]).join(', '), // 将勾选的科目转换为字符串
                 fullMark: totalScores
-            })
+            });
             if (!response.ok) {
                 console.error('保存基础信息失败');
             } else {
                 setBaseInfoSaved(true);
+                setEdit('0'); // 保存后切换回查看模式
             }
         } catch (error) {
             console.error('请求出错', error);
         } finally {
-            setLoading(false);  // 隐藏loading效果
+            setLoading(false); // 隐藏loading效果
         }
     };
+
+
+
 
     const saveExamInfo = async () => {
         try {
@@ -221,7 +247,12 @@ setErrorMessage('请填写政治成绩');            return;}
         }
         await saveExamInfo(); // 保存考试信息
 
-        setExams(prevExams => [...prevExams, currentExam]);
+        setExams(prevExams => [...prevExams, {
+            examType: educationLevel, // 确保 examType 设置正确
+            examName: currentExam.examType, // 确保 examName 设置正确
+            scores: currentExam.scores,
+            selfEvaluation: currentExam.selfEvaluation
+        }]);
         setCurrentExam({
             examType: '',
             scores: {
@@ -268,6 +299,60 @@ setErrorMessage('请填写政治成绩');            return;}
     const handlePrevPage = () => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
+    const fetchBaseInfo = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/spark/baseInfo?student_id=${student_id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data) {
+                    const subjectsArray = data.subject.split(', ').map(subject => subject.trim());
+                    const subjectsObject = {
+                        Physics: subjectsArray.includes('Physics'),
+                        Chemistry: subjectsArray.includes('Chemistry'),
+                        Biology: subjectsArray.includes('Biology'),
+                        Geography: subjectsArray.includes('Geography'),
+                        History: subjectsArray.includes('History'),
+                        Politics: subjectsArray.includes('Politics')
+                    };
+
+                    setEducationLevel(data.education_level);
+                    setSubjects(subjectsObject);
+                    setTotalScores(data.fullMark);
+                    setBaseInfoSaved(true);
+
+                    // 更新 currentExam 状态中的 scores 属性
+                    setCurrentExam(prevState => ({
+                        ...prevState,
+                        scores: {
+                            Chinese: '',
+                            Math: '',
+                            English: '',
+                            Physics: '',
+                            Chemistry: '',
+                            Biology: '',
+                            Geography: '',
+                            History: '',
+                            Politics: '',
+                            ...data.fullMark
+                        }
+                    }));
+                }
+            } else {
+                console.error('获取基础信息失败');
+            }
+        } catch (error) {
+            console.error('请求出错', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
 
@@ -276,7 +361,9 @@ setErrorMessage('请填写政治成绩');            return;}
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
-                    edit==='0' ?(<Button onClick={()=>setEdit('1')}>编辑科目信息</Button>):(
+                    edit === '0' ? (
+                        <Button onClick={() => setEdit('1')}>编辑科目信息</Button>
+                    ) : (
                         <div className={styles.BaseInfoForm}>
                             <Select
                                 id="educationLevel"
@@ -380,24 +467,29 @@ setErrorMessage('请填写政治成绩');            return;}
                                 />
                             )}
                             <Button onClick={saveBaseInfo}>保存基础信息</Button>
-                        </div>)
+                        </div>
+                    )
                 ) : (
-                    view==='0'?(<Button onClick={()=>setView('1')}>查看科目信息</Button>):(<div className={styles.FixedInfo}>
-                <h3>教育阶段: {educationLevel}</h3>
-                <h3>额外科目: {Object.keys(subjects).filter(subject => subjects[subject]).join(', ')}</h3>
-                <h3>各科总分</h3>
-                <p>语文: {totalScores.Chinese}</p>
-                <p>数学: {totalScores.Math}</p>
-                <p>英语: {totalScores.English}</p>
-                {subjects.Physics && <p>物理: {totalScores.Physics}</p>}
-                {subjects.Chemistry && <p>化学: {totalScores.Chemistry}</p>}
-                {subjects.Biology && <p>生物: {totalScores.Biology}</p>}
-                {subjects.Geography && <p>地理: {totalScores.Geography}</p>}
-                {subjects.History && <p>历史: {totalScores.History}</p>}
-                {subjects.Politics && <p>政治: {totalScores.Politics}</p>}
-                        <Button onClick={()=>setView('0')}>收起科目信息</Button>
-            </div>)
-
+                    view === '0' ? (
+                        <Button onClick={() => setView('1')}>查看科目信息</Button>
+                    ) : (
+                        <div className={styles.FixedInfo}>
+                            <h3>教育阶段: {educationLevel}</h3>
+                            <h3>额外科目: {Object.keys(subjects).filter(subject => subjects[subject]).join(', ')}</h3>
+                            <h3>各科总分</h3>
+                            <p>语文: {totalScores.Chinese}</p>
+                            <p>数学: {totalScores.Math}</p>
+                            <p>英语: {totalScores.English}</p>
+                            {subjects.Physics && <p>物理: {totalScores.Physics}</p>}
+                            {subjects.Chemistry && <p>化学: {totalScores.Chemistry}</p>}
+                            {subjects.Biology && <p>生物: {totalScores.Biology}</p>}
+                            {subjects.Geography && <p>地理: {totalScores.Geography}</p>}
+                            {subjects.History && <p>历史: {totalScores.History}</p>}
+                            {subjects.Politics && <p>政治: {totalScores.Politics}</p>}
+                            <Button onClick={() => { setEdit('1'); setBaseInfoSaved(false); }}>编辑科目信息</Button>
+                            <Button onClick={() => setView('0')}>收起科目信息</Button>
+                        </div>
+                    )
                 )}
 
                 <div className={styles.ExamForm}>

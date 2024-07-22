@@ -47,7 +47,7 @@ export default function TextPage() {
                     </div>
                     <div className={styles.Translate}>
                         <TextArea
-                            labelText="请输入需要润色的英语作文"
+                            labelText="请输入需要润色的作文"
                             placeholder="请在此输入作文"  // 使用 placeholder 属性
                             onChange={handleTextChange}
                             counterMode="word"

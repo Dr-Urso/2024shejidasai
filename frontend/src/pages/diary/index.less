@@ -10,8 +10,20 @@
 .Entries{
 
 }
-.Entry{
+.Entry {
+  position: relative;
+  transition: all 1s ease;
+}
 
+.Entry:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: rgba(0, 0, 255, 0.5); /* 50% 透明度的蓝色覆盖 */
+  pointer-events: none;
 }
 .Err{
 color:red;
