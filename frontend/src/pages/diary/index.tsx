@@ -136,9 +136,10 @@ export default function Page() {
     const handleDateChange = (date) => {
         setCurrentDiary(prevState => ({
             ...prevState,
-            date: date[0]?.toISOString().split('T')[0] || ''
+            date: date[0]?.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-') || ''
         }));
     };
+
 
     const handleSortChange = (e) => {
         setSortOption(e.target.value);

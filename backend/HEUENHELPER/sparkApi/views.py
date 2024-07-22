@@ -1,5 +1,4 @@
 import datetime
-
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,6 +9,31 @@ from .webApi.sparkAPI import sparkApi, res
 from .models import Diary
 from .serializers import DiarySerializer
 from userLogin.models import User, Student
+
+
+class GetBaseInfoView(APIView):
+
+    def get(self, request):
+        student_id = request.query_params.get('student_id')
+        try:
+            student = Student.objects.filter(student_id=student_id).first()
+            if not student:
+                return Response({'error': '无效的 student_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+            base_info = BaseInfo.objects.filter(student=student).first()
+            if not base_info:
+                return Response({'message': '基础信息未找到'}, status=status.HTTP_404_NOT_FOUND)
+
+            data = {
+                'student_id': student_id,
+                'education_level': base_info.education_level,
+                'subject': base_info.subject,
+                'fullMark': base_info.fullMark
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SaveInfoView(APIView):
 
@@ -25,16 +49,26 @@ class SaveInfoView(APIView):
             if not student:
                 return Response({'error': '无效的 student_id'}, status=status.HTTP_400_BAD_REQUEST)
 
-            Info = BaseInfo(
-                student=student,
-                subject=subject,
-                fullMark=fullMark,
-                education_level=education_level
-            )
-            Info.save()
+            # 检查是否已经存在记录
+            base_info = BaseInfo.objects.filter(student=student).first()
+            if base_info:
+                base_info.subject = subject
+                base_info.fullMark = fullMark
+                base_info.education_level = education_level
+                base_info.save()
+            else:
+                base_info = BaseInfo(
+                    student=student,
+                    subject=subject,
+                    fullMark=fullMark,
+                    education_level=education_level
+                )
+                base_info.save()
+
             return Response({'message': 'Base info saved successfully.'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SaveExamInfoView(APIView):
 

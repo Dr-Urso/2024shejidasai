@@ -63,7 +63,7 @@ export default function TextPage() {
                             id="text-area-title"
                         />
                         <TextArea
-                            labelText="请输入需要批改的英语作文"
+                            labelText="请输入需要批改的作文"
                             placeholder="请在此输入作文"
                             onChange={handleTextChange}
                             counterMode="word"

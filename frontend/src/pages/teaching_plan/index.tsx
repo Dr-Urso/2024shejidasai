@@ -84,7 +84,7 @@ export default function LessonPlanPage() {
                             value={topic}
                         />
                         <Button onClick={handleGenerateLessonPlan}>生成教案模板</Button>
-                        <Button onClick={handleDownloadLessonPlan}>下载教案docx</Button>
+                        <Button className={styles.right} onClick={handleDownloadLessonPlan}>下载简版教案docx</Button>
                         <div className={styles.Trans}>
                             <TextArea
                                 value={lessonPlan}

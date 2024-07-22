@@ -10,6 +10,7 @@ class BaseInfo(models.Model):
     def __str__(self):
         return self.student.user.username
 
+
 class ExamInfo(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     examType = models.CharField(max_length=100)
