@@ -1,14 +1,14 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState, useEffect, useRef } from "react";
-import { Content, TextArea } from "carbon-components-react";
+import {Content, Select, SelectItem, TextArea} from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
 
 export default function TextPage() {
     const [text, setText] = useState("");
     const [translatedText, setTranslatedText] = useState("翻译");
     const typingTimeoutRef = useRef(null);
-
+    const [fromTo,setFromTo]=useState('en-cn');
     const handleTranslate = async (textToTranslate) => {
         try {
             const response = await fetch('/api/trans/trans', {
@@ -16,7 +16,7 @@ export default function TextPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text: textToTranslate })
+                body: JSON.stringify({ text: textToTranslate,fromTo:fromTo })
             });
             if (response.ok) {
                 const data = await response.json();
@@ -28,7 +28,9 @@ export default function TextPage() {
             console.error('请求出错', error);
         }
     };
-
+    const handleTransChange = (e) => {
+        setFromTo(e.target.value);
+    };
     const handleTextChange = (e) => {
         setText(e.target.value);
 
@@ -49,6 +51,12 @@ export default function TextPage() {
                         <p>当前由</p>
                         <Link to='https://fanyi.xfyun.cn/console/trans/doc'>讯飞星火大模型</Link>
                         <p>为您提供翻译服务</p>
+                        <div className={styles.Select}>
+                        <Select id="sortOption" labelText="翻译语言" value={fromTo} onChange={handleTransChange}>
+                            <SelectItem value="en-cn" text="英译汉" />
+                            <SelectItem value="cn-en" text="汉译英" />
+                        </Select>
+                        </div>
                     </div>
                     <div className={styles.Translate}>
                         <div className={styles.Input}>
