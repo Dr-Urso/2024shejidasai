@@ -82,7 +82,7 @@ class AnalyzeTasksAPIView(APIView):
                     ai_service.add_param('user', f"当天任务{cnt}: {task.task_name}, 状态: {task.status}")
 
             if cnt ==0:
-                ai_service.add_param('user', f"当天任务数量为零")
+                ai_service.add_param('user', f"当天任务清单为零")
             # 获取AI生成的总结
             advice = ai_service.get_advice(user_id=request.user.id)
             print(advice)
