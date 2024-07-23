@@ -185,7 +185,7 @@ export default function Page() {
                 const data = await response.json();
                 setAnalysisResult(data.result);
             }else if (response.status === 502) {
-                setErr('对不起，网络繁忙，请稍后再试');
+                setErr('对不起，当前网络繁忙，请刷新或稍后再试');
             } else {
                 console.error('分析失败');
             }
@@ -229,8 +229,8 @@ export default function Page() {
                         <Button onClick={handleAnalyzeDiaries}>每周日记总结</Button>
                         <div className={styles.Select}>
                             <Select id="sortOption" labelText="排序方式" value={sortOption} onChange={handleSortChange}>
-                                <SelectItem value="date" text="按日期排序" />
-                                <SelectItem value="mood" text="按心情排序" />
+                                <SelectItem value="date" text="按日期排序"/>
+                                <SelectItem value="mood" text="按心情排序"/>
                             </Select>
                         </div>
                     </div>
@@ -247,8 +247,10 @@ export default function Page() {
                     <div className={styles.Pagination}>
                         <Button onClick={handlePrevPage} disabled={currentPage === 1}>上一页</Button>
                         <span>{currentPage}</span>
-                        <Button onClick={handleNextPage} disabled={indexOfLastDiary >= sortedDiaries.length}>下一页</Button>
+                        <Button onClick={handleNextPage}
+                                disabled={indexOfLastDiary >= sortedDiaries.length}>下一页</Button>
                     </div>
+                    {err && <p style={{color: 'red'}}>{err}</p>}
                     {analysisResult && (
                         <div className={styles.AnalysisResult}>
                             <h3>每日日记总结</h3>

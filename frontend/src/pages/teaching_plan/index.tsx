@@ -27,7 +27,7 @@ export default function LessonPlanPage() {
                 const resultText = Array.isArray(data.result) ? data.result.join('\n') : data.result;
                 setLessonPlan(resultText);
             } else if (response.status === 502) {
-                setErr('对不起，网络繁忙，请稍后再试');
+                setErr('对不起，当前网络繁忙，请刷新或稍后再试');
             } else {
                 console.error('生成教案模板失败');
             }
@@ -91,9 +91,7 @@ export default function LessonPlanPage() {
                         />
                         <Button onClick={handleGenerateLessonPlan}>生成教案模板</Button>
                         <Button className={styles.right} onClick={handleDownloadLessonPlan}>下载简版教案docx</Button>
-                        <div>{err && (
-                            <div className={styles.Err}>{err}</div>
-                        )}</div>
+                        <div>{err && <p style={{color: 'red'}}>{err}</p>}</div>
                         <div className={styles.Trans}>
                             <TextArea
                                 value={lessonPlan}

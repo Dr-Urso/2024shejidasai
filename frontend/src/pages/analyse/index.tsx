@@ -298,7 +298,7 @@ setErrorMessage('请填写政治成绩');            return;}
                 const data = await response.json();
                 setAiSuggestions(data.result);
             } else if (response.status === 502) {
-                setErrorMessage('对不起，网络繁忙，请稍后再试');
+                setErrorMessage('对不起，当前网络繁忙，请刷新或稍后再试');
             } else {
                 console.error('分析失败');
                 setErrorMessage('分析失败，请稍后再试');

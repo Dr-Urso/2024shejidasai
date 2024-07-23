@@ -29,7 +29,7 @@ export default function TextPage() {
                 const resultText = data.result.join('');
                 setCorrectedText(resultText);
             } else if (response.status === 502) {
-                setError('对不起，网络繁忙，请稍后再试');
+                setError('对不起，当前网络繁忙，请刷新或稍后再试');
             }else {
                 const data = await response.json();
                 if (data.error.includes('包含敏感内容')) {
