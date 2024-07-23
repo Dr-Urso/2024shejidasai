@@ -1,15 +1,18 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, { useState } from "react";
-import {Content, TextArea, Button, Loading} from "carbon-components-react";
+import { Content, TextArea, Button, Loading } from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
 
 export default function TextPage() {
     const [text, setText] = useState("");
     const [translatedText, setTranslatedText] = useState("修改建议");
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(""); // 新增状态变量来保存错误信息
+
     const handleCorrection = async () => {
         setLoading(true);
+        setError(""); // 请求前清空错误信息
         try {
             const response = await fetch('/api/essay/correction', {
                 method: 'POST',
@@ -22,7 +25,12 @@ export default function TextPage() {
                 const data = await response.json();
                 setTranslatedText(data.choices?.[0].message.content);
             } else {
-                console.error('批改失败');
+                const data = await response.json();
+                if (data.error.includes('包含敏感内容')) {
+                    setError("抱歉，你的作文包含敏感内容。");
+                } else {
+                    console.error('批改失败', data.error);
+                }
             }
         } catch (error) {
             console.error('请求出错', error);
@@ -57,6 +65,7 @@ export default function TextPage() {
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即润色</Button>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
                         <div className={styles.Trans}>
                             <TextArea
                                 value={translatedText}

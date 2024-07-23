@@ -323,7 +323,7 @@ setErrorMessage('请填写政治成绩');            return;}
 
                     setEducationLevel(data.education_level);
                     setSubjects(subjectsObject);
-                    setTotalScores(data.fullMark);
+                    //setTotalScores(data.fullMark);
                     setBaseInfoSaved(true);
                     // 更新 currentExam 状态中的 scores 属性
                     setCurrentExam(prevState => ({
