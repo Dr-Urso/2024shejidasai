@@ -392,16 +392,27 @@ setErrorMessage('请填写政治成绩');            return;}
                             </Select>
 
                             <h3>选择额外科目</h3>
-                            {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => (
-                                <Checkbox
-                                    key={subject}
-                                    id={subject}
-                                    name={subject}
-                                    labelText={subject}
-                                    checked={subjects[subject]}
-                                    onChange={handleSubjectChange}
-                                />
-                            ))}
+                            {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => {
+                                let cn;
+                                if (subject === 'Physics') { cn = '物理'; }
+                                if (subject === 'Chemistry') { cn = '化学'; }
+                                if (subject === 'Biology') { cn = '生物'; }
+                                if (subject === 'Geography') { cn = '地理'; }
+                                if (subject === 'History') { cn = '历史'; }
+                                if (subject === 'Politics') { cn = '政治'; }
+
+                                return (
+                                    <Checkbox
+                                        key={subject}
+                                        id={subject}
+                                        name={subject}
+                                        labelText={cn}
+                                        checked={subjects[subject]}
+                                        onChange={handleSubjectChange}
+                                    />
+                                );
+                            })}
+
 
                             <h3>输入科目总分</h3>
                             <TextInput
