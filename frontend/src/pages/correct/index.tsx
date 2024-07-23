@@ -1,6 +1,6 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Content, TextArea, Button, Loading } from "carbon-components-react";
 
 export default function TextPage() {
@@ -9,7 +9,9 @@ export default function TextPage() {
     const [correctedText, setCorrectedText] = useState("批改结果");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
-
+    useEffect(()=>{
+        setError('');
+    },[]);
     const handleCorrection = async () => {
         setLoading(true);
         setError(""); // 请求前清空错误信息
@@ -26,7 +28,9 @@ export default function TextPage() {
                 // 将数组数据转换为字符串，用换行符分隔
                 const resultText = data.result.join('');
                 setCorrectedText(resultText);
-            } else {
+            } else if (response.status === 502) {
+                setError('对不起，网络繁忙，请稍后再试');
+            }else {
                 const data = await response.json();
                 if (data.error.includes('包含敏感内容')) {
                     setError("抱歉，你的作文包含敏感内容。");

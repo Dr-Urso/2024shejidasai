@@ -32,7 +32,9 @@ export default function Page() {
         mood: '平常心',
         content: ''
     });
-
+    useEffect(()=>{
+        setErr('');
+    },[]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 7;
 
@@ -182,6 +184,8 @@ export default function Page() {
             if (response.ok) {
                 const data = await response.json();
                 setAnalysisResult(data.result);
+            }else if (response.status === 502) {
+                setErr('对不起，网络繁忙，请稍后再试');
             } else {
                 console.error('分析失败');
             }

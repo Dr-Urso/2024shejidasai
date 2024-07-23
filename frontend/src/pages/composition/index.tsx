@@ -1,6 +1,6 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Content, TextArea, Button, Loading } from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,9 @@ export default function TextPage() {
     const [translatedText, setTranslatedText] = useState("修改建议");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
-
+useEffect(()=>{
+    setError('');
+},[]);
     const handleCorrection = async () => {
         setLoading(true);
         setError(""); // 请求前清空错误信息
@@ -24,6 +26,8 @@ export default function TextPage() {
             if (response.ok) {
                 const data = await response.json();
                 setTranslatedText(data.choices?.[0].message.content);
+            }else if (response.status === 502) {
+                setError('对不起，网络繁忙，请稍后再试');
             } else {
                 const data = await response.json();
                 if (data.error.includes('包含敏感内容')) {

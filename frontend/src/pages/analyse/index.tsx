@@ -56,6 +56,7 @@ export default function ScoreAnalysis() {
     useEffect(() => {
         fetchScores();
         fetchBaseInfo();
+        setErrorMessage('');
     }, []);
 
     const fetchScores = async () => {
@@ -296,13 +297,17 @@ setErrorMessage('请填写政治成绩');            return;}
             if (response.ok) {
                 const data = await response.json();
                 setAiSuggestions(data.result);
+            } else if (response.status === 502) {
+                setErrorMessage('对不起，网络繁忙，请稍后再试');
             } else {
                 console.error('分析失败');
+                setErrorMessage('分析失败，请稍后再试');
             }
         } catch (error) {
             console.error('请求出错', error);
+            setErrorMessage('请求出错，请稍后再试');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
     const handleNextPage = () => {

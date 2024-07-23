@@ -1,12 +1,16 @@
 import styles from "./index.less";
 import { Link } from "@@/exports";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {Content, TextArea, Button, TextInput, Loading} from "carbon-components-react";
 
 export default function LessonPlanPage() {
     const [topic, setTopic] = useState("");
     const [lessonPlan, setLessonPlan] = useState("生成的教案模板将在这里显示");
     const [loading, setLoading] = useState(false)
+    const [err, setErr] = useState('');
+    useEffect(()=>{
+        setErr('');
+    },[]);
     const handleGenerateLessonPlan = async () => {
         setLoading(true);
         try {
@@ -22,6 +26,8 @@ export default function LessonPlanPage() {
                 // 后端返回的结果应该包含在 result 字段中
                 const resultText = Array.isArray(data.result) ? data.result.join('\n') : data.result;
                 setLessonPlan(resultText);
+            } else if (response.status === 502) {
+                setErr('对不起，网络繁忙，请稍后再试');
             } else {
                 console.error('生成教案模板失败');
             }
@@ -85,6 +91,9 @@ export default function LessonPlanPage() {
                         />
                         <Button onClick={handleGenerateLessonPlan}>生成教案模板</Button>
                         <Button className={styles.right} onClick={handleDownloadLessonPlan}>下载简版教案docx</Button>
+                        <div>{err && (
+                            <div className={styles.Err}>{err}</div>
+                        )}</div>
                         <div className={styles.Trans}>
                             <TextArea
                                 value={lessonPlan}
