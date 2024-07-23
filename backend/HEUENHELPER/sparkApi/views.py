@@ -110,6 +110,7 @@ from rest_framework import status
 from .models import ExamSummary, ExamInfo, BaseInfo
 from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
 from .webApi.sparkAPI import res
+from services.AI_API_CALL import RateLimitException, AIAdviceService, InvalidRoleException
 
 # 获取logger实例
 logger = logging.getLogger(__name__)
@@ -226,6 +227,16 @@ class WritingCorrectView(APIView):
             title_json = json.dumps({"作文标题": title}, ensure_ascii=False)
             article_json = json.dumps({"作文内容": essay_text}, ensure_ascii=False)
             query = "作文标题：" + title_json + " 作文内容：" + article_json
+
+            #检测是否含有敏感内容
+            try:
+                ai_service = AIAdviceService()
+                ai_service.add_param('user',essay_text+title)
+                user_id=request.user.id
+                advice = ai_service.get_advice(user_id=user_id)
+            except Exception as e:
+                print(e)
+                return Response({"error": "包含敏感内容,错误码10013"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # 调用分析函数
             sparkApi(query, 'write')
