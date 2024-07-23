@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 import { Button, TextInput, Select, SelectItem, Content, Loading } from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 import { useUser,UserContext } from "@/Utils/UserContext";
@@ -148,6 +148,19 @@ export default function TodoList() {
         }
     };
 
+    //定位到每日计划总结
+    const bottomRef = useRef(null);
+
+    const scrollToBottom = () => {
+        bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        if (aiSuggestions) {
+            scrollToBottom();
+        }
+    }, [aiSuggestions]);
+
     const [loading, setLoading] = useState(false);
     const analyzeTasks = async () => {
         if (days.length === 0) {
@@ -269,7 +282,7 @@ export default function TodoList() {
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>
                         {student_id === null ? (<h3>每日教学计划总结</h3>):(<h3>每日学习计划总结</h3>)}
-                        <p>{aiSuggestions}</p>
+                        <p ref={bottomRef}>{aiSuggestions}</p>
                     </div>
                 )}
             </div>

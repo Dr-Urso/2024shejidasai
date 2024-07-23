@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading} from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
@@ -269,6 +269,19 @@ setErrorMessage('请填写政治成绩');            return;}
             selfEvaluation: ''
         });
     };
+
+    //定位到成绩分析总结
+    const bottomRef = useRef(null);
+
+    const scrollToBottom = () => {
+        bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        if (aiSuggestions) {
+            scrollToBottom();
+        }
+    }, [aiSuggestions]);
 
     const analyzeExams = async () => {
         setLoading(true);
@@ -613,8 +626,8 @@ setErrorMessage('请填写政治成绩');            return;}
                 </div>
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>
-                        <h3>AI 大模型的建议</h3>
-                        <p>{aiSuggestions}</p>
+                        <h3>成绩分析总结</h3>
+                        <p ref={bottomRef}>{aiSuggestions}</p>
                     </div>
                 )}
             </div>
