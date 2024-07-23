@@ -147,7 +147,7 @@ class ExamSummaryView(APIView):
             data_json = ", ".join(data_json_list)
 
             # 构造查询
-            query = f"评分标准：{score_json}\n考试科目名称：{subject_json}\n学生要分析的考试信息：{data_json}"
+            query = f"考试成绩：{score_json}\n考试的名称：{subject_json}\n学生的自我评价：{data_json}"
             logger.debug("Query: %s", query)
 
             # 调用分析函数
