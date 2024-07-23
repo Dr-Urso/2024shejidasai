@@ -23,7 +23,7 @@ class EssayCorrectionView(APIView):
                 return Response({"error": "作文文本不能为空"}, status=status.HTTP_400_BAD_REQUEST)
 
             ai_service = AIAdviceService()
-            ai_service.add_param('system','现在你是一位英语老师，请根据下面的学生作文来给出修改建议。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。用中文回答。').add_param('user', '下面是学生作文：'  +  essay_text)
+            ai_service.add_param('system','你是一位很擅长修改学生作文的老师，你现在的任务是给学生的作文提出修改建议，指出作文中的错误。用中文给出修改建议。').add_param('user', '下面是学生作文：'  +  essay_text)
             advice = ai_service.get_advice(user_id=user_id)
 
             return Response(advice, status=status.HTTP_200_OK)
@@ -34,4 +34,4 @@ class EssayCorrectionView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "包含敏感内容,错误码10013"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
