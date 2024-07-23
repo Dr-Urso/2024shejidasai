@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading} from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
@@ -270,6 +270,19 @@ setErrorMessage('请填写政治成绩');            return;}
         });
     };
 
+    //定位到成绩分析总结
+    const bottomRef = useRef(null);
+
+    const scrollToBottom = () => {
+        bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        if (aiSuggestions) {
+            scrollToBottom();
+        }
+    }, [aiSuggestions]);
+
     const analyzeExams = async () => {
         setLoading(true);
         try {
@@ -325,6 +338,7 @@ setErrorMessage('请填写政治成绩');            return;}
                     setSubjects(subjectsObject);
                     //setTotalScores(data.fullMark);
                     setBaseInfoSaved(true);
+
                     // 更新 currentExam 状态中的 scores 属性
                     setCurrentExam(prevState => ({
                         ...prevState,
@@ -378,27 +392,16 @@ setErrorMessage('请填写政治成绩');            return;}
                             </Select>
 
                             <h3>选择额外科目</h3>
-                            {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => {
-                                let cn;
-                                if (subject === 'Physics') { cn = '物理'; }
-                                if (subject === 'Chemistry') { cn = '化学'; }
-                                if (subject === 'Biology') { cn = '生物'; }
-                                if (subject === 'Geography') { cn = '地理'; }
-                                if (subject === 'History') { cn = '历史'; }
-                                if (subject === 'Politics') { cn = '政治'; }
-
-                                return (
-                                    <Checkbox
-                                        key={subject}
-                                        id={subject}
-                                        name={subject}
-                                        labelText={cn}
-                                        checked={subjects[subject]}
-                                        onChange={handleSubjectChange}
-                                    />
-                                );
-                            })}
-
+                            {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => (
+                                <Checkbox
+                                    key={subject}
+                                    id={subject}
+                                    name={subject}
+                                    labelText={subject}
+                                    checked={subjects[subject]}
+                                    onChange={handleSubjectChange}
+                                />
+                            ))}
 
                             <h3>输入科目总分</h3>
                             <TextInput
@@ -623,8 +626,8 @@ setErrorMessage('请填写政治成绩');            return;}
                 </div>
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>
-                        <h3>AI 大模型的建议</h3>
-                        <p>{aiSuggestions}</p>
+                        <h3>成绩分析总结</h3>
+                        <p ref={bottomRef}>{aiSuggestions}</p>
                     </div>
                 )}
             </div>

@@ -1,6 +1,6 @@
 import styles from './index.less';
 import { Button, Content, TextInput, DatePicker, DatePickerInput, Select, SelectItem } from 'carbon-components-react';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Quill样式
 import DOMPurify from 'dompurify';
@@ -157,6 +157,19 @@ export default function Page() {
         }
     };
 
+    //定位到每日日记总结
+    const bottomRef = useRef(null);
+
+    const scrollToBottom = () => {
+        bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        if (analysisResult) {
+            scrollToBottom();
+        }
+    }, [analysisResult]);
+
     const handleAnalyzeDiaries = async () => {
         try {
             const response = await fetch('/api/spark/diary_summary', {
@@ -235,7 +248,7 @@ export default function Page() {
                     {analysisResult && (
                         <div className={styles.AnalysisResult}>
                             <h3>每日日记总结</h3>
-                            <p>{analysisResult}</p>
+                            <p ref={bottomRef}>{analysisResult}</p>
                         </div>
                     )}
                 </div>
