@@ -2,6 +2,7 @@ import styles from "./index.less";
 import { Link } from "@@/exports";
 import React, {useEffect, useState} from "react";
 import { Content, TextArea, Button, Loading } from "carbon-components-react";
+import ImageUploader from "@/components/ImageUploader";
 
 export default function TextPage() {
     const [title, setTitle] = useState("");
@@ -56,8 +57,11 @@ export default function TextPage() {
     return (
         <>
             <Content className={styles.Container} id='main-content'>
-                <Loading active={loading} />
-                <div>
+                <div className={styles.ImageUploaderWrapper}>
+                    <ImageUploader setText={setEssayText}/>
+                </div>
+                <Loading active={loading}/>
+                <div className={styles.ContentWrapper}>
                     <div className={styles.Header}>
                         <p>当前由</p>
                         <Link to='https://fanyi.xfyun.cn/console/trans/doc'>讯飞星火大模型</Link>
@@ -77,6 +81,7 @@ export default function TextPage() {
                         <TextArea
                             labelText="请输入需要批改的作文"
                             placeholder="请在此输入作文"
+                            value={essayText}
                             onChange={handleTextChange}
                             counterMode="word"
                             enableCounter={true}
@@ -85,7 +90,7 @@ export default function TextPage() {
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即批改</Button>
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        {error && <p style={{color: 'red'}}>{error}</p>}
                         <div className={styles.Trans}>
                             <TextArea
                                 value={correctedText}

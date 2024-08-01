@@ -28,4 +28,5 @@ urlpatterns = [
     path('spark/', include('sparkApi.urls')),
     path('essay/', include('essayCorrect.urls')),
     path('generatedoc/', include('generateDoc.urls')),
+    path('imgUpload/', include('imgUpload.urls')),
 ]

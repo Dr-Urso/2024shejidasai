@@ -3,15 +3,28 @@
   width: 100%;
   height: 200%; /* 你可以根据需要调整高度 */
   /* 防止子元素溢出 */
+  display: flex;
+  flex-direction: row; /* Arrange children horizontally */
+  align-items: flex-start; /* Align items to the top */
+  gap: 24px; /* Optional: add some space between ImageUploader and the content */
 }
 
 
+.ImageUploaderWrapper {
+  flex: 0 0 auto; /* Prevent ImageUploader from growing */
+}
+
+
+.ContentWrapper {
+  flex: 1; /* Allow this div to take up the remaining space */
+  display: flex;
+  flex-direction: column; /* Arrange children vertically */
+}
 
 /* 添加到您的 styles.Header 的 CSS 文件 */
 .Header {
   display: flex;
   align-items: center;  /* 垂直居中对齐 */
-
 }
 
 .Header p, .Header a {

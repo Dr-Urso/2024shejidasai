@@ -3,6 +3,7 @@ import { Link } from "@@/exports";
 import React, {useEffect, useState} from "react";
 import { Content, TextArea, Button, Loading } from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
+import ImageUploader from "@/components/ImageUploader";
 
 export default function TextPage() {
     const [text, setText] = useState("");
@@ -50,8 +51,11 @@ useEffect(()=>{
     return (
         <>
             <Content className={styles.Container} id='main-content'>
-                <Loading active={loading} />
-                <div>
+                <div className={styles.ImageUploaderWrapper}>
+                    <ImageUploader setText={setText}/>
+                </div>
+                <Loading active={loading}/>
+                <div className={styles.ContentWrapper}>
                     <div className={styles.Header}>
                         <p>当前由</p>
                         <Link to='https://fanyi.xfyun.cn/console/trans/doc'>讯飞星火大模型</Link>
@@ -61,6 +65,7 @@ useEffect(()=>{
                         <TextArea
                             labelText="请输入需要润色的作文"
                             placeholder="请在此输入作文"  // 使用 placeholder 属性
+                            value={text}
                             onChange={handleTextChange}
                             counterMode="word"
                             enableCounter={true}
@@ -69,7 +74,7 @@ useEffect(()=>{
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即润色</Button>
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        {error && <p style={{color: 'red'}}>{error}</p>}
                         <div className={styles.Trans}>
                             <TextArea
                                 value={translatedText}
