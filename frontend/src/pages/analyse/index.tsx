@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading} from 'carbon-components-react';
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
+import { Line } from '@ant-design/charts';
 
 export default function ScoreAnalysis() {
     const [edit,setEdit]=useState('0');
@@ -54,6 +55,13 @@ export default function ScoreAnalysis() {
         },
         selfEvaluation: ''
     });
+
+    const [TData, setTData] = useState([])
+
+
+
+
+
     useEffect(() => {
         fetchScores();
         fetchBaseInfo();
@@ -84,13 +92,39 @@ export default function ScoreAnalysis() {
 
                 setExams(formattedData);
                 console.log('Exams set:', formattedData);  // 确认 exams 数据已设置
-                
+                let temp = [];
+                let dict = {"Chinese":"语文",
+                "Math":"数学",
+                "English":"英语",
+                "Physics":"物理",
+                "Chemistry":"化学",
+                "Biology":"生物",
+                "Geography":"地理",
+                "History":"历史",
+                "Politics":"政治"};
+                data.forEach(exam => {
+                    Object.entries(exam.examScore).forEach(([subject, score]) => {
+                        if (score) {
+                            if (typeof score === "string") {
+                                temp.push({
+                                    examName: exam.examName,
+                                    value: parseInt(score, 10),
+                                    subject: dict[subject]
+                                });
+                            }
+                        }
+                    });
+
+                });
+                setTData(temp);
+                console.log(temp);
             } else {
                 console.error('获取成绩信息失败');
             }
         } catch (error) {
             console.error('请求出错', error);
         } finally {
+
             setLoading(false);
         }
     };
@@ -377,6 +411,11 @@ setErrorMessage('请填写政治成绩');            return;}
 
         <Content className={styles.Container} id='main-content'>
             {loading&&<Loading />}
+            <Line
+            data={TData}
+            xField="examName"
+            yField="value"
+            colorField="subject"/>
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
