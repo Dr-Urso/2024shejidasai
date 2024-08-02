@@ -56,7 +56,7 @@ export default function ScoreAnalysis() {
     });
 
     const [TData, setTData] = useState([])
-
+    const [TotalData, setTotalData] = useState([])
 
 
 
@@ -92,6 +92,7 @@ export default function ScoreAnalysis() {
                 setExams(formattedData);
                 console.log('Exams set:', formattedData);  // 确认 exams 数据已设置
                 let temp = [];
+                let temp2 = [];
                 let dict = {"Chinese":"语文",
                 "Math":"数学",
                 "English":"英语",
@@ -113,9 +114,24 @@ export default function ScoreAnalysis() {
                             }
                         }
                     });
+                    let total = 0;
 
+                    Object.values(exam.examScore).forEach(score => {
+                        if (score) {
+                            if (typeof score === "string") {
+                                total += parseInt(score, 10);
+                            }
+                        }
+                    });
+
+                    temp2.push({
+                        examName: exam.examName,
+                        subject: '总分',
+                        value: total,
+                    })
                 });
                 setTData(temp);
+                setTotalData(temp2);
                 console.log(temp);
             } else {
                 console.error('获取成绩信息失败');
@@ -404,6 +420,8 @@ setErrorMessage('请填写政治成绩');            return;}
             setLoading(false);
         }
     };
+    const chartRef = useRef<any>(null);
+    const [ChartisChecked, setChartisChecked] = useState(false)
 
 
     return (
@@ -411,10 +429,14 @@ setErrorMessage('请填写政治成绩');            return;}
         <Content className={styles.Container} id='main-content'>
             {loading&&<Loading />}
             <Line
-            data={TData}
+            data={ChartisChecked?TotalData:TData}
             xField="examName"
             yField="value"
-            colorField="subject"/>
+            colorField="subject"
+
+            onReady={(chart) => {chartRef.current = chart;}}
+            />
+            <Checkbox id="checkbox" labelText="查看总分趋势" checked={ChartisChecked} onChange={(_, { checked }) => setChartisChecked(checked)} />
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
