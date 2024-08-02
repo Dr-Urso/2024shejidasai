@@ -10,9 +10,24 @@ export default function TextPage() {
     const [translatedText, setTranslatedText] = useState("修改建议");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
-useEffect(()=>{
-    setError('');
-},[]);
+    const [textNum,setTextNum] = useState(0);
+
+    useEffect(()=>{
+        setError('');
+    },[]);
+
+     useEffect(() => {
+        setTextNum(text.length)
+    }, [text]);
+
+     const handleKeyDown = (e) => {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            if(text.length===1||window.getSelection().toString().length===textNum){
+                setText('');
+            }
+        }
+    };
+
     const handleCorrection = async () => {
         setLoading(true);
         setError(""); // 请求前清空错误信息
@@ -67,6 +82,7 @@ useEffect(()=>{
                             placeholder="请在此输入作文"  // 使用 placeholder 属性
                             value={text}
                             onChange={handleTextChange}
+                            onKeyDown={(text.length===1||text.length===textNum)?handleKeyDown:()=>{}}
                             counterMode="word"
                             enableCounter={true}
                             maxCount={1000}

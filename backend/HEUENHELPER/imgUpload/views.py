@@ -32,7 +32,7 @@ class ImageUploadView(APIView):
                     res = recognition(image_base64)
 
                 res_list.append(res)
-            result = ''.join(res_list)
+            result = ''.join(res_list).replace('\n', '')
             return Response({'message': '图片文本识别成功', 'result': result}, status=200)
         else:
             return Response({'error': '图片文本识别失败'}, status=400)

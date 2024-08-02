@@ -76,6 +76,9 @@ export default function Layout() {
                     {teacher_id && (<SideNavLink href='/plat/correct'>
                         作文批改
                     </SideNavLink>)}
+                    {(<SideNavLink href='/plat/audio'>
+                        书籍视听
+                    </SideNavLink>)}
                 </SideNavItems>
             </SideNav>
             <UserProvider>

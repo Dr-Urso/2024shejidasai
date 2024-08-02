@@ -22,7 +22,7 @@ class GenerateLessonPlanView(APIView):
 
         # 调用AI生成建议
         ai_service = AIAdviceService()
-        ai_service.add_param('system', '你现在是一位英语老师，请根据下面的提示词生成教案。教案应包括以下部分：1. 教案标题 2. 教学目标 3. 教学过程 4. 课后作业 用中文回答。这四个部分应该分别分行，并以1. 2. 3. 4. 分别开头。整个回答应该只有四行。要详细回答，设计教学步骤。').add_param('user', prompt)
+        ai_service.add_param('system', '你现在是一位老师，请根据下面的提示词生成教案。教案应包括以下部分：1. 教案标题 2. 教学目标 3. 教学过程 4. 课后作业 用中文回答。这四个部分应该分别分行，并以1. 2. 3. 4. 分别开头。整个回答应该只有四行。要详细回答，设计教学步骤。').add_param('user', prompt)
         advice = ai_service.get_advice(user_id=user_id)
         advice = advice['choices'][0]['message']['content']
         # 检查返回内容是否符合预期格式

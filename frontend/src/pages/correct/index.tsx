@@ -10,9 +10,23 @@ export default function TextPage() {
     const [correctedText, setCorrectedText] = useState("批改结果");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
+    const [textNum,setTextNum] = useState(0);
     useEffect(()=>{
         setError('');
     },[]);
+
+    useEffect(() => {
+        setTextNum(essayText.length)
+    }, [essayText]);
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            if(essayText.length===1||window.getSelection().toString().length===textNum){
+                setEssayText('');
+            }
+        }
+    };
+
     const handleCorrection = async () => {
         setLoading(true);
         setError(""); // 请求前清空错误信息
@@ -83,6 +97,7 @@ export default function TextPage() {
                             placeholder="请在此输入作文"
                             value={essayText}
                             onChange={handleTextChange}
+                            onKeyDown={(essayText.length===1||essayText.length===textNum)?handleKeyDown:()=>{}}
                             counterMode="word"
                             enableCounter={true}
                             maxCount={1000}

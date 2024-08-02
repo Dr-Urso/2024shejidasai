@@ -1,11 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, FileUploader, RadioButton} from "@carbon/react";
 import {RadioButtonGroup} from "carbon-components-react";
 
-const ImageUploader = ({setText}) => {
+const ImageUploader = ({setText,setLanguage,btn,setBtn}) => {
     const [files, setFiles] = useState([]);
 
     const [selectedLanguage, setSelectedLanguage] = useState('');
+    //让ImageUploader中的lang与audio中的保持一致
+    useEffect(() => {
+        if(typeof setLanguage === 'function')setLanguage(selectedLanguage);//判断是否传递setLanguage
+        if(btn===true){
+            setSelectedLanguage('');
+            setBtn(false);
+        }
+    }, [selectedLanguage,btn]);
 
     // 处理文件选择
     const handleFileChange = (e) => {
@@ -49,7 +57,8 @@ const ImageUploader = ({setText}) => {
             formData.append('images', file); // 'files[]' is the key used on the server side
         });
         formData.append('lang',selectedLanguage);
-        setSelectedLanguage('');
+
+        setSelectedLanguage('');//上传后清空选择的语言
         try {
             // 发送POST请求到后台
             const response = await fetch('/api/imgUpload/upload', {
@@ -58,7 +67,7 @@ const ImageUploader = ({setText}) => {
             });
             if (response.ok) {
                 const data = await response.json();
-                setText(data.result);
+                setText((prevState)=>prevState+data.result);
             } else {
                 console.error('图片上传失败');
                 // 处理上传失败后的逻辑
@@ -88,7 +97,7 @@ const ImageUploader = ({setText}) => {
                 <RadioButton labelText="英语" value="en" id="radio-button-1" />
                 <RadioButton labelText="汉语" value="cn" id="radio-button-2" />
             </RadioButtonGroup>
-            <Button onClick={handleUpload} kind="primary" size="sm" style={{ marginTop: '16px'}}>上传图片</Button>
+            <Button onClick={handleUpload} kind="primary" size="sm" style={{ marginTop: '16px'}}>图片识别</Button>
         </div>
     );
 };

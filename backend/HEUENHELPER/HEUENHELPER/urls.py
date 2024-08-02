@@ -29,4 +29,5 @@ urlpatterns = [
     path('essay/', include('essayCorrect.urls')),
     path('generatedoc/', include('generateDoc.urls')),
     path('imgUpload/', include('imgUpload.urls')),
+    path('audioText/', include('audioText.urls')),
 ]
