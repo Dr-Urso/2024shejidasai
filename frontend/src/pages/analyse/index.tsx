@@ -18,6 +18,7 @@ export default function ScoreAnalysis() {
     const indexOfFirstExam = indexOfLastExam - itemsPerPage;
     const currentExams = exams.slice(indexOfFirstExam, indexOfLastExam);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showScoreForm, setShowScoreForm] = useState(false); // 新添加的状态变量
     const [subjects, setSubjects] = useState({
         Physics: false,
         Chemistry: false,
@@ -500,7 +501,7 @@ setErrorMessage('请填写政治成绩');            return;}
                     )
                 ) : (
                     view === '0' ? (
-                        <Button onClick={() => setView('1')}>查看科目信息</Button>
+                        <Button onClick={() => setView('1')} style={{ marginRight: "20px" }} >查看科目信息</Button>
                     ) : (
                         <div className={styles.FixedInfo}>
                             <h3>教育阶段: {educationLevel}</h3>
@@ -520,102 +521,106 @@ setErrorMessage('请填写政治成绩');            return;}
                         </div>
                     )
                 )}
+                <Button onClick={() => setShowScoreForm(!showScoreForm)} style={{ marginBottom: '20px' }}>
+                    {showScoreForm ? '隐藏成绩输入表单' : '添加成绩'}
+                </Button>
+                {showScoreForm && (
+                    <div className={styles.ExamForm}>
+                        <TextInput
+                            id="examType"
+                            name="examType"
+                            labelText="考试名称"
+                            value={currentExam.examType}
+                            onChange={handleChange}
+                        />
+                        <TextInput
+                            id="Chinese"
+                            name="Chinese"
+                            labelText="语文"
+                            value={currentExam.scores.Chinese}
+                            onChange={handleScoreChange}
+                        />
+                        <TextInput
+                            id="Math"
+                            name="Math"
+                            labelText="数学"
+                            value={currentExam.scores.Math}
+                            onChange={handleScoreChange}
+                        />
+                        <TextInput
+                            id="English"
+                            name="English"
+                            labelText="英语"
+                            value={currentExam.scores.English}
+                            onChange={handleScoreChange}
+                        />
+                        {subjects.Physics && (
+                            <TextInput
+                                id="Physics"
+                                name="Physics"
+                                labelText="物理"
+                                value={currentExam.scores.Physics}
+                                onChange={handleScoreChange}
+                            />
+                        )}
+                        {subjects.Chemistry && (
+                            <TextInput
+                                id="Chemistry"
+                                name="Chemistry"
+                                labelText="化学"
+                                value={currentExam.scores.Chemistry}
+                                onChange={handleScoreChange}
+                            />
+                        )}
+                        {subjects.Biology && (
+                            <TextInput
+                                id="Biology"
+                                name="Biology"
+                                labelText="生物"
+                                value={currentExam.scores.Biology}
+                                onChange={handleScoreChange}
+                            />
+                        )}
+                        {subjects.Geography && (
+                            <TextInput
+                                id="Geography"
+                                name="Geography"
+                                labelText="地理"
+                                value={currentExam.scores.Geography}
+                                onChange={handleScoreChange}
+                            />
+                        )}
+                        {subjects.History && (
+                            <TextInput
+                                id="History"
+                                name="History"
+                                labelText="历史"
+                                value={currentExam.scores.History}
+                                onChange={handleScoreChange}
+                            />
+                        )}
+                        {subjects.Politics && (
+                            <TextInput
+                                id="Politics"
+                                name="Politics"
+                                labelText="政治"
+                                value={currentExam.scores.Politics}
+                                onChange={handleScoreChange}
+                            />
+                        )}
+                        <TextArea
+                            id="selfEvaluation"
+                            name="selfEvaluation"
+                            labelText="自我评价"
+                            value={currentExam.selfEvaluation}
+                            onChange={handleChange}
+                            rows={4}
+                        />
+                        <Button onClick={addExam} style={{ marginRight: "20px" }}>添加考试成绩</Button>
+                        <Button onClick={analyzeExams}>分析成绩</Button>
+                    </div>
+                )}
 
-                <div className={styles.ExamForm}>
-                    <TextInput
-                        id="examType"
-                        name="examType"
-                        labelText="考试名称"
-                        value={currentExam.examType}
-                        onChange={handleChange}
-                    />
-                    <TextInput
-                        id="Chinese"
-                        name="Chinese"
-                        labelText="语文"
-                        value={currentExam.scores.Chinese}
-                        onChange={handleScoreChange}
-                    />
-                    <TextInput
-                        id="Math"
-                        name="Math"
-                        labelText="数学"
-                        value={currentExam.scores.Math}
-                        onChange={handleScoreChange}
-                    />
-                    <TextInput
-                        id="English"
-                        name="English"
-                        labelText="英语"
-                        value={currentExam.scores.English}
-                        onChange={handleScoreChange}
-                    />
-                    {subjects.Physics && (
-                        <TextInput
-                            id="Physics"
-                            name="Physics"
-                            labelText="物理"
-                            value={currentExam.scores.Physics}
-                            onChange={handleScoreChange}
-                        />
-                    )}
-                    {subjects.Chemistry && (
-                        <TextInput
-                            id="Chemistry"
-                            name="Chemistry"
-                            labelText="化学"
-                            value={currentExam.scores.Chemistry}
-                            onChange={handleScoreChange}
-                        />
-                    )}
-                    {subjects.Biology && (
-                        <TextInput
-                            id="Biology"
-                            name="Biology"
-                            labelText="生物"
-                            value={currentExam.scores.Biology}
-                            onChange={handleScoreChange}
-                        />
-                    )}
-                    {subjects.Geography && (
-                        <TextInput
-                            id="Geography"
-                            name="Geography"
-                            labelText="地理"
-                            value={currentExam.scores.Geography}
-                            onChange={handleScoreChange}
-                        />
-                    )}
-                    {subjects.History && (
-                        <TextInput
-                            id="History"
-                            name="History"
-                            labelText="历史"
-                            value={currentExam.scores.History}
-                            onChange={handleScoreChange}
-                        />
-                    )}
-                    {subjects.Politics && (
-                        <TextInput
-                            id="Politics"
-                            name="Politics"
-                            labelText="政治"
-                            value={currentExam.scores.Politics}
-                            onChange={handleScoreChange}
-                        />
-                    )}
-
-                    <TextArea
-                        id="selfEvaluation"
-                        name="selfEvaluation"
-                        labelText="自我评价"
-                        value={currentExam.selfEvaluation}
-                        onChange={handleChange}
-                        rows={4}
-                    />
-                    <Button onClick={addExam} style={{marginRight:"20px"}} >添加考试成绩</Button>
-                    <Button onClick={analyzeExams}>分析成绩</Button>
-                </div>
                 {errorMessage && <div style={{ color: 'red', marginBottom: '0%', marginTop: "2%" }}>{errorMessage}</div>}
                 <div className={styles.ExamList}>
                     {currentExams.map((exam, index) => (
