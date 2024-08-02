@@ -429,15 +429,7 @@ setErrorMessage('请填写政治成绩');            return;}
 
         <Content className={styles.Container} id='main-content'>
             {loading&&<Loading />}
-            <Line
-            data={ChartisChecked?TotalData:TData}
-            xField="examName"
-            yField="value"
-            colorField="subject"
 
-            onReady={(chart) => {chartRef.current = chart;}}
-            />
-            <Checkbox id="checkbox" labelText="查看总分趋势" checked={ChartisChecked} onChange={(_, { checked }) => setChartisChecked(checked)} />
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
@@ -585,6 +577,17 @@ setErrorMessage('请填写政治成绩');            return;}
                 <Button onClick={() => setShowScoreForm(!showScoreForm)} style={{ marginBottom: '20px' }}>
                     {showScoreForm ? '隐藏成绩输入表单' : '添加成绩'}
                 </Button>
+
+                <Line
+                    data={ChartisChecked?TotalData:TData}
+                    xField="examName"
+                    yField="value"
+                    colorField="subject"
+
+                    onReady={(chart) => {chartRef.current = chart;}}
+                />
+                <Checkbox id="checkbox" labelText="查看总分趋势" checked={ChartisChecked} onChange={(_, { checked }) => setChartisChecked(checked)} />
+
                 {showScoreForm && (
                     <div className={styles.ExamForm}>
                         <TextInput
