@@ -1,0 +1,40 @@
+.Container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 居中对齐子元素 */
+  justify-content: center; /* 使子元素在垂直方向上居中 */
+  width: 100%;
+  height: 200%; /* 使容器高度占满整个视口 */
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%; /* 使inputGroup占满父容器的宽度 */
+  max-width: 900px; /* 设定最大宽度，防止过宽 */
+}
+
+.inputGroup .bx--text-input {
+  flex: 1; /* 使输入框占据剩余空间 */
+  margin-right: 10px; /* 控制输入框与按钮之间的间距 */
+  min-width: 300px; /* 设置输入框的最小宽度 */
+}
+
+.centerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 垂直居中对齐 */
+  justify-content: center; /* 水平居中对齐 */
+  text-align: center; /* 文字水平居中 */
+  margin-top: 20px; /* 控制与inputGroup之间的距离 */
+  min-height: 600px; /* 设置最小高度，确保中心内容区域有足够空间 */
+  padding: 20px; /* 增加内边距，增大区域 */
+
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+}
