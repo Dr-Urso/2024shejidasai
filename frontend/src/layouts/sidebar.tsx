@@ -25,10 +25,20 @@ export default function Layout() {
 
     const navigate = useNavigate();
     const [isSideNavExpanded, setIsSideNavExpanded] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
     function toggleSideNav() {
         setIsSideNavExpanded(!isSideNavExpanded);
     }
-    console.log('这里是侧边栏的日志',{ username, student_id, teacher_id });
+
+    function handleSideNavLinkClick(path) {
+        setIsTransitioning(true);
+        setTimeout(() => {
+            setIsSideNavExpanded(false);
+            navigate(path);
+        }, 50); // 300ms 与 CSS 过渡时间一致
+    }
+
+    // console.log('这里是侧边栏的日志',{ username, student_id, teacher_id });
     return (
         <>
             <Header>
@@ -47,41 +57,43 @@ export default function Layout() {
 
                 </HeaderGlobalBar>
             </Header>
-            <SideNav isFixedNav={true} expanded={isSideNavExpanded} isChildOfHeader={false} aria-label="Side navigation">
+            <SideNav isFixedNav={true} expanded={isSideNavExpanded} isChildOfHeader={false} aria-label="Side navigation"
+                     className={`sideNavContainer ${isSideNavExpanded ? 'sideNavExpanded' : 'sideNavCollapsed'}`}
+            >
                 <SideNavItems>
-                    {student_id && (<SideNavLink href='/plat/analyse'>
-                        成绩分析
-                    </SideNavLink>)}
-                    {student_id && (<SideNavLink href='/plat/to_do_list'>
+                    {student_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/to_do_list')}>
                         学习计划
                     </SideNavLink>)}
-                    {student_id && (<SideNavLink href='/plat/diary'>
-                        日记本
+                    {student_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/diary')}>
+                        我的日记
                     </SideNavLink>)}
-                    {teacher_id && (<SideNavLink href='/plat/to_do_list'>
+                    {teacher_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/to_do_list')}>
                         教学计划
                     </SideNavLink>)}
-                    <SideNavLink href='/plat/text'>
-                        文本翻译
-                    </SideNavLink>
-                    <SideNavLink href='/plat/bbs'>
-                        师生论坛
-                    </SideNavLink>
-                    {student_id && (<SideNavLink href='/plat/composition'>
+                    {student_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/analyse')}>
+                        成绩分析
+                    </SideNavLink>)}
+                    {student_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/composition')}>
                         作文润色
                     </SideNavLink>)}
-                    {teacher_id && (<SideNavLink href='/plat/teaching_plan'>
+                    {teacher_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/teaching_plan')}>
                         教案生成
                     </SideNavLink>)}
-                    {teacher_id && (<SideNavLink href='/plat/correct'>
+                    {teacher_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/correct')}>
                         作文批改
                     </SideNavLink>)}
-                    {(<SideNavLink href='/plat/audio'>
+                    <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/text')}>
+                        文本翻译
+                    </SideNavLink>
+                    {(<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/audio')}>
                         书籍视听
                     </SideNavLink>)}
-                    {(<SideNavLink href='/plat/image'>
+                    {(<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/image')}>
                         趣味图片
                     </SideNavLink>)}
+                     <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/bbs')}>
+                        师生论坛
+                    </SideNavLink>
                 </SideNavItems>
             </SideNav>
             <UserProvider>

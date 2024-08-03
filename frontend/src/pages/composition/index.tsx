@@ -76,7 +76,7 @@ export default function TextPage() {
                         <Link to='https://fanyi.xfyun.cn/console/trans/doc'>讯飞星火大模型</Link>
                         <p>为您提供作文修改服务</p>
                     </div>
-                    <div className={styles.Translate}>
+                    <div className={styles.Content}>
                         <TextArea
                             labelText=""
                             placeholder="请在此输入作文"  // 使用 placeholder 属性
@@ -90,7 +90,7 @@ export default function TextPage() {
                         />
                         <Button onClick={handleCorrection}>立即润色</Button>
                         {error && <p style={{color: 'red'}}>{error}</p>}
-                        <div className={styles.Trans}>
+                        <div className={styles.ResultContent}>
                             <TextArea
                                 value={translatedText}
                                 placeholder={"修改建议"}

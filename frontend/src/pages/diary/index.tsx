@@ -225,10 +225,10 @@ export default function Page() {
                 <div className={styles.Box}>
                     <h2>我的日记本</h2>
                     <div className={styles.Tool} style={{marginBottom:'16px',marginTop:'16px'}}>
-                        <Button onClick={handleNewDiary}>新建日记</Button>
-                        {currentDiaries.length!==0&&<Button onClick={handleAnalyzeDiaries}>每周日记总结</Button>}
+                        <Button onClick={handleNewDiary} style={{marginTop:'3px'}}>新建日记</Button>
+                        {currentDiaries.length!==0&&<Button onClick={handleAnalyzeDiaries} style={{marginTop:'3px'}}>每周日记总结</Button>}
                         {currentDiaries.length!==0&&<div className={styles.Select}>
-                            <Select id="sortOption" labelText="排序方式" value={sortOption} onChange={handleSortChange}>
+                            <Select id="sortOption" labelText="" value={sortOption} onChange={handleSortChange}>
                                 <SelectItem value="date" text="按日期排序"/>
                                 <SelectItem value="mood" text="按心情排序"/>
                             </Select>
