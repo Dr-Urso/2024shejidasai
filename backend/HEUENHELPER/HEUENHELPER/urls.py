@@ -30,4 +30,5 @@ urlpatterns = [
     path('generatedoc/', include('generateDoc.urls')),
     path('imgUpload/', include('imgUpload.urls')),
     path('audioText/', include('audioText.urls')),
+    path('imageWord/', include('imageWord.urls')),
 ]

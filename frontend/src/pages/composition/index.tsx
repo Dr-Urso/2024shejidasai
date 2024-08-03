@@ -7,7 +7,7 @@ import ImageUploader from "@/components/ImageUploader";
 
 export default function TextPage() {
     const [text, setText] = useState("");
-    const [translatedText, setTranslatedText] = useState("修改建议");
+    const [translatedText, setTranslatedText] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
     const [textNum,setTextNum] = useState(0);
@@ -71,22 +71,21 @@ export default function TextPage() {
                 </div>
                 <Loading active={loading}/>
                 <div className={styles.ContentWrapper}>
-                    <div className={styles.Header}>
+                    <div className={styles.Header} style={{marginBottom:'16px'}}s>
                         <p>当前由</p>
                         <Link to='https://fanyi.xfyun.cn/console/trans/doc'>讯飞星火大模型</Link>
                         <p>为您提供作文修改服务</p>
                     </div>
                     <div className={styles.Translate}>
                         <TextArea
-                            labelText="请输入需要润色的作文"
+                            labelText=""
                             placeholder="请在此输入作文"  // 使用 placeholder 属性
                             value={text}
                             onChange={handleTextChange}
                             onKeyDown={(text.length===1||text.length===textNum)?handleKeyDown:()=>{}}
                             counterMode="word"
-                            enableCounter={true}
                             maxCount={1000}
-                            rows={10}
+                            rows={15}
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即润色</Button>
@@ -94,8 +93,9 @@ export default function TextPage() {
                         <div className={styles.Trans}>
                             <TextArea
                                 value={translatedText}
+                                placeholder={"修改建议"}
                                 readOnly
-                                rows={10}
+                                rows={15}
                                 id="text-area-2"
                             />
                         </div>

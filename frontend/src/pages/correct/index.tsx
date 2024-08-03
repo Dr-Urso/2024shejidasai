@@ -7,7 +7,7 @@ import ImageUploader from "@/components/ImageUploader";
 export default function TextPage() {
     const [title, setTitle] = useState("");
     const [essayText, setEssayText] = useState("");
-    const [correctedText, setCorrectedText] = useState("批改结果");
+    const [correctedText, setCorrectedText] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
     const [textNum,setTextNum] = useState(0);
@@ -83,25 +83,24 @@ export default function TextPage() {
                     </div>
                     <div className={styles.Translate}>
                         <TextArea
-                            labelText="请输入作文标题"
+                            labelText=""
                             placeholder="请在此输入作文标题"
                             onChange={handleTitleChange}
                             counterMode="word"
-                            enableCounter={true}
                             maxCount={100}
                             rows={1}
                             id="text-area-title"
+                            style={{marginTop:'16px'}}
                         />
                         <TextArea
-                            labelText="请输入需要批改的作文"
+                            labelText=""
                             placeholder="请在此输入作文"
                             value={essayText}
                             onChange={handleTextChange}
                             onKeyDown={(essayText.length===1||essayText.length===textNum)?handleKeyDown:()=>{}}
                             counterMode="word"
-                            enableCounter={true}
-                            maxCount={1000}
-                            rows={10}
+                            maxCount={1500}
+                            rows={15}
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即批改</Button>
@@ -109,6 +108,7 @@ export default function TextPage() {
                         <div className={styles.Trans}>
                             <TextArea
                                 value={correctedText}
+                                placeholder={"批改结果"}
                                 readOnly
                                 rows={10}
                                 id="text-area-2"

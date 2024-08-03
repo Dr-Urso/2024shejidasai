@@ -15,6 +15,7 @@
     "@carbon/react": "^1.61.0",
     "@headlessui/react": "^2.1.1",
     "@ibm/plex": "^6.4.1",
+    "antd": "^5.19.4",
     "aos": "^2.3.4",
     "axios": "^1.7.2",
     "carbon-components": "^10.58.12",

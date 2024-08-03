@@ -223,16 +223,16 @@ export default function Page() {
         return (
             <Content className={styles.Container} id='main-content'>
                 <div className={styles.Box}>
-                    <h2>日记本</h2>
-                    <div className={styles.Tool}>
+                    <h2>我的日记本</h2>
+                    <div className={styles.Tool} style={{marginBottom:'16px',marginTop:'16px'}}>
                         <Button onClick={handleNewDiary}>新建日记</Button>
-                        <Button onClick={handleAnalyzeDiaries}>每周日记总结</Button>
-                        <div className={styles.Select}>
+                        {currentDiaries.length!==0&&<Button onClick={handleAnalyzeDiaries}>每周日记总结</Button>}
+                        {currentDiaries.length!==0&&<div className={styles.Select}>
                             <Select id="sortOption" labelText="排序方式" value={sortOption} onChange={handleSortChange}>
                                 <SelectItem value="date" text="按日期排序"/>
                                 <SelectItem value="mood" text="按心情排序"/>
                             </Select>
-                        </div>
+                        </div>}
                     </div>
                     <div className={styles.Entries}>
                         {currentDiaries.map((diary, index) => (
@@ -244,12 +244,12 @@ export default function Page() {
                             </div>
                         ))}
                     </div>
-                    <div className={styles.Pagination}>
+                    {currentDiaries.length!==0&&<div className={styles.Pagination} style={{marginTop:'16px'}}>
                         <Button onClick={handlePrevPage} disabled={currentPage === 1}>上一页</Button>
                         <span>{currentPage}</span>
                         <Button onClick={handleNextPage}
                                 disabled={indexOfLastDiary >= sortedDiaries.length}>下一页</Button>
-                    </div>
+                    </div>}
                     {err && <p style={{color: 'red'}}>{err}</p>}
                     {analysisResult && (
                         <div className={styles.AnalysisResult}>
@@ -267,12 +267,11 @@ export default function Page() {
             <Content className={styles.Container} id='main-content'>
                 <div className={styles.Box}>
                     <h1>{currentDiary.title}</h1>
-                    <div className={styles.Subhead}>
-                        <p>日期: {currentDiary.date}</p>
-                        <p>心情: {currentDiary.mood}</p>
+                    <div className={styles.Subhead} style={{marginTop:'16px'}}>
+                        <p>日期: {currentDiary.date} 心情: {currentDiary.mood}</p>
                     </div>
                     <div dangerouslySetInnerHTML={{ __html: currentDiary.content }}></div>
-                    <Button onClick={() => setViewMode('home')}>返回</Button>
+                    <Button onClick={() => setViewMode('home')} style={{marginTop:'32px'}}>返回</Button>
                 </div>
             </Content>
         );
@@ -287,8 +286,9 @@ export default function Page() {
                     labelText="日记标题"
                     value={currentDiary.title}
                     onChange={handleChange}
+                    style={{marginBottom:'16px'}}
                 />
-                <DatePicker dateFormat="Y-m-d" datePickerType="single" onChange={handleDateChange}>
+                <DatePicker dateFormat="Y-m-d" datePickerType="single" onChange={handleDateChange} style={{marginBottom:'16px'}}>
                     <DatePickerInput
                         id="date"
                         placeholder="yyyy-mm-dd"
@@ -309,9 +309,9 @@ export default function Page() {
                     <SelectItem value="伤心" text="伤心" />
                     <SelectItem value="悲伤" text="悲伤" />
                 </Select>
-                <ReactQuill value={value} onChange={setValue} modules={modules} />
-                <Button onClick={handleSave}>保存</Button>
-                <Button onClick={() => setViewMode('home')}>取消</Button>
+                <ReactQuill value={value} onChange={setValue} modules={modules} style={{marginTop:'16px'}}/>
+                <Button onClick={handleSave} style={{marginTop:'16px',marginRight:'16px'}}>保存</Button>
+                <Button onClick={() => setViewMode('home')} style={{marginTop:'16px',marginRight:'16px'}}>取消</Button>
                 <div>{err && (
                     <div className={styles.Err}>{err}</div>
                 )}</div>

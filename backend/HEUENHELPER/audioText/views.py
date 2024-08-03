@@ -18,6 +18,6 @@ class AudioTextView(APIView):
 
             audioGen(audio,lang)
 
-            return Response({'message': '成长文本语音合成功'}, status=200)
+            return Response({'message': '长文本语音合成成功'}, status=200)
         else:
-            return Response({'error': '成长文本语音合成功'}, status=400)
+            return Response({'error': '长文本语音合成成功'}, status=400)

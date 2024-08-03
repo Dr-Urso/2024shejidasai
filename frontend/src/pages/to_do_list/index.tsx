@@ -210,7 +210,7 @@ export default function TodoList() {
         <Content className={styles.Container} id='main-content'>
             <Loading active={loading} />
             <div className={styles.Box}>
-                {student_id === null ? (<h2>教学计划管理</h2>):(<h2>学习计划管理</h2>)}
+                {/*{student_id === null ? (<h2>教学计划管理</h2>):(<h2>学习计划管理</h2>)}*/}
                 <div className={styles.DayForm}>
                     <TextInput
                         id="date"
@@ -244,9 +244,9 @@ export default function TodoList() {
                         <SelectItem value="进行中" text="进行中" />
                         <SelectItem value="已完成" text="已完成" />
                     </Select>
-                    <Button onClick={addTask} style={{ marginRight: "20px" }}>添加任务</Button>
-                    <Button onClick={addDay} style={{ marginRight: "20px" }}>添加当天任务</Button>
-                    <Button onClick={analyzeTasks}>当天任务总结</Button>
+                    <Button onClick={addTask} style={{ marginRight: "20px",marginBottom:'16px',marginTop:'16px'}}>添加任务</Button>
+                    <Button onClick={addDay} style={{ marginRight: "20px",marginBottom:'16px',marginTop:'16px'}}>添加当天计划</Button>
+                    {currentDays.length!==0&&<Button onClick={analyzeTasks} style={{ marginRight: "20px",marginBottom:'16px',marginTop:'16px'}}>当天计划总结</Button>}
                 </div>
                 <div>{err && (
                     <div className={styles.Err}>{err}</div>
@@ -274,11 +274,11 @@ export default function TodoList() {
                         </div>
                     ))}
                 </div>
-                <div className={styles.Pagination}>
+                {currentDays.length!==0&&<div className={styles.Pagination}>
                     <Button onClick={handlePrevPage} disabled={currentPage === 1}>上一页</Button>
                     <span>{currentPage}</span>
                     <Button onClick={handleNextPage} disabled={indexOfLastDay >= days.length}>下一页</Button>
-                </div>
+                </div>}
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>
                         {student_id === null ? (<h3>每日教学计划总结</h3>):(<h3>每日学习计划总结</h3>)}

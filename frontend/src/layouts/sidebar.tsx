@@ -79,6 +79,9 @@ export default function Layout() {
                     {(<SideNavLink href='/plat/audio'>
                         书籍视听
                     </SideNavLink>)}
+                    {(<SideNavLink href='/plat/image'>
+                        趣味图片
+                    </SideNavLink>)}
                 </SideNavItems>
             </SideNav>
             <UserProvider>

@@ -23,8 +23,8 @@ export default defineConfig({
        { path: "/plat/to_do_list", component: "to_do_list" },
           { path: "/plat/teaching_plan", component: "teaching_plan" },
           { path: "/plat/composition", component: "composition" },
-       { path: "/plat/message", component: "messager"},],},
-
+       { path: "/plat/message", component: "messager"},
+      { path: "/plat/image", component: "image"}],},
   ],
   proxy: {
     '/api': {

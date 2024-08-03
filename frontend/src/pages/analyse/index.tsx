@@ -57,6 +57,15 @@ export default function ScoreAnalysis() {
         selfEvaluation: ''
     });
 
+    const subjectNames = {
+        Physics: '物理',
+        Chemistry: '化学',
+        Biology: '生物',
+        Geography: '地理',
+        History: '历史',
+        Politics: '政治',
+    };
+
     const [TData, setTData] = useState([])
     const [TotalData, setTotalData] = useState([])
 
@@ -443,44 +452,44 @@ export default function ScoreAnalysis() {
             {loading && <Loading />}
 
             <div className={styles.Box}>
-                <h2>成绩分析</h2>
+                {/*<h2>成绩分析</h2>*/}
                 {!baseInfoSaved ? (
                     <Button onClick={() => setShowEditForm(true)}>编辑科目信息</Button>
                 ) : (
                     view === '0' ? (
-                        <Button onClick={() => setView('1')} style={{ marginRight: "20px" }} >查看科目信息</Button>
+                        <Button onClick={() => setView('1')} style={{ marginRight: "20px",marginBottom:'16px' ,marginTop:'8px'}} >查看信息</Button>
                     ) : (
                         <div className={styles.FixedInfo}>
                             <h3>教育阶段: {educationLevel}</h3>
-                            <h3>额外科目: {Object.keys(subjects).filter(subject => subjects[subject]).join(', ')}</h3>
-                            <h3>各科总分</h3>
-                            <p>语文: {totalScores.Chinese}</p>
-                            <p>数学: {totalScores.Math}</p>
-                            <p>英语: {totalScores.English}</p>
-                            {subjects.Physics && <p>物理: {totalScores.Physics}</p>}
-                            {subjects.Chemistry && <p>化学: {totalScores.Chemistry}</p>}
-                            {subjects.Biology && <p>生物: {totalScores.Biology}</p>}
-                            {subjects.Geography && <p>地理: {totalScores.Geography}</p>}
-                            {subjects.History && <p>历史: {totalScores.History}</p>}
-                            {subjects.Politics && <p>政治: {totalScores.Politics}</p>}
-                            <Button onClick={() => setShowEditForm(true)} style={{ marginRight: "20px" }}>编辑科目信息</Button>
-                            <Button onClick={() => setView('0')}>收起科目信息</Button>
+                            <h3>选修科目: {Object.keys(subjects).filter(subject => subjects[subject]).map(subject => subjectNames[subject]).join(', ')}</h3>
+                            <h3 style={{display:"inline"}}>各科总分:</h3>
+                            <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>语文: {totalScores.Chinese}</span>
+                            <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>数学: {totalScores.Math}</span>
+                            <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>英语: {totalScores.English}</span>
+                            {subjects.Physics && <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>物理: {totalScores.Physics}</span>}
+                            {subjects.Chemistry && <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>化学: {totalScores.Chemistry}</span>}
+                            {subjects.Biology && <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>生物: {totalScores.Biology}</span>}
+                            {subjects.Geography && <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>地理: {totalScores.Geography}</span>}
+                            {subjects.History && <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>历史: {totalScores.History}</span>}
+                            {subjects.Politics && <span className={styles.InlineParagraph} style={{fontSize:"24px"}}>政治: {totalScores.Politics}</span>}
+                            <br/>
+                            <Button onClick={() => setShowEditForm(true)} style={{ marginRight: "16px" ,marginTop:'16px'}}>编辑信息</Button>
+                            <Button onClick={() => setView('0')} style={{marginTop:'16px'}}>收起信息</Button>
                         </div>
                     )
                 )}
-                <div style={{height:'20px'}}></div>
-                <Button onClick={() => setShowScoreForm(true)} style={{ marginBottom: '20px' ,marginTop:'20px'}}>
-                    添加成绩
-                </Button>
+                {view === '0' && <Button onClick={() => setShowScoreForm(true)} style={{ marginBottom: '16px' ,marginTop:'8px'}}>添加成绩</Button>}
+                {currentExams.length!==0&&view === '0'&&<Button onClick={analyzeExams} style={{marginLeft:'16px', marginBottom:'16px',marginTop:'8px'}}>分析成绩</Button>}
+                <div style={{height:'5px'}}></div>
 
-                <Line
+                {currentExams.length!==0&&<Line
                     data={ChartisChecked ? TotalData : TData}
                     xField="examName"
                     yField="value"
                     colorField="subject"
                     onReady={(chart) => { chartRef.current = chart; }}
-                />
-                <Checkbox id="checkbox" labelText="查看总分趋势" checked={ChartisChecked} onChange={(_, { checked }) => setChartisChecked(checked)} />
+                />}
+                {currentExams.length!==0&&<Checkbox id="checkbox" labelText="查看总分趋势" checked={ChartisChecked} onChange={(_, { checked }) => setChartisChecked(checked)} />}
 
                 <Modal
                     open={showEditForm}
@@ -495,6 +504,7 @@ export default function ScoreAnalysis() {
                             labelText="选择教育阶段"
                             value={educationLevel}
                             onChange={(e) => setEducationLevel(e.target.value)}
+                            style={{marginBottom:'8px'}}
                         >
                             <SelectItem value="" text="请选择" />
                             <SelectItem value="小学" text="小学" />
@@ -502,7 +512,7 @@ export default function ScoreAnalysis() {
                             <SelectItem value="高中" text="高中" />
                         </Select>
 
-                        <h3>选择额外科目</h3>
+                        <h3 >选择选修科目</h3>
                         {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => {
                             let cn;
                             if (subject === 'Physics') { cn = '物理'; }
@@ -525,13 +535,14 @@ export default function ScoreAnalysis() {
                         })}
 
 
-                        <h3>输入科目总分</h3>
+                        <h3 style={{marginBottom:'8px'}}>各科目总分</h3>
                         <TextInput
                             id="ChineseTotal"
                             name="Chinese"
                             labelText="语文总分"
                             value={totalScores.Chinese}
                             onChange={handleTotalScoreChange}
+                            style={{marginBottom:'8px'}}s
                         />
                         <TextInput
                             id="MathTotal"
@@ -539,6 +550,7 @@ export default function ScoreAnalysis() {
                             labelText="数学总分"
                             value={totalScores.Math}
                             onChange={handleTotalScoreChange}
+                            style={{marginBottom:'8px'}}
                         />
                         <TextInput
                             id="EnglishTotal"
@@ -546,6 +558,7 @@ export default function ScoreAnalysis() {
                             labelText="英语总分"
                             value={totalScores.English}
                             onChange={handleTotalScoreChange}
+                            style={{marginBottom:'8px'}}
                         />
                         {subjects.Physics && (
                             <TextInput
@@ -554,6 +567,7 @@ export default function ScoreAnalysis() {
                                 labelText="物理总分"
                                 value={totalScores.Physics}
                                 onChange={handleTotalScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Chemistry && (
@@ -563,6 +577,7 @@ export default function ScoreAnalysis() {
                                 labelText="化学总分"
                                 value={totalScores.Chemistry}
                                 onChange={handleTotalScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Biology && (
@@ -572,6 +587,7 @@ export default function ScoreAnalysis() {
                                 labelText="生物总分"
                                 value={totalScores.Biology}
                                 onChange={handleTotalScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Geography && (
@@ -581,6 +597,7 @@ export default function ScoreAnalysis() {
                                 labelText="地理总分"
                                 value={totalScores.Geography}
                                 onChange={handleTotalScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.History && (
@@ -590,6 +607,7 @@ export default function ScoreAnalysis() {
                                 labelText="历史总分"
                                 value={totalScores.History}
                                 onChange={handleTotalScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Politics && (
@@ -599,9 +617,10 @@ export default function ScoreAnalysis() {
                                 labelText="政治总分"
                                 value={totalScores.Politics}
                                 onChange={handleTotalScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
-                        <Button onClick={saveBaseInfo}>保存基础信息</Button>
+                        <Button onClick={saveBaseInfo} style={{marginTop:'16px'}}>保存信息</Button>
                     </div>
                 </Modal>
 
@@ -618,6 +637,7 @@ export default function ScoreAnalysis() {
                             labelText="考试名称"
                             value={currentExam.examType}
                             onChange={handleChange}
+                            style={{marginBottom:'8px'}}
                         />
                         <TextInput
                             id="Chinese"
@@ -625,6 +645,7 @@ export default function ScoreAnalysis() {
                             labelText="语文"
                             value={currentExam.scores.Chinese}
                             onChange={handleScoreChange}
+                            style={{marginBottom:'8px'}}
                         />
                         <TextInput
                             id="Math"
@@ -632,6 +653,7 @@ export default function ScoreAnalysis() {
                             labelText="数学"
                             value={currentExam.scores.Math}
                             onChange={handleScoreChange}
+                            style={{marginBottom:'8px'}}
                         />
                         <TextInput
                             id="English"
@@ -639,6 +661,7 @@ export default function ScoreAnalysis() {
                             labelText="英语"
                             value={currentExam.scores.English}
                             onChange={handleScoreChange}
+                            style={{marginBottom:'8px'}}
                         />
                         {subjects.Physics && (
                             <TextInput
@@ -647,6 +670,7 @@ export default function ScoreAnalysis() {
                                 labelText="物理"
                                 value={currentExam.scores.Physics}
                                 onChange={handleScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Chemistry && (
@@ -656,6 +680,7 @@ export default function ScoreAnalysis() {
                                 labelText="化学"
                                 value={currentExam.scores.Chemistry}
                                 onChange={handleScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Biology && (
@@ -665,6 +690,7 @@ export default function ScoreAnalysis() {
                                 labelText="生物"
                                 value={currentExam.scores.Biology}
                                 onChange={handleScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Geography && (
@@ -674,6 +700,7 @@ export default function ScoreAnalysis() {
                                 labelText="地理"
                                 value={currentExam.scores.Geography}
                                 onChange={handleScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.History && (
@@ -683,6 +710,7 @@ export default function ScoreAnalysis() {
                                 labelText="历史"
                                 value={currentExam.scores.History}
                                 onChange={handleScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         {subjects.Politics && (
@@ -692,6 +720,7 @@ export default function ScoreAnalysis() {
                                 labelText="政治"
                                 value={currentExam.scores.Politics}
                                 onChange={handleScoreChange}
+                                style={{marginBottom:'8px'}}
                             />
                         )}
                         <TextArea
@@ -700,6 +729,7 @@ export default function ScoreAnalysis() {
                             labelText="自我评价"
                             value={currentExam.selfEvaluation}
                             onChange={handleChange}
+                            style={{marginBottom:'16px'}}
                             rows={4}
                         />
                         <Button onClick={addExam} style={{ marginRight: "20px" }}>添加考试成绩</Button>
@@ -708,30 +738,28 @@ export default function ScoreAnalysis() {
                 </Modal>
 
                 {errorMessage && <div style={{ color: 'red', marginBottom: '0%', marginTop: "2%" }}>{errorMessage}</div>}
-                <Button onClick={analyzeExams}>分析成绩</Button>
-                <div className={styles.ExamList}>
+                <div className={styles.ExamList} style={{marginTop:'16px'}}>
                     {currentExams.map((exam, index) => (
                         <div key={index} className={styles.ExamItem}>
-                            <h3>考试名称: {exam.examName}</h3>
-                            <p>考试阶段: {exam.examType}</p>
-                            <p>语文: {exam.scores.Chinese}</p>
-                            <p>数学: {exam.scores.Math}</p>
-                            <p>英语: {exam.scores.English}</p>
-                            {exam.scores.Physics && <p>物理: {exam.scores.Physics}</p>}
-                            {exam.scores.Chemistry && <p>化学: {exam.scores.Chemistry}</p>}
-                            {exam.scores.Biology && <p>生物: {exam.scores.Biology}</p>}
-                            {exam.scores.Geography && <p>地理: {exam.scores.Geography}</p>}
-                            {exam.scores.History && <p>历史: {exam.scores.History}</p>}
-                            {exam.scores.Politics && <p>政治: {exam.scores.Politics}</p>}
-                            <p>自我评价: {exam.selfEvaluation}</p>
+                            <h3 style={{marginBottom:'8px'}}>{exam.examName}</h3>
+                            <span className={styles.InlineParagraph}>语文: {exam.scores.Chinese}</span>
+                            <span className={styles.InlineParagraph}>数学: {exam.scores.Math}</span>
+                            <span className={styles.InlineParagraph}>英语: {exam.scores.English}</span>
+                            {exam.scores.Physics && <span className={styles.InlineParagraph}>物理: {exam.scores.Physics}</span>}
+                            {exam.scores.Chemistry && <span className={styles.InlineParagraph}>化学: {exam.scores.Chemistry}</span>}
+                            {exam.scores.Biology && <span className={styles.InlineParagraph}>生物: {exam.scores.Biology}</span>}
+                            {exam.scores.Geography && <span className={styles.InlineParagraph}>地理: {exam.scores.Geography}</span>}
+                            {exam.scores.History && <span className={styles.InlineParagraph}>历史: {exam.scores.History}</span>}
+                            {exam.scores.Politics && <span className={styles.InlineParagraph}>政治: {exam.scores.Politics}</span>}
+                            <p style={{marginTop:'8px'}}>自我评价: {exam.selfEvaluation}</p>
                         </div>
                     ))}
                 </div>
-                <div className={styles.Pagination}>
+                {currentExams.length!==0&&<div className={styles.Pagination} style={{marginTop:'16px'}}>
                     <Button onClick={handlePrevPage} disabled={currentPage === 1}>上一页</Button>
                     <span>{currentPage}</span>
                     <Button onClick={handleNextPage} disabled={indexOfLastExam >= exams.length}>下一页</Button>
-                </div>
+                </div>}
                 {aiSuggestions && (
                     <div className={styles.AiSuggestions}>
                         <h3>成绩分析总结</h3>

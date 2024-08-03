@@ -5,7 +5,7 @@ import {Content, TextArea, Button, TextInput, Loading} from "carbon-components-r
 
 export default function LessonPlanPage() {
     const [topic, setTopic] = useState("");
-    const [lessonPlan, setLessonPlan] = useState("生成的教案模板将在这里显示");
+    const [lessonPlan, setLessonPlan] = useState("");
     const [loading, setLoading] = useState(false)
     const [err, setErr] = useState('');
     useEffect(()=>{
@@ -83,18 +83,20 @@ export default function LessonPlanPage() {
                     </div>
                     <div className={styles.Generate}>
                         <TextInput
-                            labelText="请输入教案的主题"
+                            labelText=""
                             placeholder="请在此输入教案主题"
                             onChange={handleTopicChange}
                             id="topic-input"
                             value={topic}
+                            style={{marginTop: '16px'}}
                         />
-                        <Button onClick={handleGenerateLessonPlan}>生成教案模板</Button>
-                        <Button className={styles.right} onClick={handleDownloadLessonPlan}>下载简版教案docx</Button>
+                        <Button onClick={handleGenerateLessonPlan} style={{marginTop: '16px',marginBottom:'16px'}}>生成教案模板</Button>
+                        <Button className={styles.right} onClick={handleDownloadLessonPlan} style={{marginTop: '16px',marginBottom:'16px'}}>下载简版教案docx</Button>
                         <div>{err && <p style={{color: 'red'}}>{err}</p>}</div>
                         <div className={styles.Trans}>
                             <TextArea
                                 value={lessonPlan}
+                                placeholder={"生成的教案模板将在这里显示"}
                                 readOnly
                                 rows={30}
                                 id="lesson-plan-area"

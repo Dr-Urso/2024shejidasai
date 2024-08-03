@@ -6,9 +6,19 @@ import { useNavigate } from "react-router-dom";
 
 export default function TextPage() {
     const [text, setText] = useState("");
-    const [translatedText, setTranslatedText] = useState("翻译");
+    const [translatedText, setTranslatedText] = useState("");
     const typingTimeoutRef = useRef(null);
     const [fromTo,setFromTo]=useState('en-cn');
+    const [textNum,setTextNum] = useState(0);
+
+    useEffect(() => {
+        setTextNum(text.length)
+    }, [text]);
+
+    useEffect(() => {
+        if(text.length!==0)handleTranslate(text);
+    }, [fromTo]);
+
     const handleTranslate = async (textToTranslate) => {
         try {
             const response = await fetch('/api/trans/trans', {
@@ -31,6 +41,7 @@ export default function TextPage() {
     const handleTransChange = (e) => {
         setFromTo(e.target.value);
     };
+
     const handleTextChange = (e) => {
         setText(e.target.value);
 
@@ -43,11 +54,20 @@ export default function TextPage() {
         }, 1000);  // 停止输入 1 秒后进行翻译
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            if(text.length===1||window.getSelection().toString().length===textNum){
+                setText('');
+                setTranslatedText('');
+            }
+        }
+    };
+
     return (
         <>
             <Content className={styles.Container} id='main-content'>
                 <div>
-                    <div className={styles.Header}>
+                    <div className={styles.Header} style={{marginBottom:'16px'}}>
                         <p>当前由</p>
                         <Link to='https://fanyi.xfyun.cn/console/trans/doc'>讯飞星火大模型</Link>
                         <p>为您提供翻译服务</p>
@@ -61,11 +81,11 @@ export default function TextPage() {
                     <div className={styles.Translate}>
                         <div className={styles.Input}>
                         <TextArea
-                            labelText="请输入需要翻译的文本"
+                            labelText=""
                             placeholder="请在此输入文本"  // 使用 placeholder 属性
                             onChange={handleTextChange}
+                            onKeyDown={(text.length===1||text.length===textNum)?handleKeyDown:()=>{}}
                             counterMode="word"
-                            enableCounter={true}
                             maxCount={1000}
                             rows={30}
                             id="text-area-1"
@@ -73,10 +93,11 @@ export default function TextPage() {
                         </div>
                         <div className={styles.Trans}>
                             <TextArea
-                                labelText="  "
+                                labelText=""
                                 value={translatedText}
+                                placeholder={"翻译结果"}
                                 readOnly
-                                rows={10}
+                                rows={30}
                                 id="text-area-2"
                             />
                         </div>
