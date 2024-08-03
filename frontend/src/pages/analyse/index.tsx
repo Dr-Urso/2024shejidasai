@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading} from 'carbon-components-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loading, Modal } from 'carbon-components-react'; // 引入 Modal 组件
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
 import { Line } from '@ant-design/charts';
 
 export default function ScoreAnalysis() {
-    const [edit,setEdit]=useState('0');
-    const [view,setView]=useState('0');
+    const [edit, setEdit] = useState('0');
+    const [view, setView] = useState('0');
     const [loading, setLoading] = useState(false);
     const { username, student_id, teacher_id } = useUser();
     console.log({ username, student_id, teacher_id });
@@ -19,7 +19,8 @@ export default function ScoreAnalysis() {
     const indexOfFirstExam = indexOfLastExam - itemsPerPage;
     const currentExams = exams.slice(indexOfFirstExam, indexOfLastExam);
     const [errorMessage, setErrorMessage] = useState('');
-    const [showScoreForm, setShowScoreForm] = useState(false); // 新添加的状态变量
+    const [showScoreForm, setShowScoreForm] = useState(false); // 控制模态框显示的状态变量
+    const [showEditForm, setShowEditForm] = useState(false); // 新的状态变量，用于控制编辑科目信息模态框的显示
     const [subjects, setSubjects] = useState({
         Physics: false,
         Chemistry: false,
@@ -59,9 +60,6 @@ export default function ScoreAnalysis() {
     const [TData, setTData] = useState([])
     const [TotalData, setTotalData] = useState([])
 
-
-
-
     useEffect(() => {
         fetchScores();
         fetchBaseInfo();
@@ -80,8 +78,8 @@ export default function ScoreAnalysis() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Fetched data:', data);  // 调试输出
-                console.log('edit',edit);
-                console.log('view',view);
+                console.log('edit', edit);
+                console.log('view', view);
                 // 格式化数据以匹配前端期望的结构
                 const formattedData = data.map(exam => ({
                     examType: exam.examType,
@@ -94,15 +92,17 @@ export default function ScoreAnalysis() {
                 console.log('Exams set:', formattedData);  // 确认 exams 数据已设置
                 let temp = [];
                 let temp2 = [];
-                let dict = {"Chinese":"语文",
-                "Math":"数学",
-                "English":"英语",
-                "Physics":"物理",
-                "Chemistry":"化学",
-                "Biology":"生物",
-                "Geography":"地理",
-                "History":"历史",
-                "Politics":"政治"};
+                let dict = {
+                    "Chinese": "语文",
+                    "Math": "数学",
+                    "English": "英语",
+                    "Physics": "物理",
+                    "Chemistry": "化学",
+                    "Biology": "生物",
+                    "Geography": "地理",
+                    "History": "历史",
+                    "Politics": "政治"
+                };
                 data.forEach(exam => {
                     Object.entries(exam.examScore).forEach(([subject, score]) => {
                         if (score) {
@@ -145,7 +145,6 @@ export default function ScoreAnalysis() {
         }
     };
 
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCurrentExam(prevState => ({
@@ -164,6 +163,7 @@ export default function ScoreAnalysis() {
             }
         }));
     };
+
     const handleTotalScoreChange = (e) => {
         const { name, value } = e.target;
         setTotalScores(prevState => ({
@@ -195,9 +195,8 @@ export default function ScoreAnalysis() {
         }
     };
 
-
     const saveBaseInfo = async () => {
-        if (!educationLevel){
+        if (!educationLevel) {
             setErrorMessage('请选择教育阶段');
             return;
         }
@@ -226,6 +225,7 @@ export default function ScoreAnalysis() {
             } else {
                 setBaseInfoSaved(true);
                 setEdit('0'); // 保存后切换回查看模式
+                setShowEditForm(false); // 关闭编辑科目信息模态框
             }
         } catch (error) {
             console.error('请求出错', error);
@@ -233,9 +233,6 @@ export default function ScoreAnalysis() {
             setLoading(false); // 隐藏loading效果
         }
     };
-
-
-
 
     const saveExamInfo = async () => {
         try {
@@ -275,25 +272,41 @@ export default function ScoreAnalysis() {
             return;
         }
         if (!currentExam.scores.Chinese) {
-            setErrorMessage('请填写语文成绩');            return;}
-        if(!currentExam.scores.Math){
-            setErrorMessage('请填写数学成绩');            return;}
-        if(!currentExam.scores.English){
-            setErrorMessage('请填写英语成绩');            return;}
-
+            setErrorMessage('请填写语文成绩');
+            return;
+        }
+        if (!currentExam.scores.Math) {
+            setErrorMessage('请填写数学成绩');
+            return;
+        }
+        if (!currentExam.scores.English) {
+            setErrorMessage('请填写英语成绩');
+            return;
+        }
         if (subjects.Physics && !currentExam.scores.Physics) {
-            setErrorMessage('请填写物理成绩');            return;}
+            setErrorMessage('请填写物理成绩');
+            return;
+        }
         if (subjects.Chemistry && !currentExam.scores.Chemistry) {
-            setErrorMessage('请填写化学成绩');            return;}
-        if (subjects.Biology && !currentExam.scores.Biology){
-            setErrorMessage('请填写生物成绩') ;           return;}
+            setErrorMessage('请填写化学成绩');
+            return;
+        }
+        if (subjects.Biology && !currentExam.scores.Biology) {
+            setErrorMessage('请填写生物成绩');
+            return;
+        }
         if (subjects.Geography && !currentExam.scores.Geography) {
-            setErrorMessage('请填写地理成绩');            return;
+            setErrorMessage('请填写地理成绩');
+            return;
         }
         if (subjects.History && !currentExam.scores.History) {
-            setErrorMessage('请填写历史成绩');            return;}
+            setErrorMessage('请填写历史成绩');
+            return;
+        }
         if (subjects.Politics && !currentExam.scores.Politics) {
-setErrorMessage('请填写政治成绩');            return;}
+            setErrorMessage('请填写政治成绩');
+            return;
+        }
         if (!baseInfoSaved) {
             await saveBaseInfo(); // 保存基础信息
         }
@@ -320,9 +333,10 @@ setErrorMessage('请填写政治成绩');            return;}
             },
             selfEvaluation: ''
         });
+        setShowScoreForm(false); // 关闭模态框
     };
 
-    //定位到成绩分析总结
+    // 定位到成绩分析总结
     const bottomRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -424,134 +438,14 @@ setErrorMessage('请填写政治成绩');            return;}
     const chartRef = useRef<any>(null);
     const [ChartisChecked, setChartisChecked] = useState(false)
 
-
     return (
-
         <Content className={styles.Container} id='main-content'>
-            {loading&&<Loading />}
+            {loading && <Loading />}
 
             <div className={styles.Box}>
                 <h2>成绩分析</h2>
                 {!baseInfoSaved ? (
-                    edit === '0' ? (
-                        <Button onClick={() => setEdit('1')}>编辑科目信息</Button>
-                    ) : (
-                        <div className={styles.BaseInfoForm}>
-                            <Select
-                                id="educationLevel"
-                                name="educationLevel"
-                                labelText="选择教育阶段"
-                                value={educationLevel}
-                                onChange={(e) => setEducationLevel(e.target.value)}
-                            >
-                                <SelectItem value="" text="请选择" />
-                                <SelectItem value="小学" text="小学" />
-                                <SelectItem value="初中" text="初中" />
-                                <SelectItem value="高中" text="高中" />
-                            </Select>
-
-                            <h3>选择额外科目</h3>
-                            {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => {
-                                let cn;
-                                if (subject === 'Physics') { cn = '物理'; }
-                                if (subject === 'Chemistry') { cn = '化学'; }
-                                if (subject === 'Biology') { cn = '生物'; }
-                                if (subject === 'Geography') { cn = '地理'; }
-                                if (subject === 'History') { cn = '历史'; }
-                                if (subject === 'Politics') { cn = '政治'; }
-
-                                return (
-                                    <Checkbox
-                                        key={subject}
-                                        id={subject}
-                                        name={subject}
-                                        labelText={cn}
-                                        checked={subjects[subject]}
-                                        onChange={handleSubjectChange}
-                                    />
-                                );
-                            })}
-
-
-                            <h3>输入科目总分</h3>
-                            <TextInput
-                                id="ChineseTotal"
-                                name="Chinese"
-                                labelText="语文总分"
-                                value={totalScores.Chinese}
-                                onChange={handleTotalScoreChange}
-                            />
-                            <TextInput
-                                id="MathTotal"
-                                name="Math"
-                                labelText="数学总分"
-                                value={totalScores.Math}
-                                onChange={handleTotalScoreChange}
-                            />
-                            <TextInput
-                                id="EnglishTotal"
-                                name="English"
-                                labelText="英语总分"
-                                value={totalScores.English}
-                                onChange={handleTotalScoreChange}
-                            />
-                            {subjects.Physics && (
-                                <TextInput
-                                    id="PhysicsTotal"
-                                    name="Physics"
-                                    labelText="物理总分"
-                                    value={totalScores.Physics}
-                                    onChange={handleTotalScoreChange}
-                                />
-                            )}
-                            {subjects.Chemistry && (
-                                <TextInput
-                                    id="ChemistryTotal"
-                                    name="Chemistry"
-                                    labelText="化学总分"
-                                    value={totalScores.Chemistry}
-                                    onChange={handleTotalScoreChange}
-                                />
-                            )}
-                            {subjects.Biology && (
-                                <TextInput
-                                    id="BiologyTotal"
-                                    name="Biology"
-                                    labelText="生物总分"
-                                    value={totalScores.Biology}
-                                    onChange={handleTotalScoreChange}
-                                />
-                            )}
-                            {subjects.Geography && (
-                                <TextInput
-                                    id="GeographyTotal"
-                                    name="Geography"
-                                    labelText="地理总分"
-                                    value={totalScores.Geography}
-                                    onChange={handleTotalScoreChange}
-                                />
-                            )}
-                            {subjects.History && (
-                                <TextInput
-                                    id="HistoryTotal"
-                                    name="History"
-                                    labelText="历史总分"
-                                    value={totalScores.History}
-                                    onChange={handleTotalScoreChange}
-                                />
-                            )}
-                            {subjects.Politics && (
-                                <TextInput
-                                    id="PoliticsTotal"
-                                    name="Politics"
-                                    labelText="政治总分"
-                                    value={totalScores.Politics}
-                                    onChange={handleTotalScoreChange}
-                                />
-                            )}
-                            <Button onClick={saveBaseInfo}>保存基础信息</Button>
-                        </div>
-                    )
+                    <Button onClick={() => setShowEditForm(true)}>编辑科目信息</Button>
                 ) : (
                     view === '0' ? (
                         <Button onClick={() => setView('1')} style={{ marginRight: "20px" }} >查看科目信息</Button>
@@ -569,26 +463,154 @@ setErrorMessage('请填写政治成绩');            return;}
                             {subjects.Geography && <p>地理: {totalScores.Geography}</p>}
                             {subjects.History && <p>历史: {totalScores.History}</p>}
                             {subjects.Politics && <p>政治: {totalScores.Politics}</p>}
-                            <Button onClick={() => { setEdit('1'); setBaseInfoSaved(false); }}>编辑科目信息</Button>
+                            <Button onClick={() => setShowEditForm(true)} style={{ marginRight: "20px" }}>编辑科目信息</Button>
                             <Button onClick={() => setView('0')}>收起科目信息</Button>
                         </div>
                     )
                 )}
-                <Button onClick={() => setShowScoreForm(!showScoreForm)} style={{ marginBottom: '20px' }}>
-                    {showScoreForm ? '隐藏成绩输入表单' : '添加成绩'}
+                <div style={{height:'20px'}}></div>
+                <Button onClick={() => setShowScoreForm(true)} style={{ marginBottom: '20px' ,marginTop:'20px'}}>
+                    添加成绩
                 </Button>
 
                 <Line
-                    data={ChartisChecked?TotalData:TData}
+                    data={ChartisChecked ? TotalData : TData}
                     xField="examName"
                     yField="value"
                     colorField="subject"
-
-                    onReady={(chart) => {chartRef.current = chart;}}
+                    onReady={(chart) => { chartRef.current = chart; }}
                 />
                 <Checkbox id="checkbox" labelText="查看总分趋势" checked={ChartisChecked} onChange={(_, { checked }) => setChartisChecked(checked)} />
 
-                {showScoreForm && (
+                <Modal
+                    open={showEditForm}
+                    modalHeading="编辑科目信息"
+                    passiveModal
+                    onRequestClose={() => setShowEditForm(false)}
+                >
+                    <div className={styles.BaseInfoForm}>
+                        <Select
+                            id="educationLevel"
+                            name="educationLevel"
+                            labelText="选择教育阶段"
+                            value={educationLevel}
+                            onChange={(e) => setEducationLevel(e.target.value)}
+                        >
+                            <SelectItem value="" text="请选择" />
+                            <SelectItem value="小学" text="小学" />
+                            <SelectItem value="初中" text="初中" />
+                            <SelectItem value="高中" text="高中" />
+                        </Select>
+
+                        <h3>选择额外科目</h3>
+                        {['Physics', 'Chemistry', 'Biology', 'Geography', 'History', 'Politics'].map(subject => {
+                            let cn;
+                            if (subject === 'Physics') { cn = '物理'; }
+                            if (subject === 'Chemistry') { cn = '化学'; }
+                            if (subject === 'Biology') { cn = '生物'; }
+                            if (subject === 'Geography') { cn = '地理'; }
+                            if (subject === 'History') { cn = '历史'; }
+                            if (subject === 'Politics') { cn = '政治'; }
+
+                            return (
+                                <Checkbox
+                                    key={subject}
+                                    id={subject}
+                                    name={subject}
+                                    labelText={cn}
+                                    checked={subjects[subject]}
+                                    onChange={handleSubjectChange}
+                                />
+                            );
+                        })}
+
+
+                        <h3>输入科目总分</h3>
+                        <TextInput
+                            id="ChineseTotal"
+                            name="Chinese"
+                            labelText="语文总分"
+                            value={totalScores.Chinese}
+                            onChange={handleTotalScoreChange}
+                        />
+                        <TextInput
+                            id="MathTotal"
+                            name="Math"
+                            labelText="数学总分"
+                            value={totalScores.Math}
+                            onChange={handleTotalScoreChange}
+                        />
+                        <TextInput
+                            id="EnglishTotal"
+                            name="English"
+                            labelText="英语总分"
+                            value={totalScores.English}
+                            onChange={handleTotalScoreChange}
+                        />
+                        {subjects.Physics && (
+                            <TextInput
+                                id="PhysicsTotal"
+                                name="Physics"
+                                labelText="物理总分"
+                                value={totalScores.Physics}
+                                onChange={handleTotalScoreChange}
+                            />
+                        )}
+                        {subjects.Chemistry && (
+                            <TextInput
+                                id="ChemistryTotal"
+                                name="Chemistry"
+                                labelText="化学总分"
+                                value={totalScores.Chemistry}
+                                onChange={handleTotalScoreChange}
+                            />
+                        )}
+                        {subjects.Biology && (
+                            <TextInput
+                                id="BiologyTotal"
+                                name="Biology"
+                                labelText="生物总分"
+                                value={totalScores.Biology}
+                                onChange={handleTotalScoreChange}
+                            />
+                        )}
+                        {subjects.Geography && (
+                            <TextInput
+                                id="GeographyTotal"
+                                name="Geography"
+                                labelText="地理总分"
+                                value={totalScores.Geography}
+                                onChange={handleTotalScoreChange}
+                            />
+                        )}
+                        {subjects.History && (
+                            <TextInput
+                                id="HistoryTotal"
+                                name="History"
+                                labelText="历史总分"
+                                value={totalScores.History}
+                                onChange={handleTotalScoreChange}
+                            />
+                        )}
+                        {subjects.Politics && (
+                            <TextInput
+                                id="PoliticsTotal"
+                                name="Politics"
+                                labelText="政治总分"
+                                value={totalScores.Politics}
+                                onChange={handleTotalScoreChange}
+                            />
+                        )}
+                        <Button onClick={saveBaseInfo}>保存基础信息</Button>
+                    </div>
+                </Modal>
+
+                <Modal
+                    open={showScoreForm}
+                    modalHeading="添加成绩"
+                    passiveModal
+                    onRequestClose={() => setShowScoreForm(false)}
+                >
                     <div className={styles.ExamForm}>
                         <TextInput
                             id="examType"
@@ -681,11 +703,12 @@ setErrorMessage('请填写政治成绩');            return;}
                             rows={4}
                         />
                         <Button onClick={addExam} style={{ marginRight: "20px" }}>添加考试成绩</Button>
-                        <Button onClick={analyzeExams}>分析成绩</Button>
+                        <Button onClick={() => setShowScoreForm(false)}>取消</Button>
                     </div>
-                )}
+                </Modal>
 
                 {errorMessage && <div style={{ color: 'red', marginBottom: '0%', marginTop: "2%" }}>{errorMessage}</div>}
+                <Button onClick={analyzeExams}>分析成绩</Button>
                 <div className={styles.ExamList}>
                     {currentExams.map((exam, index) => (
                         <div key={index} className={styles.ExamItem}>
