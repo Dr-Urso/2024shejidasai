@@ -1,0 +1,73 @@
+.Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Header {
+  margin-bottom: 20px;
+}
+
+.UploadSection {
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.ChatSection {
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  height: 80%;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.ChatWindow {
+  width: 100%;
+  height: 400px;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.UserMessage, .BotMessage {
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.UserMessage {
+  align-self: flex-end;
+  background-color: #d1e7ff;
+}
+
+.BotMessage {
+  align-self: flex-start;
+  background-color: #f1f1f1;
+}
+
+.Timestamp {
+  font-size: 0.8em;
+  color: #999;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.InputSection {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.ChatBox {
+  display: flex;
+  width: 100%;
+}

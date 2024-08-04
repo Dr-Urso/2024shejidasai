@@ -1,9 +1,15 @@
 import datetime
+import ssl
+
+import requests
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .models import ExamSummary, ExamInfo, BaseInfo
+
+from HEUENHELPER import settings
+from .models import ExamSummary, ExamInfo, BaseInfo, Document, Question
 from userLogin.models import Student, Teacher  # 引入 Student 和 Teacher 模型
 from .webApi.sparkAPI import sparkApi, res
 from .models import Diary
@@ -340,3 +346,291 @@ class DiarySummaryView(APIView):
         except Exception as e:
             logger.error(f"Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+import hashlib
+import base64
+import hmac
+import time
+import json
+import websocket
+import ssl
+import logging
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from .models import Document, Question
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+class DocumentUploadView(APIView):
+    def post(self, request):
+        file = request.FILES.get('file')
+        if not file:
+            logger.debug('No file uploaded')
+            return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+        document = Document(file=file, file_name=file.name)
+        document.save()
+
+        upload_response = self.upload_document(document)
+        if upload_response.status_code != 200:
+            logger.debug(f'Failed to upload document: {upload_response.status_code} - {upload_response.text}')
+            return JsonResponse({'error': 'Failed to upload document'}, status=upload_response.status_code)
+
+        response_data = upload_response.json()
+        file_id = response_data['data']['fileId']
+        document.file_id = file_id
+        document.save()
+
+        logger.debug(f'Document uploaded successfully: document_id={document.id}, file_id={file_id}')
+        return JsonResponse({'message': 'Document uploaded successfully', 'document_id': document.id, 'file_id': file_id})
+
+    def upload_document(self, document):
+        APPId = settings.APP_ID
+        APISecret = settings.API_SECRET
+        timestamp = str(int(time.time()))
+        request_url = "https://chatdoc.xfyun.cn/openapi/v1/file/upload"
+
+        signature = self.get_signature(APPId, APISecret, timestamp)
+        headers = {
+            "appId": APPId,
+            "timestamp": timestamp,
+            "signature": signature,
+        }
+
+        files = {'file': document.file}
+        body = {
+            "url": "",
+            "fileName": document.file_name,
+            "fileType": document.file_type,
+            "needSummary": False,
+            "stepByStep": False,
+            "callbackUrl": "your_callbackUrl",
+        }
+
+        response = requests.post(request_url, files=files, data=body, headers=headers)
+        logger.debug(f'Upload document response: {response.status_code} - {response.text}')
+        return response
+
+    def get_signature(self, APPId, APISecret, timestamp):
+        m2 = hashlib.md5()
+        data = bytes(APPId + timestamp, encoding="utf-8")
+        m2.update(data)
+        checkSum = m2.hexdigest()
+        signature = hmac.new(APISecret.encode('utf-8'), checkSum.encode('utf-8'), digestmod=hashlib.sha1).digest()
+        return base64.b64encode(signature).decode(encoding='utf-8')
+
+
+class DocumentQAndAView(APIView):
+    def post(self, request):
+        logger.debug(f'Request body: {request.body}')
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            logger.debug('Invalid JSON received')
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        document_id = data.get('document_id')
+        question_text = data.get('question')
+
+        if not document_id or not question_text:
+            logger.debug('Document ID and question are required')
+            return JsonResponse({'error': 'Document ID and question are required'}, status=400)
+
+        try:
+            document = Document.objects.get(id=document_id)
+        except Document.DoesNotExist:
+            logger.debug(f'Document not found: document_id={document_id}')
+            return JsonResponse({'error': 'Document not found'}, status=404)
+
+        question = Question(document=document, question=question_text)
+        question.save()
+
+        answer = self.ask_question(document, question_text)
+        question.answer = answer
+        question.save()
+
+        logger.debug(f'Question asked: question_text={question_text}, answer={answer}')
+        return JsonResponse({'question': question_text, 'answer': answer})
+
+    def ask_question(self, document, question_text):
+        APPId = settings.APP_ID
+        APISecret = settings.API_SECRET
+        timestamp = str(int(time.time()))
+        origin_url = "wss://chatdoc.xfyun.cn/openapi/chat"
+
+        signature = self.get_signature(APPId, APISecret, timestamp)
+        ws_url = f"{origin_url}?appId={APPId}&timestamp={timestamp}&signature={signature}"
+
+        complete_answer = []
+
+        def on_message(ws, message):
+            logger.debug(f'WebSocket message received: {message}')
+            data = json.loads(message)
+            if data.get('status') == 2:
+                ws.close()
+            content = data.get('content', '')
+            complete_answer.append(content)
+
+        def on_error(ws, error):
+            logger.debug(f'WebSocket error: {error}')
+            complete_answer.append('Error occurred')
+
+        def on_close(ws, close_status_code, close_msg):
+            logger.debug(f'WebSocket connection closed with status: {close_status_code}, message: {close_msg}')
+
+        def on_open(ws):
+            logger.debug('WebSocket connection opened')
+            body = {
+                "chatExtends": {
+                    "wikiPromptTpl": "请将以下内容作为已知信息：\n<wikicontent>\n请根据以上内容回答用户的问题。\n问题:<wikiquestion>\n回答:",
+                    "wikiFilterScore": 0.83,
+                    "temperature": 0.5
+                },
+                "fileIds": [
+                    document.file_id  # 使用正确的 file_id
+                ],
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": question_text
+                    }
+                ]
+            }
+            ws.send(json.dumps(body))
+
+        websocket.enableTrace(True)
+        ws = websocket.WebSocketApp(ws_url,
+                                    on_message=on_message,
+                                    on_error=on_error,
+                                    on_close=on_close,
+                                    on_open=on_open)
+        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+
+        return ''.join(complete_answer)
+
+    def get_signature(self, APPId, APISecret, timestamp):
+        m2 = hashlib.md5()
+        data = bytes(APPId + timestamp, encoding="utf-8")
+        m2.update(data)
+        checkSum = m2.hexdigest()
+        signature = hmac.new(APISecret.encode('utf-8'), checkSum.encode('utf-8'), digestmod=hashlib.sha1).digest()
+        return base64.b64encode(signature).decode(encoding='utf-8')
+
+
+import time
+import requests
+import hashlib
+import base64
+import hmac
+import logging
+
+from django.conf import settings
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from .models import Document
+
+logger = logging.getLogger(__name__)
+
+
+class DocumentSummaryView(APIView):
+    def post(self, request):
+        document_id = request.data.get('document_id')
+        if not document_id:
+            return JsonResponse({'error': 'Document ID is required'}, status=400)
+
+        try:
+            document = Document.objects.get(id=document_id)
+        except Document.DoesNotExist:
+            return JsonResponse({'error': 'Document not found'}, status=404)
+        time.sleep(5)  # 等待5秒后再获取总结结果
+        # 发起文档总结请求
+        start_response = self.start_document_summary(document)
+        if start_response.status_code != 200:
+            return JsonResponse({'error': 'Failed to start document summary'}, status=start_response.status_code)
+
+        start_data = start_response.json()
+        logger.debug(f'Start summary response data: {start_data}')
+
+        if start_data['code'] != 0:
+            return JsonResponse({'error': start_data.get('desc', 'Unknown error')}, status=400)
+
+        # 轮询获取总结结果
+        summary_response = self.poll_document_summary(document.file_id)
+        if summary_response.status_code != 200:
+            return JsonResponse({'error': 'Failed to get document summary'}, status=summary_response.status_code)
+
+        response_data = summary_response.json()
+        logger.debug(f'Summary response data: {response_data}')
+
+        if response_data.get('data') is None:
+            return JsonResponse({'error': 'No summary data available'}, status=400)
+
+        document.summary = response_data['data'].get('summary', '')
+        document.save()
+
+        return JsonResponse({'message': 'Document summarized successfully', 'summary': document.summary})
+
+    def start_document_summary(self, document):
+        APPId = settings.APP_ID
+        APISecret = settings.API_SECRET
+        timestamp = str(int(time.time()))
+        request_url = "https://chatdoc.xfyun.cn/openapi/v1/file/summary/start"
+
+        signature = self.get_signature(APPId, APISecret, timestamp)
+        headers = {
+            "appId": APPId,
+            "timestamp": timestamp,
+            "signature": signature,
+        }
+
+        files = {
+            "fileId": (None, document.file_id)
+        }
+
+        response = requests.post(request_url, files=files, headers=headers)
+        logger.debug(f'Start summary response: {response.status_code} - {response.text}')
+        return response
+
+    def poll_document_summary(self, file_id):
+        APPId = settings.APP_ID
+        APISecret = settings.API_SECRET
+        timestamp = str(int(time.time()))
+        request_url = "https://chatdoc.xfyun.cn/openapi/v1/file/summary/query"
+
+        signature = self.get_signature(APPId, APISecret, timestamp)
+        headers = {
+            "appId": APPId,
+            "timestamp": timestamp,
+            "signature": signature,
+        }
+
+        files = {
+            "fileId": (None, file_id)
+        }
+
+        max_attempts = 10
+        for attempt in range(max_attempts):
+            response = requests.post(request_url, files=files, headers=headers)
+            logger.debug(f'Poll summary attempt {attempt + 1}/{max_attempts}: {response.status_code} - {response.text}')
+
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('data') is not None:
+                    return response
+
+            time.sleep(5)  # 等待5秒后重试
+
+        return response
+
+    def get_signature(self, APPId, APISecret, timestamp):
+        m2 = hashlib.md5()
+        data = bytes(APPId + timestamp, encoding="utf-8")
+        m2.update(data)
+        checkSum = m2.hexdigest()
+        signature = hmac.new(APISecret.encode('utf-8'), checkSum.encode('utf-8'), digestmod=hashlib.sha1).digest()
+        return base64.b64encode(signature).decode(encoding='utf-8')

@@ -18,6 +18,7 @@ export default defineConfig({
         { path: "/plat/bbs", component: "bbs" },
        { path: "/plat/audio", component: "audio" },
        { path: "/plat/analyse", component: "analyse" },
+          { path: "/plat/documentQA", component: "documentQA" },
        { path: "/plat/diary", component: "diary" },
           { path: "/plat/correct", component: "correct" },
        { path: "/plat/to_do_list", component: "to_do_list" },

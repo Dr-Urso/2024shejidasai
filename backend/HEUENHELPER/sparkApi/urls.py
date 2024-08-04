@@ -12,5 +12,9 @@ urlpatterns = [
     path('writing_correction', views.WritingCorrectView.as_view()),
     path('teaching_plan', views.TeachingPlanView.as_view()),
     path('diary_list', views.DiaryListView.as_view()),
+    path('upload', views.DocumentUploadView.as_view()),
+    path('qanda', views.DocumentQAndAView.as_view()),
+    path('document_summary', views.DocumentSummaryView.as_view()),
+    path('document_summary_result', views.DocumentSummaryView.as_view())
 
 ]

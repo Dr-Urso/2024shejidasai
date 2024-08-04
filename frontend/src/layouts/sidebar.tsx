@@ -94,6 +94,9 @@ export default function Layout() {
                      <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/bbs')}>
                         师生论坛
                     </SideNavLink>
+                    <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/documentQA')}>
+                        文档问答
+                    </SideNavLink>
                 </SideNavItems>
             </SideNav>
             <UserProvider>

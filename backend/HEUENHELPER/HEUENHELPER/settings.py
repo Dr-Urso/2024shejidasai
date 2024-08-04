@@ -15,7 +15,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+APP_ID = "d49d5acf"
+API_SECRET = "NTA3NzcxNWIzZTA0YzVmYzliMDU2NDc3"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -55,7 +56,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',  # 添加这个
+    'DEFAULT_FORMAT_SUFFIX_KWARG': 'format',  # 添加这个
 }
 
 MIDDLEWARE = [
