@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import { Content, TextArea, Button, Loading } from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
 import ImageUploader from "@/components/ImageUploader";
+import {message} from "antd";
 
 export default function TextPage() {
     const [text, setText] = useState("");
@@ -12,12 +13,69 @@ export default function TextPage() {
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
     const [textNum,setTextNum] = useState(0);
 
-    useEffect(()=>{
-        setError('');
-    },[]);
+    useEffect(() => {
+        switch (error) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先输入要修改的作文': {
+                message.info({
+                    content: '请先输入要修改的作文',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '对不起，当前网络繁忙，请刷新或稍后再试': {
+                message.info({
+                    content: '对不起，当前网络繁忙，请刷新或稍后再试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '抱歉，你的作文包含敏感内容': {
+                message.error({
+                    content: '抱歉，你的作文包含敏感内容',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+             case '批改失败': {
+                message.error({
+                    content: '批改失败，请重新点击或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [error]);
 
      useEffect(() => {
-        setTextNum(text.length)
+        setTextNum(text.length);
+        setError('');
     }, [text]);
 
      const handleKeyDown = (e) => {
@@ -29,8 +87,12 @@ export default function TextPage() {
     };
 
     const handleCorrection = async () => {
+        if(text.length===0){
+            setError('请先输入要修改的作文');
+            return;
+        }
+        setTranslatedText('');
         setLoading(true);
-        setError(""); // 请求前清空错误信息
         try {
             const response = await fetch('/api/essay/correction', {
                 method: 'POST',
@@ -42,18 +104,21 @@ export default function TextPage() {
             if (response.ok) {
                 const data = await response.json();
                 setTranslatedText(data.choices?.[0].message.content);
+                setError('');
             }else if (response.status === 502) {
                 setError('对不起，当前网络繁忙，请刷新或稍后再试');
             } else {
                 const data = await response.json();
                 if (data.error.includes('包含敏感内容')) {
-                    setError("抱歉，你的作文包含敏感内容。");
+                    setError("抱歉，你的作文包含敏感内容");
                 } else {
+                    setError('批改失败');
                     console.error('批改失败', data.error);
                 }
             }
         } catch (error) {
-            console.error('请求出错', error);
+            setError('网络错误');
+            console.error('网络错误', error);
         } finally {
             setLoading(false);
         }
@@ -89,7 +154,6 @@ export default function TextPage() {
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即润色</Button>
-                        {error && <p style={{color: 'red'}}>{error}</p>}
                         <div className={styles.ResultContent}>
                             <TextArea
                                 value={translatedText}

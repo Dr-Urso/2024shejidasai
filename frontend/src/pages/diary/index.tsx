@@ -4,6 +4,11 @@ import React, {useState, useEffect, useRef} from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Quill样式
 import DOMPurify from 'dompurify';
+import {message} from "antd";
+
+message.config({
+    zIndex:9999
+})
 
 class DiaryEntry {
     private title: any;
@@ -29,12 +34,114 @@ export default function Page() {
     const [currentDiary, setCurrentDiary] = useState({
         title: '',
         date: '',
-        mood: '平常心',
+        mood: '正常',
         content: ''
     });
-    useEffect(()=>{
-        setErr('');
-    },[]);
+
+    useEffect(() => {
+        switch (err) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请输入日记标题': {
+                message.info({
+                    content: '请输入日记标题',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请选择日期': {
+                message.info({
+                    content: '请选择日期',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请选择心情': {
+                message.info({
+                    content: '请输入日记标题',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请输入日记内容': {
+                message.info({
+                    content: '请输入日记内容',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '对不起，当前网络繁忙，请刷新或稍后再试': {
+                message.info({
+                    content: '对不起，当前网络繁忙，请刷新或稍后再试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '获取日记失败': {
+                message.error({
+                    content: '获取日记失败，请刷新或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '保存日记失败': {
+                message.error({
+                    content: '保存日记失败，请刷新或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+             case '日记总结失败': {
+                message.error({
+                    content: '日记总结失败，请刷新或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [err]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 7;
 
@@ -46,11 +153,14 @@ export default function Page() {
                 if (response.ok) {
                     const data = await response.json();
                     setDiaries(data);
+                    setErr('');
                 } else {
+                    setErr('获取日记失败');
                     console.error('获取日记失败');
                 }
             } catch (error) {
-                console.error('请求出错', error);
+                setErr('网络错误')
+                console.error('网络错误', error);
             }
         };
         fetchDiaries();
@@ -61,7 +171,7 @@ export default function Page() {
         setCurrentDiary({
             title: '',
             date: '',
-            mood: '平常心',
+            mood: '正常',
             content: ''
         });
         setValue('');
@@ -79,7 +189,7 @@ export default function Page() {
         setViewMode('view');
     };
 
-    const handleSave = async () => {
+    const handleSave = async (e) => {
         if (!currentDiary.title) {
             setErr("请输入日记标题");
             return;
@@ -92,8 +202,9 @@ export default function Page() {
             setErr('请选择心情');
             return;
         }
-        if (err) {
-            setErr('');
+        if (value==='') {
+            setErr('请输入日记内容');
+            return;
         }
         const sanitizedContent = DOMPurify.sanitize(value);
         const newDiary = new DiaryEntry(
@@ -116,14 +227,15 @@ export default function Page() {
                 const savedDiary = await response.json();
                 setDiaries([...diaries, savedDiary]);
                 setViewMode('home');
+                setErr('');
             } else {
                 const errorData = await response.json();
-                console.error('保存失败', errorData);
-                setErr('保存失败，请检查输入');
+                console.error('保存日记失败', errorData);
+                setErr('保存日记失败');
             }
         } catch (error) {
-            console.error('请求出错', error);
-            setErr('请求出错，请稍后再试');
+            console.error('网络错误', error);
+            setErr('网络错误');
         }
     };
 
@@ -148,7 +260,7 @@ export default function Page() {
     };
 
     const getSortedDiaries = () => {
-        const moodOrder = { '兴奋': 1, '开心': 2, '平常心': 3, '伤心': 4, '悲伤': 5 };
+        const moodOrder = { '兴奋': 1, '开心': 2, '正常': 3, '伤心': 4, '悲伤': 5 };
 
         if (sortOption === 'date') {
             return [...diaries].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -184,13 +296,16 @@ export default function Page() {
             if (response.ok) {
                 const data = await response.json();
                 setAnalysisResult(data.result);
+                setErr('');
             }else if (response.status === 502) {
                 setErr('对不起，当前网络繁忙，请刷新或稍后再试');
             } else {
-                console.error('分析失败');
+                setErr('日记总结失败')
+                console.error('日记总结失败');
             }
         } catch (error) {
-            console.error('请求出错', error);
+            setErr('网络错误');
+            console.error('网络错误', error);
         }
     };
 
@@ -250,7 +365,6 @@ export default function Page() {
                         <Button onClick={handleNextPage}
                                 disabled={indexOfLastDiary >= sortedDiaries.length}>下一页</Button>
                     </div>}
-                    {err && <p style={{color: 'red'}}>{err}</p>}
                     {analysisResult && (
                         <div className={styles.AnalysisResult}>
                             <h3>每日日记总结</h3>
@@ -305,16 +419,13 @@ export default function Page() {
                 >
                     <SelectItem value="兴奋" text="兴奋" />
                     <SelectItem value="开心" text="开心" />
-                    <SelectItem value="平常心" text="平常心" />
+                    <SelectItem value="正常" text="正常" />
                     <SelectItem value="伤心" text="伤心" />
                     <SelectItem value="悲伤" text="悲伤" />
                 </Select>
                 <ReactQuill value={value} onChange={setValue} modules={modules} style={{marginTop:'16px'}}/>
                 <Button onClick={handleSave} style={{marginTop:'16px',marginRight:'16px'}}>保存</Button>
                 <Button onClick={() => setViewMode('home')} style={{marginTop:'16px',marginRight:'16px'}}>取消</Button>
-                <div>{err && (
-                    <div className={styles.Err}>{err}</div>
-                )}</div>
             </div>
         </Content>
     );

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './index.less';
 import {Button, Content, Loading} from "carbon-components-react";
 import {TextInput} from "@carbon/react";
-import { Image } from 'antd';
+import { Image ,message } from 'antd';
 
 export default function Page() {
     const [showImg, setShowImg] = useState(false);
@@ -11,21 +11,76 @@ export default function Page() {
     const [click,setClick]=useState(false);
     const [init,setInit]=useState(true);
     const downloadLink = useRef(null);
+    const [error,setError]=useState('');
+
+    useEffect(() => {
+        switch (error) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先输入图片描述': {
+                message.info({
+                    content: '请先输入图片描述',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '图片生成失败': {
+                message.error({
+                    content: '图片生成失败，请重新点击或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '暂未生成图片': {
+                message.info({
+                    content: '暂未生成图片',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [error]);
 
     const handleTextChange = (e) => {
         setText(e.target.value);
+        setError('');
     };
 
     const handleDownload = () => {
-        if (!imageUrl) return;
+        if (!imageUrl) {
+            setError('暂未生成图片');
+            return;
+        }
         if (downloadLink.current) {
             downloadLink.current.click();
+            setError('');
         }
     };
 
     const handleSubmit = async () => {
         if(text.length===0){
-            alert('请先输入图片描述.');
+            setError('请先输入图片描述')
             return ;
         }
         const formData = new FormData();
@@ -47,12 +102,15 @@ export default function Page() {
                 setImageUrl(updatedImageUrl); // 更新图片文件URL
                 setShowImg(true);
                 setClick(false);
+                setError('')
                 console.log('图片生成成功')
             } else {
+                setError('图片生成失败')
                 console.error('图片生成失败');
                 // 处理上传失败后的逻辑
             }
         } catch (error) {
+            setError('网络错误')
             console.error('网络错误:', error);
             // 处理网络错误
         }

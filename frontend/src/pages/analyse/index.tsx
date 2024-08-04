@@ -3,6 +3,11 @@ import { Button, TextArea, TextInput, Select, SelectItem, Checkbox, Content, Loa
 import styles from './index.less'; // 样式文件
 import { useUser } from "@/Utils/UserContext";
 import { Line } from '@ant-design/charts';
+import {message} from "antd";
+
+message.config(
+    {zIndex:9999}
+)
 
 export default function ScoreAnalysis() {
     const [edit, setEdit] = useState('0');
@@ -66,8 +71,211 @@ export default function ScoreAnalysis() {
         Politics: '政治',
     };
 
-    const [TData, setTData] = useState([])
-    const [TotalData, setTotalData] = useState([])
+    const [TData, setTData] = useState([]);
+    const [TotalData, setTotalData] = useState([]);
+
+    useEffect(() => {
+        switch (errorMessage) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请选择教育阶段': {
+                message.info({
+                    content: '请选择教育阶段',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '对不起，当前网络繁忙，请刷新或稍后再试': {
+                message.info({
+                    content: '对不起，当前网络繁忙，请刷新或稍后再试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '获取成绩信息失败': {
+                message.error({
+                    content: '获取成绩信息失败，请刷新或稍后再试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '保存基础信息失败': {
+                message.error({
+                    content: '保存基础信息失败，请重新保存或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '添加考试信息失败': {
+                message.error({
+                    content: '添加考试信息失败，请重新添加或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '分析失败，请稍后再试': {
+                message.error({
+                    content: ' 分析失败，请重新分析或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '获取基础信息失败': {
+                message.error({
+                    content: '获取基础信息失败，请刷新或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请填写考试名称': {
+                message.info({
+                    content: '请填写考试名称',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写语文成绩': {
+                message.info({
+                    content: '请填写语文成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写数学成绩': {
+                message.info({
+                    content: '请填写数学成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写英语成绩': {
+                message.info({
+                    content: '请填写英语成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写物理成绩': {
+                message.info({
+                    content: '请填写物理成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写化学成绩': {
+                message.info({
+                    content: '请填写化学成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写生物成绩': {
+                message.info({
+                    content: '请填写生物成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写历史成绩': {
+                message.info({
+                    content: '请填写历史成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写政治成绩': {
+                message.info({
+                    content: '请填写政治成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+           case '请填写地理成绩': {
+                message.info({
+                    content: '请填写地理成绩',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+           }
+        }
+    }, [errorMessage]);
 
     useEffect(() => {
         fetchScores();
@@ -142,14 +350,16 @@ export default function ScoreAnalysis() {
                 });
                 setTData(temp);
                 setTotalData(temp2);
-                console.log(temp);
+                setErrorMessage('');
+                // console.log(temp);
             } else {
+                setErrorMessage('获取成绩信息失败');
                 console.error('获取成绩信息失败');
             }
         } catch (error) {
-            console.error('请求出错', error);
+            setErrorMessage('网络错误');
+            console.error('网络错误', error);
         } finally {
-
             setLoading(false);
         }
     };
@@ -229,7 +439,9 @@ export default function ScoreAnalysis() {
                 subject: Object.keys(subjects).filter(subject => subjects[subject]).join(', '), // 将勾选的科目转换为字符串
                 fullMark: totalScores
             });
+            setErrorMessage('');
             if (!response.ok) {
+                setErrorMessage('保存基础信息失败');
                 console.error('保存基础信息失败');
             } else {
                 setBaseInfoSaved(true);
@@ -237,7 +449,8 @@ export default function ScoreAnalysis() {
                 setShowEditForm(false); // 关闭编辑科目信息模态框
             }
         } catch (error) {
-            console.error('请求出错', error);
+            setErrorMessage('网络错误');
+            console.error('网络错误', error);
         } finally {
             setLoading(false); // 隐藏loading效果
         }
@@ -267,8 +480,10 @@ export default function ScoreAnalysis() {
                 totalScore: totalScores,
                 selfEvaluation: currentExam.selfEvaluation
             })
+            setErrorMessage('');
             if (!response.ok) {
-                console.error('保存考试信息失败');
+                setErrorMessage('添加考试信息失败');
+                console.error('添加考试信息失败');
             }
         } catch (error) {
             console.error('请求出错', error);
@@ -369,6 +584,7 @@ export default function ScoreAnalysis() {
             });
 
             if (response.ok) {
+                setErrorMessage('');
                 const data = await response.json();
                 setAiSuggestions(data.result);
             } else if (response.status === 502) {
@@ -379,7 +595,7 @@ export default function ScoreAnalysis() {
             }
         } catch (error) {
             console.error('请求出错', error);
-            setErrorMessage('请求出错，请稍后再试');
+            setErrorMessage('网络错误');
         } finally {
             setLoading(false);
         }
@@ -417,6 +633,7 @@ export default function ScoreAnalysis() {
                     setSubjects(subjectsObject);
                     setTotalScores(data.fullMark);
                     setBaseInfoSaved(true);
+                    setErrorMessage('');
 
                     // 更新 currentExam 状态中的 scores 属性
                     setCurrentExam(prevState => ({
@@ -436,10 +653,12 @@ export default function ScoreAnalysis() {
                     }));
                 }
             } else {
+                setErrorMessage('获取基础信息失败');
                 console.error('获取基础信息失败');
             }
         } catch (error) {
-            console.error('请求出错', error);
+            setErrorMessage('网络错误')
+            console.error('网络错误', error);
         } finally {
             setLoading(false);
         }
@@ -496,6 +715,7 @@ export default function ScoreAnalysis() {
                     modalHeading="编辑科目信息"
                     passiveModal
                     onRequestClose={() => setShowEditForm(false)}
+                    style={{ zIndex: 1000 }}
                 >
                     <div className={styles.BaseInfoForm}>
                         <Select
@@ -629,6 +849,7 @@ export default function ScoreAnalysis() {
                     modalHeading="添加成绩"
                     passiveModal
                     onRequestClose={() => setShowScoreForm(false)}
+                    style={{ zIndex: 1000 }}
                 >
                     <div className={styles.ExamForm}>
                         <TextInput
@@ -737,7 +958,6 @@ export default function ScoreAnalysis() {
                     </div>
                 </Modal>
 
-                {errorMessage && <div style={{ color: 'red', marginBottom: '0%', marginTop: "2%" }}>{errorMessage}</div>}
                 <div className={styles.ExamList} style={{marginTop:'16px'}}>
                     {currentExams.map((exam, index) => (
                         <div key={index} className={styles.ExamItem}>

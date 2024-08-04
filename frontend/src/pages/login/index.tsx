@@ -39,6 +39,14 @@ export default function Page() {
     };
 
     const onLogin = async () => {
+        if(username===''){
+            setErrorMessage('用户名不能为空');
+            return;
+        }
+        if(password===''){
+            setErrorMessage('密码不能为空');
+            return;
+        }
         try {
             const response = await axios.post('/api/user/login', {
                 username,

@@ -3,6 +3,7 @@ import { Link } from "@@/exports";
 import React, {useEffect, useState} from "react";
 import { Content, TextArea, Button, Loading } from "carbon-components-react";
 import ImageUploader from "@/components/ImageUploader";
+import {message} from "antd";
 
 export default function TextPage() {
     const [title, setTitle] = useState("");
@@ -11,12 +12,85 @@ export default function TextPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(""); // 新增状态变量来保存错误信息
     const [textNum,setTextNum] = useState(0);
+
+    useEffect(() => {
+        switch (error) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先输入作文标题': {
+                message.info({
+                    content: '请先输入作文标题',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先输入作文内容': {
+                message.info({
+                    content: '请先输入作文内容',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '对不起，当前网络繁忙，请刷新或稍后再试': {
+                message.info({
+                    content: '对不起，当前网络繁忙，请刷新或稍后再试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '抱歉，你的作文包含敏感内容': {
+                message.error({
+                    content: '抱歉，你的作文包含敏感内容',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+             case '批改失败': {
+                message.error({
+                    content: '批改失败，请重新点击或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [error]);
+
     useEffect(()=>{
         setError('');
     },[]);
 
     useEffect(() => {
-        setTextNum(essayText.length)
+        setTextNum(essayText.length);
+        setError('');
     }, [essayText]);
 
     const handleKeyDown = (e) => {
@@ -28,8 +102,15 @@ export default function TextPage() {
     };
 
     const handleCorrection = async () => {
+        if(title.length===0){
+            setError('请先输入作文标题');
+            return;
+        }
+        if(essayText.length===0){
+            setError('请先输入作文内容');
+            return;
+        }
         setLoading(true);
-        setError(""); // 请求前清空错误信息
         try {
             const response = await fetch('/api/spark/writing_correction', {
                 method: 'POST',
@@ -43,17 +124,20 @@ export default function TextPage() {
                 // 将数组数据转换为字符串，用换行符分隔
                 const resultText = data.result.join('');
                 setCorrectedText(resultText);
+                setError('');
             } else if (response.status === 502) {
                 setError('对不起，当前网络繁忙，请刷新或稍后再试');
             }else {
                 const data = await response.json();
                 if (data.error.includes('包含敏感内容')) {
-                    setError("抱歉，你的作文包含敏感内容。");
+                    setError("抱歉，你的作文包含敏感内容");
                 } else {
+                    setError('批改失败');
                     console.error('批改失败', data.error);
                 }
             }
         } catch (error) {
+            setError('网络错误');
             console.error('请求出错', error);
         } finally {
             setLoading(false);
@@ -62,6 +146,7 @@ export default function TextPage() {
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value);
+        setError('');
     };
 
     const handleTextChange = (e) => {
@@ -104,7 +189,6 @@ export default function TextPage() {
                             id="text-area-1"
                         />
                         <Button onClick={handleCorrection}>立即批改</Button>
-                        {error && <p style={{color: 'red'}}>{error}</p>}
                         <div className={styles.Trans}>
                             <TextArea
                                 value={correctedText}

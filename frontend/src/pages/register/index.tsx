@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, TextInput, RadioButton } from "@carbon/react";
 import { Content, Header, HeaderName, RadioButtonGroup } from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import axios from 'axios';
 import styles from './index.less';
 import { Link } from "umi";
 import bg from "@/assets/register.svg";
+import {message} from "antd";
 
 export default function Page() {
     const [username, setUsername] = useState("");
@@ -13,7 +14,24 @@ export default function Page() {
     const [id, setId] = useState("");
     const [user_type, setUser_type] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [mesg,setMessage]=useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        switch (mesg) {
+            case '注册成功，请登录': {
+                message.success({
+                    content: '注册成功，请登录',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [mesg]);
 
     const handleRegister = async () => {
         if (!username || !password || !id || !user_type) {
@@ -27,7 +45,7 @@ export default function Page() {
         } else {
             payload.student_id = id;
         }
-
+        setMessage('');
         try {
             const response = await axios.post('/api/user/create', payload, {
                 headers: {
@@ -38,7 +56,7 @@ export default function Page() {
             const data = response.data;  // 获取响应数据
             if (response.status === 200 && data.detail === 'OK') {
                 console.log('Registration successful:', data);
-                alert('注册成功，请登录');
+                setMessage('注册成功，请登录');
 
                 // 延迟导航
                 setTimeout(() => {

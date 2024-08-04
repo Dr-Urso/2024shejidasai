@@ -3,6 +3,7 @@ import { Link } from "@@/exports";
 import React, { useState, useEffect, useRef } from "react";
 import {Content, Select, SelectItem, TextArea} from "carbon-components-react";
 import { useNavigate } from "react-router-dom";
+import {message} from "antd";
 
 export default function TextPage() {
     const [text, setText] = useState("");
@@ -10,6 +11,23 @@ export default function TextPage() {
     const typingTimeoutRef = useRef(null);
     const [fromTo,setFromTo]=useState('en-cn');
     const [textNum,setTextNum] = useState(0);
+    const [error,setError]=useState('');
+
+    useEffect(() => {
+        switch (error) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [error]);
 
     useEffect(() => {
         setTextNum(text.length)
@@ -31,11 +49,12 @@ export default function TextPage() {
             if (response.ok) {
                 const data = await response.json();
                 setTranslatedText(data.result);  // 假设后端返回的键名为 result
+                setError('');
             } else {
                 console.error('翻译失败');
             }
         } catch (error) {
-            console.error('请求出错', error);
+            console.error('网络错误', error);
         }
     };
     const handleTransChange = (e) => {

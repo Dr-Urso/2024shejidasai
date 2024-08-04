@@ -1,34 +1,159 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Content, Button, FileUploader, TextInput, Modal } from 'carbon-components-react';
 import styles from './index.less';
+import {Popover,Button as AntdButton,message} from 'antd';
 
 export default function DocumentQA() {
     const [file, setFile] = useState(null);
     const [documentId, setDocumentId] = useState(null);
     const [question, setQuestion] = useState('');
     const [messages, setMessages] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [uploadLoading,setuploadLoading]=useState(false);
+    const [qLoading,setQLoading]=useState(false);
     const [error, setError] = useState('');
     const [summary, setSummary] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [getSummary, setGetSummary] = useState(false);
+    const [init,setInit]=useState(true);
+    const [initChat,setInitChat]=useState(true);
+
+    useEffect(() => {
+        switch (error){
+            case '请求出错':{
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration:3,
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先选择一个文档':{
+                message.info({
+                    content: '请先选择一个文档',
+                    className: 'custom-class',
+                    duration:3,
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '文档上传失败':{
+                message.error({
+                    content: '文档上传失败',
+                    className: 'custom-class',
+                    duration:3,
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '文档总结请求失败，正在重试':{
+                message.info({
+                    content: '文档总结请求失败，正在重试',
+                    className: 'custom-class',
+                    duration:3,
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '文档总结结果获取失败，正在重试':{
+                message.info({
+                    content: '文档总结结果获取失败，正在重试',
+                    duration:3,
+                    className: 'custom-class',
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先上传文档':{
+                message.info({
+                    content: '请先上传文档',
+                    className: 'custom-class',
+                    duration:3,
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请输入问题':{
+                message.info({
+                    content: '请先输入问题',
+                    className: 'custom-class',
+                    duration:3,
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '问答失败':{
+                message.error({
+                    content: '回答失败，可能网络繁忙或断开连接，请刷新或稍后再试',
+                    duration:3,
+                    className: 'custom-class',
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '文档总结请求失败':{
+                message.error({
+                    content: '文档总结请求失败，请刷新或稍后重试',
+                    duration:3,
+                    className: 'custom-class',
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '文档总结结果获取失败':{
+                message.error({
+                    content: '文档总结结果获取失败，请刷新或稍后重试',
+                    duration:3,
+                    className: 'custom-class',
+                    style: {
+                    marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [error]);
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
         setError('');
     };
 
+    const handleRemoveFile = (event) => {
+        setFile(null);
+        setError('');
+    };
+
     const handleUpload = async () => {
         if (!file) {
-            setError('请先选择一个文件');
+            setError('请先选择一个文档');
             return;
         }
+
+        setDocumentId(null);//清除之前的文档id
 
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            setLoading(true);
+            setuploadLoading(true);
             const response = await fetch('/api/spark/upload', {
                 method: 'POST',
                 body: formData,
@@ -38,41 +163,70 @@ export default function DocumentQA() {
                 const data = await response.json();
                 setDocumentId(data.document_id);
                 setError('');
+                setuploadLoading(false);
+                setGetSummary(false);
+                setInit(false);
+
+                if(initChat){
+                    //首次上传文档成功后，提示用户可以开始对话
+                    const answerMessage = {
+                        sender: 'bot',
+                        text: '您的文档上传成功，快来尝试对文档进行提问吧~',
+                        timestamp: new Date().toLocaleTimeString()
+                    };
+                    setMessages(prevMessages => [...prevMessages, answerMessage]);
+                }else{
+                    //上传文档成功后，提示用户可以开始对话
+                    const answerMessage = {
+                        sender: 'bot',
+                        text: '您重新上传的文档已成功上传，快来对文档提问吧~',
+                        timestamp: new Date().toLocaleTimeString()
+                    };
+                    setMessages(prevMessages => [...prevMessages, answerMessage]);
+                }
+
+                setInitChat(false);
                 console.log('Document uploaded successfully, document_id:', data.document_id);
 
+                await new Promise(resolve => setTimeout(resolve, 3000));//等待3s发起总结请求
                 // 调用发起文档总结 API
                 await startSummary(data.document_id);
             } else {
-                setError('文件上传失败');
+                setError('文档上传失败');
             }
         } catch (error) {
             setError('请求出错');
             console.error('请求出错', error);
-        } finally {
-            setLoading(false);
         }
     };
 
     const startSummary = async (documentId) => {
-        try {
-            const response = await fetch('/api/spark/document_summary', {
+        const maxAttempts = 10;
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                const response = await fetch('/api/spark/document_summary', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ document_id: documentId }),
-            });
+                });
 
-            if (response.ok) {
-                console.log('Summary request started successfully');
-                await fetchSummary(documentId);
-            } else {
-                setError('文档总结请求失败');
+                if (response.ok) {
+                    console.log('Summary request started successfully');
+                    setError('');
+                    await fetchSummary(documentId);
+                    return ;
+                } else {
+                    setError('文档总结请求失败，正在重试');
+                }
+            } catch (error) {
+                setError('请求出错');
+                console.error('请求出错', error);
             }
-        } catch (error) {
-            setError('请求出错');
-            console.error('请求出错', error);
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 等待5秒后重试
         }
+        setError('文档总结请求失败');
     };
 
     const fetchSummary = async (documentId) => {
@@ -97,7 +251,9 @@ export default function DocumentQA() {
                         return;
                     }
                 } else {
-                    setError('文档总结结果获取失败');
+                    if(attempt>=5){
+                        setError('文档总结结果获取失败，正在重试');
+                    }
                 }
             } catch (error) {
                 setError('请求出错');
@@ -105,7 +261,8 @@ export default function DocumentQA() {
             }
             await new Promise(resolve => setTimeout(resolve, 5000)); // 等待5秒后重试
         }
-        setError('无法获取文档总结结果');
+        setError('文档总结结果获取失败');
+        setGetSummary(false);
     };
 
     const handleQuestionChange = (event) => {
@@ -115,12 +272,12 @@ export default function DocumentQA() {
 
     const handleAskQuestion = async () => {
         if (!documentId) {
-            setError('请先上传一个文件');
+            setError('请先上传文档');
             return;
         }
 
         if (!question) {
-            setError('请输入一个问题');
+            setError('请输入问题');
             return;
         }
 
@@ -137,9 +294,10 @@ export default function DocumentQA() {
         setMessages([...messages, newMessage]);
         setQuestion('');
 
+        setQLoading(true);
+
         try {
-            console.log('payload:', payload);
-            setLoading(true);
+            // console.log('payload:', payload);
             const response = await fetch('/api/spark/qanda', {
                 method: 'POST',
                 headers: {
@@ -157,82 +315,72 @@ export default function DocumentQA() {
                 };
                 setMessages(prevMessages => [...prevMessages, answerMessage]);
                 setError('');
-                console.log('Question asked successfully, answer:', data.answer);
+                // console.log('Question asked successfully, answer:', data.answer);
             } else {
                 setError('问答失败');
             }
         } catch (error) {
             setError('请求出错');
             console.error('请求出错', error);
-        } finally {
-            setLoading(false);
         }
-    };
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
+        setQLoading(false);
     };
 
     return (
-        <Content id='main-content'>
-            <div className={styles.Container}>
-                <div className={styles.Header}>
-                    <p>上传文档并进行问答</p>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                </div>
-                <div className={styles.UploadSection}>
+        <Content id='main-content' className={styles.Container}>
+            <div className={styles.ImageUploaderWrapper}>
+                <div style={{marginTop:'32px'}}>
                     <FileUploader
-                        buttonLabel="选择文件"
-                        onChange={handleFileChange}
-                        accept={['.pdf', '.txt']}
-                        style={{ height: "35px" }}
+                    buttonLabel="选择文档"
+                    labelDescription={"仅支持 .pdf .txt .doc"}
+                    onChange={handleFileChange}
+                    accept={['.pdf', '.txt', '.docx', '.doc']}
+                    multiple={false}
+                    filenameStatus="edit"
+                    onDelete={handleRemoveFile}
+                    size={"sm"}
                     />
-                    <Button onClick={handleUpload} disabled={loading} style={{ height: "15px", marginTop: '10px' }}>
-                        {loading ? '上传中...' : '上传'}
-                    </Button>
-                    { getSummary && <Button onClick={openModal} style={{ height: "15px", marginTop: '10px' }}>
-                        查看文档总结
-                    </Button>}
                 </div>
-                {documentId && (
-                    <div className={styles.ChatSection}>
-                        <div className={styles.ChatWindow}>
-                            {messages.map((msg, index) => (
-                                <div key={index} className={msg.sender === 'user' ? styles.UserMessage : styles.BotMessage}>
-                                    <span>{msg.text}</span>
-                                    <div className={styles.Timestamp}>{msg.timestamp}</div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className={styles.InputSection}>
-                            <div className={styles.ChatBox}>
-                                <TextInput
-                                    placeholder="请输入你的问题"
-                                    onChange={handleQuestionChange}
-                                    style={{ height: "50px" }}
-                                    value={question}
-                                />
-                                <Button onClick={handleAskQuestion} disabled={loading} >
-                                    {loading ? '提问中...' : '提问'}
-                                </Button>
+                <Button onClick={handleUpload} disabled={uploadLoading} style={{ marginTop: '16px'}} size={"sm"}>
+                    {init&&'上传文档'}
+                    {!init&&(uploadLoading?'上传中...':getSummary?'上传文档':'文档总结中...')}
+                </Button>
+                <br/>
+                <Popover content={() => {return <p>{summary}</p>}}
+                         title={"文档总结"}
+                         trigger={"click"}
+                         placement={"bottom"}
+                         overlayStyle={{ width: 500 }}
+                >
+                    {getSummary&&<AntdButton type="primary" style={{marginTop:'16px'}} >文档总结</AntdButton>}
+                </Popover>
+            </div>
+            <div className={styles.ContentWrapper}>
+                <div className={styles.ChatSection}>
+                    <div className={styles.ChatWindow}>
+                        {messages.map((msg, index) => (
+                            <div key={index}
+                                 className={msg.sender === 'user' ? styles.UserMessage : styles.BotMessage}>
+                                <span>{msg.text}</span>
+                                <div className={styles.Timestamp}>{msg.timestamp}</div>
                             </div>
+                        ))}
+                    </div>
+                    <div className={styles.InputSection}>
+                        <div className={styles.ChatBox}>
+                            <TextInput
+                                placeholder="请输入你的问题"
+                                onChange={handleQuestionChange}
+                                style={{height: "50px"}}
+                                value={question}
+                            />
+                            <Button onClick={handleAskQuestion} disabled={qLoading}>
+                                {qLoading ? '回答中...' : '提问'}
+                            </Button>
                         </div>
                     </div>
-                )}
+                </div>
             </div>
-            <Modal
-                open={isModalOpen}
-                modalHeading="文档总结"
-                primaryButtonText="关闭"
-                onRequestClose={closeModal}
-                onRequestSubmit={closeModal}
-            >
-                <p>{summary}</p>
-            </Modal>
         </Content>
     );
 }

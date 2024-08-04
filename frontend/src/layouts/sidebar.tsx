@@ -82,6 +82,9 @@ export default function Layout() {
                     {teacher_id && (<SideNavLink onClick={()=>handleSideNavLinkClick('/plat/correct')}>
                         作文批改
                     </SideNavLink>)}
+                    <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/documentQA')}>
+                        文档问答
+                    </SideNavLink>
                     <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/text')}>
                         文本翻译
                     </SideNavLink>
@@ -93,9 +96,6 @@ export default function Layout() {
                     </SideNavLink>)}
                      <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/bbs')}>
                         师生论坛
-                    </SideNavLink>
-                    <SideNavLink onClick={()=>handleSideNavLinkClick('/plat/documentQA')}>
-                        文档问答
                     </SideNavLink>
                 </SideNavItems>
             </SideNav>

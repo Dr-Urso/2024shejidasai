@@ -1,11 +1,68 @@
 import React, {useEffect, useState} from 'react';
 import {Button, FileUploader, RadioButton} from "@carbon/react";
 import {RadioButtonGroup} from "carbon-components-react";
+import {message} from "antd";
 
 const ImageUploader = ({setText,setLanguage,btn,setBtn}) => {
     const [files, setFiles] = useState([]);
 
     const [selectedLanguage, setSelectedLanguage] = useState('');
+
+    const [error,setError]=useState('');
+
+    useEffect(() => {
+        if(selectedLanguage!=='')setError('');
+    }, [selectedLanguage]);
+
+    useEffect(() => {
+        switch (error) {
+            case '网络错误': {
+                message.error({
+                    content: '网络请求出错，请刷新或稍后重试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先选择语言': {
+                message.info({
+                    content: '请先选择语言',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '请先添加图片': {
+                message.info({
+                    content: '请先添加图片',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+            case '图片上传失败': {
+                message.error({
+                    content: '图片上传失败，请重新点击或稍后再尝试',
+                    className: 'custom-class',
+                    duration: 3,
+                    style: {
+                        marginTop: '20vh',
+                    },
+                });
+                break;
+            }
+        }
+    }, [error]);
+
     //让ImageUploader中的lang与audio中的保持一致
     useEffect(() => {
         if(typeof setLanguage === 'function')setLanguage(selectedLanguage);//判断是否传递setLanguage
@@ -24,7 +81,7 @@ const ImageUploader = ({setText,setLanguage,btn,setBtn}) => {
     };
 
     const handleRemoveFile = (event) => {
-        console.log(event);
+        // console.log(event);
         let label = '';
         const nodeName = event.target.nodeName.toLowerCase();
         switch (nodeName) {
@@ -45,11 +102,11 @@ const ImageUploader = ({setText,setLanguage,btn,setBtn}) => {
     // 处理上传事件
     const handleUpload = async () => {
         if (files.length === 0) {
-            alert('请先添加图片.');
+            setError('请先添加图片');
             return;
         }
         if(selectedLanguage === ''){
-            alert('请先选择语言.');
+            setError('请先选择语言');
             return ;
         }
         const formData = new FormData();
@@ -68,11 +125,14 @@ const ImageUploader = ({setText,setLanguage,btn,setBtn}) => {
             if (response.ok) {
                 const data = await response.json();
                 setText((prevState)=>prevState+data.result);
+                setError('');
             } else {
+                setError('图片上传失败');
                 console.error('图片上传失败');
                 // 处理上传失败后的逻辑
             }
         } catch (error) {
+            setError('网络错误');
             console.error('网络错误:', error);
             // 处理网络错误
         }
