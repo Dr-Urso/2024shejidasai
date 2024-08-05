@@ -77,22 +77,22 @@
   ],
   "Services": [
     {
-      "icon": "fa fa-bullhorn",
+      "icon": "fa fa-bar-chart",
       "name": "智能成绩分析",
       "text": "成绩的可视化并利用讯飞星火大模型，实时分析学生的学习成绩，帮助学生发现不足并给出学习建议规划。"
     },
     {
-      "icon": "fa fa-cloud-download",
+      "icon": "fa fa-book",
       "name": "日记本",
       "text": "提供日记本功能，鼓励学生记录学习过程、心得和生活中的趣事，培养良好的学习习惯和身心健康。"
     },
     {
-      "icon": "fa fa-cart-arrow-down",
+      "icon": "fa fa-file-word-o",
       "name": "个性化教案编写",
       "text": "根据教师需求，定制教案，确保高效、有针对性的教学。"
     },
     {
-      "icon": "fa fa-group",
+      "icon": "fa fa-pencil-square-o",
       "name": "作文批改与润色",
       "text": "智能批改作文，帮助学生润色作文、提升写作能力和帮助老师快速批改作文和浏览作文。"
     },
@@ -102,17 +102,17 @@
       "text": "支持多语言文本翻译，帮助学生理解外语文本，提升阅读能力。"
     },
     {
-      "icon": "fa fa-group",
+      "icon": "fa fa-file-audio-o",
       "name": "书籍视听",
       "text": "将喜欢的书籍内容转化为自然流畅的人声，让书籍充满感染力，不再生硬。"
     },
     {
-      "icon": "fa fa-group",
+      "icon": "fa fa-comments-o",
       "name": "文档问答",
       "text": "面对学习和办公中海量文档和规章制度，快速检索问答来定位所需知识，提升阅读学习和办公效率。"
     },
     {
-      "icon": "fa fa-group",
+      "icon": "fa fa-picture-o",
       "name": "趣图生成",
       "text": "根据输入图片描述，生成不同类型的图片，为老师学生提供无限的创意和灵感，课后休闲放松使用。"
     }
