@@ -366,8 +366,8 @@ export default function Page() {
                                 disabled={indexOfLastDiary >= sortedDiaries.length}>下一页</Button>
                     </div>}
                     {analysisResult && (
-                        <div className={styles.AnalysisResult}>
-                            <h3>每日日记总结</h3>
+                        <div className={styles.AnalysisResult} style={{marginTop:'16px'}}>
+                            <h3>每周日记总结</h3>
                             <p ref={bottomRef}>{analysisResult}</p>
                         </div>
                     )}
