@@ -20,12 +20,12 @@
   },
   "Gallery": [
     {
-      "title": "登陆界面",
+      "title": "每日计划",
       "largeImage": "/img/portfolio/01-large.jpg",
       "smallImage": "/img/portfolio/01-small.jpg"
     },
     {
-      "title": "注册界面",
+      "title": "我的日记",
       "largeImage": "img/portfolio/02-large.jpg",
       "smallImage": "img/portfolio/02-small.jpg"
     },
@@ -35,51 +35,66 @@
       "smallImage": "img/portfolio/03-small.jpg"
     },
     {
-      "title": "学习任务管理",
+      "title": "作文润色",
       "largeImage": "img/portfolio/04-large.jpg",
       "smallImage": "img/portfolio/04-small.jpg"
     },
     {
-      "title": "日记界面",
+      "title": "教案生成",
       "largeImage": "img/portfolio/05-large.jpg",
       "smallImage": "img/portfolio/05-small.jpg"
     },
     {
-      "title": "师生论坛",
+      "title": "作文批改",
       "largeImage": "img/portfolio/06-large.jpg",
       "smallImage": "img/portfolio/06-small.jpg"
     },
     {
-      "title": "作文修改",
+      "title": "文档问答",
       "largeImage": "img/portfolio/07-large.jpg",
       "smallImage": "img/portfolio/07-small.jpg"
     },
     {
-      "title": "教案生成",
+      "title": "文本翻译",
       "largeImage": "img/portfolio/08-large.jpg",
       "smallImage": "img/portfolio/08-small.jpg"
     },
     {
-      "title": "作文批改",
+      "title": "书籍视听",
       "largeImage": "img/portfolio/09-large.jpg",
       "smallImage": "img/portfolio/09-small.jpg"
+    },
+    {
+      "title": "趣图生成",
+      "largeImage": "img/portfolio/10-large.jpg",
+      "smallImage": "img/portfolio/10-small.jpg"
+    },
+    {
+      "title": "师生论坛",
+      "largeImage": "img/portfolio/11-large.jpg",
+      "smallImage": "img/portfolio/11-small.jpg"
     }
   ],
   "Services": [
     {
-      "icon": "fa fa-wordpress",
-      "name": "AI成绩分析",
-      "text": "精准分析学习成绩，生成详细报告，帮助学生了解自身学习情况。"
-    },
-    {
-      "icon": "fa fa-cart-arrow-down",
-      "name": "个性化教学计划编写",
-      "text": "根据教师需求，定制教学计划，确保高效、有针对性的教学。"
+      "icon": "fa fa-bullhorn",
+      "name": "智能成绩分析",
+      "text": "成绩的可视化并利用讯飞星火大模型，实时分析学生的学习成绩，帮助学生发现不足并给出学习建议规划。"
     },
     {
       "icon": "fa fa-cloud-download",
       "name": "日记本",
-      "text": "提供日记本功能，鼓励学生记录学习过程和心得，培养良好的学习习惯。"
+      "text": "提供日记本功能，鼓励学生记录学习过程、心得和生活中的趣事，培养良好的学习习惯和身心健康。"
+    },
+    {
+      "icon": "fa fa-cart-arrow-down",
+      "name": "个性化教案编写",
+      "text": "根据教师需求，定制教案，确保高效、有针对性的教学。"
+    },
+    {
+      "icon": "fa fa-group",
+      "name": "作文批改与润色",
+      "text": "智能批改作文，帮助学生润色作文、提升写作能力和帮助老师快速批改作文和浏览作文。"
     },
     {
       "icon": "fa fa-language",
@@ -87,14 +102,19 @@
       "text": "支持多语言文本翻译，帮助学生理解外语文本，提升阅读能力。"
     },
     {
-      "icon": "fa fa-plane",
-      "name": "师生论坛",
-      "text": "建立互动交流平台，方便师生分享学习经验，增强学习动力。"
+      "icon": "fa fa-group",
+      "name": "书籍视听",
+      "text": "将喜欢的书籍内容转化为自然流畅的人声，让书籍充满感染力，不再生硬。"
     },
     {
-      "icon": "fa fa-pie-chart",
-      "name": "AI作文批改与修改",
-      "text": "智能批改作文，提供修改建议，帮助学生提高写作水平。"
+      "icon": "fa fa-group",
+      "name": "文档问答",
+      "text": "面对学习和办公中海量文档和规章制度，快速检索问答来定位所需知识，提升阅读学习和办公效率。"
+    },
+    {
+      "icon": "fa fa-group",
+      "name": "趣图生成",
+      "text": "根据输入图片描述，生成不同类型的图片，为老师学生提供无限的创意和灵感，课后休闲放松使用。"
     }
   ],
   "Testimonials": [
@@ -163,22 +183,22 @@
     {
       "icon": "fa fa-magic",
       "title": "AI赋能教育",
-      "text": "借助星火大模型，实现教育的AI赋能，使学习更高效、更有趣。"
+      "text": "借助星火大模型，实现教育的AI赋能，使学习更高效、更有趣，教学办公更方便、更省心。"
     },
     {
-      "icon": "fa fa-bullhorn",
-      "title": "智能成绩分析",
-      "text": "利用讯飞星火大模型，实时分析学生的学习成绩，提供详尽的分析报告，帮助学生发现不足并给出学习建议规划。"
+      "icon": "fa fa-pencil-square",
+      "title": "智能工具",
+      "text": "成绩分析、每日计划、教案生成、文档问答等功能结合讯飞人工智能平台，让使用更方便、更高效。"
     },
     {
-      "icon": "fa fa-group",
-      "title": "智能作文批改与修改",
-      "text": "AI自动批改作文，帮助学生提升写作能力和帮助老师快速批改作文。"
+      "icon": "fa fa-star",
+      "title": "课后休闲",
+      "text": "书籍视听、我的日记、趣图生成功能，丰富老师学生的课后休闲活动。"
     },
     {
       "icon": "fa fa-comments-o",
       "title": "多功能交流平台",
-      "text": "提供师生论坛和文本翻译功能，方便师生交流学习经验，促进互动与合作。"
+      "text": "提供师生论坛功能，方便师生交流学习经验，促进互动与合作。"
     }
   ]
 }

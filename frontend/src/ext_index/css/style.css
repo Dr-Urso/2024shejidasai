@@ -604,3 +604,10 @@ label {
     margin: 50px 0;
   }
 }
+.custom-carousel .slick-dots li button {
+  background-color: #3b5b9b; /* 默认点的颜色 */
+}
+
+.custom-carousel .slick-dots li.slick-active button {
+  background-color: #3b5b9b; /* 活跃点的颜色 */
+}
